@@ -5,7 +5,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="DWicon.png">
   <link rel="icon" type="image/png" sizes="180x180" href="DWicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>DUNGEON WALKER v17.7</title>
+<title>DUNGEON WALKER DWCver4</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 :root{--bg:#07050e;--panel:#110d1a;--panel2:#180f28;--border:#2a1e42;--gold:#c9a84c;--text:#e8dcc8;--dim:#5a4a3a;--common:#8a9aaa;--uncommon:#50b450;--rare:#4a8aff;--epic:#d040ff;--legendary:#ff9500;}
@@ -876,17 +876,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="ov-title" style="font-size:18px;">🗺️ エリア選択</div>
     <div style="display:flex;align-items:center;justify-content:space-between;width:100%;"><div class="ov-sub" style="color:#fff;font-weight:bold;font-style:normal;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.5);border-radius:8px;padding:5px 16px;letter-spacing:1px;">冒険するエリアを選択してください</div><div id="btn-area-back" style="background:rgba(0,0,0,.6);border:1px solid rgba(201,168,76,.5);border-radius:8px;padding:6px 14px;font-family:'Cinzel',serif;font-size:11px;color:#c9a84c;cursor:pointer;touch-action:manipulation;">← 戻る</div></div>
     <div style="display:flex;flex-direction:column;gap:10px;width:100%;padding:0 4px;">
-      <!-- エリア0: 始まりの洞窟 -->
-      <div id="area-btn-0" style="background:rgba(0,0,0,.7);border:2px solid #7fb3d3;border-radius:10px;padding:14px 18px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;gap:12px;">
-        <div style="font-size:28px;flex-shrink:0;">🪨</div>
-        <div style="flex:1;">
-          <div style="font-family:'Cinzel',serif;font-size:14px;color:#7fb3d3;font-weight:bold;">始まりの洞窟</div>
-          <div style="font-size:10px;color:#aaa;font-family:sans-serif;margin-top:3px;">冒険の第一歩。初級ダンジョン。</div>
-        </div>
-        <div style="font-size:10px;color:#4aff88;font-family:sans-serif;background:rgba(74,255,136,.1);border:1px solid rgba(74,255,136,.4);border-radius:4px;padding:2px 8px;">プレイ可能</div>
-      </div>
-      <!-- エリア1: 忘却の遺跡 -->
-      <div id="area-btn-1" style="background:rgba(0,0,0,.7);border:2px solid #c9a84c;border-radius:10px;padding:14px 18px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;gap:12px;">
+      <!-- エリア1: 忘却の遺跡（現行エリア） -->
+      <div id="area-btn-0" style="background:rgba(0,0,0,.7);border:2px solid #c9a84c;border-radius:10px;padding:14px 18px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;gap:12px;">
         <div style="font-size:28px;flex-shrink:0;">🏚️</div>
         <div style="flex:1;">
           <div style="font-family:'Cinzel',serif;font-size:14px;color:#c9a84c;font-weight:bold;">忘却の遺跡</div>
@@ -1130,13 +1121,13 @@ const DB={
   poisonNeedle:{id:'poisonNeedle',name:'毒針',    icon:'🪡', type:'attack',  rarity:'common',    cost:1, desc:'攻撃3 + 与えたダメージ分の毒を付与',shortDesc:"攻撃3+与ダメ分毒",        effect:{atk:3,poisonFromDmg:true}},
   bash:        {id:'bash',        name:'強撃',    icon:'🪓', type:'attack',  rarity:'common',    cost:2, desc:'攻撃 15',shortDesc:"攻撃 15",                   effect:{atk:15}},
   heavy:       {id:'heavy',       name:'大振り',  icon:'💥', type:'attack',  rarity:'uncommon',  cost:3, desc:'攻撃 20',shortDesc:"攻撃 20",                   effect:{atk:20}},
-  twin:        {id:'twin',        name:'双撃',    icon:'⚡', type:'attack',  rarity:'common',    cost:2, desc:'攻撃 6×2',shortDesc:"攻撃 6×2",                 effect:{atk:6,times:2}},
+  twin:        {id:'twin',        name:'双撃',    icon:'⚡', type:'attack',  rarity:'common',    cost:2, desc:'攻撃 6×2（合計12）',shortDesc:"攻6×2(計12)",                 effect:{atk:6,times:2}},
   pierce:      {id:'pierce',      name:'貫通',    icon:'🗡️', type:'attack',  rarity:'rare',     cost:1, desc:'敵シールド-4 + 攻撃 5',  shortDesc:"盾-4 + 攻撃5",            effect:{atk:5,shieldBreak:4}},
   lifesteal:   {id:'lifesteal',   name:'吸血',    icon:'🩸', type:'attack',  rarity:'epic',     cost:2, desc:'攻撃10 + 与えたダメージ分HP回復',shortDesc:"攻撃10+吸収",      effect:{atk:10,lifeSteal:true}},
-  combo:       {id:'combo',       name:'連撃',    icon:'🌀', type:'attack',  rarity:'uncommon',  cost:3, desc:'攻撃 5×3',shortDesc:"攻撃 5×3",                 effect:{atk:5,times:3}},
+  combo:       {id:'combo',       name:'連撃',    icon:'🌀', type:'attack',  rarity:'uncommon',  cost:3, desc:'攻撃 5×3（合計15）',shortDesc:"攻5×3(計15)",                 effect:{atk:5,times:3}},
   shieldBash:  {id:'shieldBash',  name:'盾の一撃',icon:'🛡', type:'attack',  rarity:'gauge',     cost:0, desc:'自分のシールド値分ダメージ + シールドを0に',shortDesc:"盾の値ダメ",         effect:{shieldAtk:true}},
   godstrike:   {id:'godstrike',   name:'神撃',    icon:'⭐', type:'attack',  rarity:'legendary',cost:3, desc:'攻撃 25 + シールド10',shortDesc:"攻撃25+盾10",            effect:{atk:25,shield:10}},
-  stormSlash:  {id:'stormSlash',  name:'嵐乱斬',  icon:'🌪', type:'attack',  rarity:'legendary',cost:4, desc:'攻撃 3×6',shortDesc:"攻撃 3×6",                 effect:{atk:3,times:6}},
+  stormSlash:  {id:'stormSlash',  name:'嵐乱斬',  icon:'🌪', type:'attack',  rarity:'legendary',cost:4, desc:'攻撃 3×6（合計18）',shortDesc:"攻3×6(計18)",                 effect:{atk:3,times:6}},
   poisonKill:  {id:'poisonKill',  name:'毒滅',    icon:'💢', type:'attack',  rarity:'epic',cost:1, desc:'敵の毒カウントが10以上の時のみ使用可 / 攻撃 18',shortDesc:"毒10以上:攻18",         effect:{atk:18,requirePoisonHigh:true}},
   // 防御
   guard:       {id:'guard',       name:'防御',    icon:'🛡️', type:'shield',  rarity:'common',   cost:1, desc:'シールド 6',shortDesc:"シールド 6",                    effect:{shield:6}},
@@ -1227,14 +1218,14 @@ const DB={
   // 新カード
   soulEater:   {id:'soulEater',   name:'魂食らい', icon:'💀', type:'skill',   rarity:'gauge',     cost:0, desc:'このターン、攻撃ダメージを与えるたびにその半分（切り捨て）HP回復',shortDesc:"攻ダメ毎半分回復",   effect:{soulEater:true}},
   furyDance:   {id:'furyDance',   name:'憤怒の舞', icon:'💃', type:'attack',  rarity:'gauge',     cost:1, desc:'攻3 + ドロー1 + 次の憤怒の舞のダメージ+3（ステージクリアでリセット）',shortDesc:"攻3+ドロー1+累積",  effect:{furyDance:true}},
-  karuren:     {id:'karuren',     name:'軽連打',   icon:'👊', type:'attack',  rarity:'gauge',     cost:1, desc:'攻撃2×2',shortDesc:"攻撃2×2",                                                              effect:{atk:2,times:2}},
+  karuren:     {id:'karuren',     name:'軽連打',   icon:'👊', type:'attack',  rarity:'gauge',     cost:1, desc:'攻撃2×2（合計4）',shortDesc:"攻2×2(計4)",                                                              effect:{atk:2,times:2}},
   chikara:     {id:'chikara',    name:'力溜め',   icon:'💪', type:'skill',   rarity:'gauge',     cost:1, desc:'次のターン開始時、ドローするカード+1とマナ+1',shortDesc:"次T ドロー+1 マナ+1",            effect:{nextTurnDrawBonus:1,nextTurnManaBonus:1}},
   konshin:     {id:'konshin',     name:'渾身の一撃',icon:'💪', type:'attack',  rarity:'gauge',     cost:3, desc:'攻撃25 / 次ターン開始ドロー-2',shortDesc:"攻25/次Tドロー-2",                       effect:{atk:25,nextDrawMinus:2}},
   shinsei:     {id:'shinsei',     name:'神聖なる拳',icon:'✊', type:'attack',  rarity:'gauge',     cost:1, desc:'このステージ中に回復したHP合計分のダメージを与える（攻撃力も加算）。使用後カウントリセット。',shortDesc:"回復合計分ダメ+リセット",   effect:{healSumDmg:true}},
 
   // ===== Stage9以降 新カード（Legendary） =====
   strikeBack:   {id:'strikeBack',  name:'殴り返し',   icon:'↩️', type:'attack',  rarity:'legendary', cost:1, desc:'ATK + 前の敵ターンで減ったHP分追加ダメージ', shortDesc:"ATK+前敵T減HP分",    effect:{atkPlusPrevHpLoss:true}},
-  evilCombo:    {id:'evilCombo',   name:'邪悪な連撃', icon:'👊', type:'attack',  rarity:'legendary', cost:1, desc:'手札の妨害カードを1枚除外して攻撃2×4（妨害カードがないと使用不可）', shortDesc:"妨害除外:攻2×4", effect:{bougaiExile_atk:true,atk:2,times:4}},
+  evilCombo:    {id:'evilCombo',   name:'邪悪な連撃', icon:'👊', type:'attack',  rarity:'legendary', cost:1, desc:'手札の妨害カードを1枚除外して攻撃2×4（合計8）（妨害カードがないと使用不可）', shortDesc:"妨害除外:攻2×4(計8)", effect:{bougaiExile_atk:true,atk:2,times:4}},
   curseShield:  {id:'curseShield', name:'呪いの盾',   icon:'🛡️', type:'shield',  rarity:'legendary', cost:3, desc:'手札の妨害カードを1枚除外して盾+30（妨害カードがないと使用不可）', shortDesc:"妨害除外:盾+30",  effect:{bougaiExile_shield:30}},
   angerShield:  {id:'angerShield', name:'憤怒の盾',   icon:'⚔️', type:'shield',  rarity:'legendary', cost:1, desc:'盾+5 + 次の敵ターンで減った盾分のダメージを与える', shortDesc:"盾+5+次敵T盾減分ダメ", effect:{shield:5,retaliateShield:true}},
   curseSuck:    {id:'curseSuck',   name:'呪詛食い',   icon:'💊', type:'heal',    rarity:'legendary', cost:3, desc:'手札の妨害カードを1枚除外してHP+30（妨害カードがないと使用不可）', shortDesc:"妨害除外:HP+30",  effect:{bougaiExile_heal:30}},
@@ -1292,23 +1283,6 @@ const ENEMIES=[
   {name:'デーモン',      icon:'😈',hp:400, atk:28, shield:30, pattern:['curse_bind','despair','big','superbigdef','big'],             boss:false, img:'enemy14.png'},
   {name:'古代の龍神',    icon:'🐲',hp:500, atk:30, shield:40, pattern:['enervate','big','poisonfang','reflect_e','bigheal'],          boss:true,  img:'enemy15.png'},
 ];
-
-// ===== 始まりの洞窟エリアデータ =====
-const CAVE_ENEMIES = [
-  {name:'スライム',   icon:'🟢',hp:40,  atk:6,  shield:0,  pattern:['atk','big','atk'],                boss:false, img:'cave_enemy1.png'},
-  {name:'角ウサギ',   icon:'🐇',hp:50,  atk:8,  shield:0,  pattern:['atk','big','atk'],                boss:false, img:'cave_enemy2.png'},
-  {name:'大蜂',       icon:'🐝',hp:60,  atk:10, shield:5,  pattern:['poisonatk','poisonatk','big'],    boss:false, img:'cave_enemy3.png'},
-  {name:'食人草',     icon:'🌿',hp:70,  atk:12, shield:8,  pattern:['curse','curse','poisonatk'],      boss:false, img:'cave_enemy4.png'},
-  {name:'トロール',   icon:'👹',hp:80,  atk:15, shield:10, pattern:['poisonatk','bigheal','big'],      boss:true,  img:'cave_enemy5.png'},
-];
-const CAVE_RARITY_WEIGHTS = [
-  [60,35, 5, 0, 0], // stage1
-  [50,40,10, 0, 0], // stage2
-  [30,50,20, 0, 0], // stage3
-  [20,40,40, 0, 0], // stage4
-];
-const CAVE_STATUP_POOL = ['permAtk','permAtkBuff2','maxHp','firstTurnMana','handPlus'];
-
 // レアリティ別カードプール
 const CARD_POOL = {
   common:    ['heal','teate','kyougeki','anger','manaDrain','strike2','slash2','poisonNeedle','bash','twin','allIn','poison','afterForce','punch','guideStrike','swiftBlade','armorPierce','smallShield'],
@@ -1346,12 +1320,7 @@ const RARITY_WEIGHTS = [
   [ 0, 0,10,40,50], // stage14
 ];
 function pickRarity(stage){
-  let w;
-  if(typeof G!=='undefined'&&G.currentArea==='cave'){
-    w=CAVE_RARITY_WEIGHTS[Math.min(stage,3)];
-  } else {
-    w=RARITY_WEIGHTS[Math.min(stage,13)];
-  }
+  const w=RARITY_WEIGHTS[Math.min(stage,13)];
   const total=w.reduce((a,b)=>a+b,0);
   let r=Math.random()*total;
   const keys=['common','uncommon','rare','epic','legendary'];
@@ -1387,7 +1356,7 @@ function getRewards(stage){
 
 let G={};
 function initGame(){
-  G={stage:0,currentArea:G.currentArea||'ruins',playerHp:30,playerMaxHp:30,shield:0,mana:3,manaMax:10,manaRegen:3,atkBuff:0,nextManaBonus:0,weakenTurns:0,weakenHalf:false,weakenHalfTurns:0,invincibleTurns:0,mirrorActive:false,exileOnBattle:[],tempExiled:[],cardGauge:0,chargeType:null,chargeCount:0,chargeActive:false,nextDmgNull:false,nextTurnHealPending:false,regenTurns:0,regenVal:0,doubleNext:false,doubleMultiplier:1,halfShieldLossTurns:0,
+  G={stage:0,playerHp:30,playerMaxHp:30,shield:0,mana:3,manaMax:10,manaRegen:3,atkBuff:0,nextManaBonus:0,weakenTurns:0,weakenHalf:false,weakenHalfTurns:0,invincibleTurns:0,mirrorActive:false,exileOnBattle:[],tempExiled:[],cardGauge:0,chargeType:null,chargeCount:0,chargeActive:false,nextDmgNull:false,nextTurnHealPending:false,regenTurns:0,regenVal:0,doubleNext:false,doubleMultiplier:1,halfShieldLossTurns:0,
      deck:[...STARTER],drawPile:[],discard:[],hand:[],enemy:null,
      enemyShield:0,enemyPoison:0,enemyAtkDebuff:0,playerPoison:0,turnCount:1,phase:'block',
      permAtkBonus:0, initShieldBonus:0, turnStartHealPct:0, firstTurnManaBonus:0,
@@ -1424,21 +1393,19 @@ function initGame(){
 function afterEventNext(){
   if(G._postEventStatUp){
     G._postEventStatUp=false;
-    setTimeout(()=>showStatUpEvent(false),150);
+    showStatUpEvent(false);
   } else {
     startStage();
   }
 }
 
 function startStage(){
-  // 暗幕を一瞬表示してからstageIntroへ（報酬→ステージ間のチラ見え防止）
+  // 暗幕を表示してからstageIntroへ（オーバーレイ→ステージ間のチラ見え防止）
   const curtain=document.getElementById('ov-curtain');
   if(curtain) curtain.style.display='block';
-  setTimeout(()=>{
-    if(curtain) curtain.style.display='none';
-    const _curEnemies=(G.currentArea==='cave')?CAVE_ENEMIES:ENEMIES;
-  showStageIntro(G.stage+1, _curEnemies[G.stage], ()=>_startStageBattle());
-  },200);
+  if(window._curtainSafeTimer){ clearTimeout(window._curtainSafeTimer); window._curtainSafeTimer=null; }
+  // 暗幕を維持したままstageIntroを表示し、stageIntro側で暗幕を消す
+  showStageIntro(G.stage+1, ENEMIES[G.stage], ()=>_startStageBattle());
 }
 function _startStageBattle(){
   stopCurseOrbs();
@@ -1448,8 +1415,7 @@ function _startStageBattle(){
   const _ha=document.getElementById('hand-area');
   if(_bf) _bf.style.visibility='visible';
   if(_ha) _ha.style.visibility='visible';
-  const _areaEnemies=(G.currentArea==='cave')?CAVE_ENEMIES:ENEMIES;
-  const e=_areaEnemies[G.stage];
+  const e=ENEMIES[G.stage];
   G.enemy={...e,curHp:e.hp,patIdx:0};
   G.enemyShield=e.shield||0; G.enemyPoison=0; G.enemyAtkDebuff=0; G.playerPoison=0;
   G.shield=G.initShieldBonus||0; G.atkBuff=G.permAtkBonus||0;
@@ -1536,7 +1502,7 @@ function _startStageBattle(){
   if(G.turnStartShieldBonus>0){
     G.shield+=G.turnStartShieldBonus;
     addLog('🛡️ ターン盾: +'+G.turnStartShieldBonus,'sys');
-    queueEffect(()=>{flashShield();flashShieldAdd('player',G.turnStartShieldBonus);sfxShield();}, 2800);
+    queueEffect(()=>{flashShield();flashShieldAdd('player',G.turnStartShieldBonus);sfxShield();}, 800);
     updateUI();
   }
   // ターン開始時HP回復（初ターンにも適用）
@@ -1659,7 +1625,15 @@ function playCard(idx, _isChain){
   const cid = c ? c.id : null;
   if(!c||!cid)return;
   if(G.phase!=='player')return;
-
+  // カード効果中操作ロック
+  const _lockTargets=['hand-area','end-turn-btn','btn-deck-view','charge-gauge-box','curse-timer-box'];
+  _lockTargets.forEach(id=>{const el=document.getElementById(id);if(el)el.style.pointerEvents='none';});
+  function _unlockUI(){
+    if(effectQueue.length===0&&!effectRunning){
+      _lockTargets.forEach(id=>{const el=document.getElementById(id);if(el)el.style.pointerEvents='';});
+    } else { setTimeout(_unlockUI,150); }
+  }
+  setTimeout(_unlockUI,200);
 
   if(!_isChain){
     const handIdx=(typeof idx==='number')?idx:G.hand.indexOf(cid);
@@ -1735,7 +1709,7 @@ function playCard(idx, _isChain){
     G.turnCostSum=(G.turnCostSum||0)+actualCost;
     if(c.type==='attack'){
       G.turnAtkCardCount=(G.turnAtkCardCount||0)+1;
-      if(G.comboHealActive){const chHeal=healPlayer((G.comboHealVal||3)+(G.healBuff||0));if(chHeal>0){queueEffect(()=>{sfxHeal();spawnDmgNum('+'+chHeal,'heal');flashHealEffect(chHeal);}, 2800);}}
+      if(G.comboHealActive){const chHeal=healPlayer((G.comboHealVal||3)+(G.healBuff||0));if(chHeal>0){queueEffect(()=>{sfxHeal();spawnDmgNum('+'+chHeal,'heal');flashHealEffect(chHeal);}, 800);}}
     }
     if(actualCost>=3) G.usedHighCostThisTurn=true;
     const _ct_now_inner=G.chargeType?CHARGE_TYPES[G.chargeType]:null;
@@ -1763,20 +1737,20 @@ function playCard(idx, _isChain){
     const sb=Math.min(G.enemyShield,ef.shieldBreak);
     G.enemyShield=Math.max(0,G.enemyShield-ef.shieldBreak);
     msgs.push('敵シールド-'+ef.shieldBreak+(sb>0?' ('+sb+'減少)':'(効果なし)'));
-    if(sb>0){queueEffect(()=>{spawnDmgNum('🛡️-'+sb,'enemy-dmg');sfxShield();}, 2800);}
+    if(sb>0){queueEffect(()=>{spawnDmgNum('🛡️-'+sb,'enemy-dmg');sfxShield();}, 800);}
   }
   // 自傷ダメージ・HP減少を攻撃より先に処理（魂喰らい+血の契約などの処理順確保）
   if(ef.selfDmg){
     const sd=ef.selfDmg;
     G.playerHp=Math.max(1,G.playerHp-sd); // 0以下にはしない（攻撃後に死亡チェック）
     msgs.push('HP-'+sd);
-    queueEffect(()=>{spawnDmgNum('-'+sd,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+sd,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 800);
   }
   if(ef.selfHp&&ef.selfHp<0){
     const sd2=Math.abs(ef.selfHp);
     G.playerHp=Math.max(1,G.playerHp+ef.selfHp);
     msgs.push('HP-'+sd2);
-    queueEffect(()=>{spawnDmgNum('-'+sd2,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+sd2,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 800);
   }
   if(ef.atk && !ef.ignoreShield){
     const t=ef.times||1;
@@ -1792,7 +1766,7 @@ function playCard(idx, _isChain){
       const reflDmg=ef.atk*t;
       G.playerHp=Math.max(0,G.playerHp-reflDmg);
       addLog('🔄 反射！攻撃が'+reflDmg+'ダメージで返ってきた！','enemy');
-      queueEffect(()=>{spawnDmgNum('-'+reflDmg,'player-dmg');shakePlayerArea();flashScreen('flash-red');sfxDamage();}, 2800);
+      queueEffect(()=>{spawnDmgNum('-'+reflDmg,'player-dmg');shakePlayerArea();flashScreen('flash-red');sfxDamage();}, 800);
       updateUI();if(G.playerHp<=0){defeat('反射ダメージ');return;}
       return;
     }
@@ -1807,8 +1781,8 @@ function playCard(idx, _isChain){
       if(!ef.pierceBreak&&G.enemyShield>0){const a=shieldAbs;G.enemyShield-=a;d-=a;if(a){msgs.push('シールド'+a+'吸収');sfxShield();flashShieldBlock('enemy');}}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
       G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
-      if(G.swiftBladeActive && d>=10){queueEffect(()=>{addLog('⚡ 加速する刃: ドロー1','sys');flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},1200);}, 2800);}
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+      if(G.swiftBladeActive && d>=10){queueEffect(()=>{addLog('⚡ 加速する刃: ドロー1','sys');flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);}
       msgs.push(c.name+': '+d+'ダメ');
       (function(dmg){
         queueEffect(()=>{
@@ -1816,7 +1790,7 @@ function playCard(idx, _isChain){
           shakeEnemyArea();
           flashScreen('flash-gold');
           sfxDamage();
-        }, 2800);
+        }, 800);
       })(d);
     }
   }
@@ -1826,8 +1800,8 @@ function playCard(idx, _isChain){
     G.enemyPoison=(G.enemyPoison||0)+poisonAmt;
     G.dokushiNextAtkPoison=false;
     msgs.push('☠️ 錬金術師: 与ダメ'+poisonAmt+'分の毒付与！');
-    (function(_pa){queueEffect(()=>showEffectPopup('Edoku.png','毒+'+_pa,'#9b59b6','enemy'),800);})(poisonAmt);
-    queueEffect(()=>{spawnDmgNum('☠️+'+poisonAmt,'enemy-dmg');}, 2800);
+    (function(_pa){queueEffect(()=>{showEffectPopup('Emoudoku.png','毒+'+_pa,'#9b59b6','enemy');sfxPoison();},800);})(poisonAmt);
+    queueEffect(()=>{spawnDmgNum('☠️+'+poisonAmt,'enemy-dmg');}, 800);
   }
   if(ef.selfHp){
     const sv=ef.selfHp;
@@ -1849,8 +1823,8 @@ function playCard(idx, _isChain){
     const poisonAmt=realDmg+(G.poisonAddBonus||0);
     G.enemyPoison=(G.enemyPoison||0)+poisonAmt;
     msgs.push('毒+'+poisonAmt+'（与ダメ'+realDmg+(G.poisonAddBonus>0?'+猛毒'+G.poisonAddBonus:'')+'）');
-    (function(_pa){queueEffect(()=>showEffectPopup('Edoku.png','毒+'+_pa,'#9b59b6','enemy'),800);})(poisonAmt);
-    queueEffect(()=>{spawnDmgNum('☠️+'+poisonAmt,'enemy-dmg');}, 2800);
+    (function(_pa){queueEffect(()=>{showEffectPopup('Edoku.png','毒+'+_pa,'#9b59b6','enemy');sfxPoison();},800);})(poisonAmt);
+    queueEffect(()=>{spawnDmgNum('☠️+'+poisonAmt,'enemy-dmg');}, 800);
     if(G.chargeType==='dokushi') addCharge(1);
   }
   if(ef.requireLowHp&&G.playerHp>10){
@@ -1866,9 +1840,9 @@ function playCard(idx, _isChain){
     let d=(atkVal+G.atkBuff)*_m2;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     msgs.push(c.name+': '+(isFullHp?'満タン ':'')+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
   }
   if(ef.atkCardCountDmg){
     // 自身の使用はカウントしない（turnAtkCardCountはすでに+1済みなので-1）
@@ -1879,10 +1853,10 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('連鎖爆発: 攻カード'+atkCount+'枚×5='+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
   }
   if(ef.costSumDmg){
     const spent=G.stageManaSpent||0;
@@ -1890,10 +1864,10 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('積み重ね: ステージ消費マナ'+spent+'→'+d+'ダメージ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
   }
   if(ef.discardAllDmg){
     const n=G.hand.length; G.discard.push(...G.hand); G.hand=[];
@@ -1902,17 +1876,17 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('捨て身: '+n+'枚捨て×5='+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     clampPage();
   }
   if(ef.discardAllShield){
     const n=G.hand.length; G.discard.push(...G.hand); G.hand=[];
     const s=n*ef.discardAllShield; G.shield+=s;
     msgs.push('大盤振る舞い: '+n+'枚捨て×2=盾+'+s);
-    queueEffect(()=>{flashShield();flashShieldAdd('player',s);sfxShield();}, 2800);
+    queueEffect(()=>{flashShield();flashShieldAdd('player',s);sfxShield();}, 800);
     clampPage();
   }
   if(ef.drawPileInverseDmg){
@@ -1923,10 +1897,10 @@ function playCard(idx, _isChain){
     let dmgLeft=d;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,dmgLeft);G.enemyShield-=a;dmgLeft-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-dmgLeft);
-    if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+dmgLeft;
     msgs.push('薄氷: 山札'+rem+'枚→'+(doubleApplied?d/2+'×2=':'')+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     if(G.enemy.curHp<=0){G.phase='block';}
   }
   if(ef.deckCountDmg){
@@ -1934,10 +1908,10 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('知識の海: デッキ'+G.deck.length+'枚='+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
   }
   if(ef.freezeEnemy){
     G.enemyFrozen=true;
@@ -1979,10 +1953,10 @@ function playCard(idx, _isChain){
           if(G.doubleNext&&i===0) G.doubleNext=false;
           if(!pef.pierceBreak&&G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
           G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-          if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+          if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
           G.totalDmgDealt=(G.totalDmgDealt||0)+d;
           echoMsgs.push(d+'ダメ');
-          (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);})(d);
+          (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);})(d);
         }
       }
       if(pef.atkPlusPrevHpLoss){
@@ -1992,14 +1966,14 @@ function playCard(idx, _isChain){
         let d=baseDmg*_mult;
         if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
         G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-        if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+        if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
         G.totalDmgDealt=(G.totalDmgDealt||0)+d;
         echoMsgs.push('殴り返し: '+d+'ダメ'+(prevLoss>0?' (前敵T減HP:'+prevLoss+'含む)':''));
-        (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);})(d);
+        (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);})(d);
       }
-      if(pef.shield){const _ps=pef.shield;G.shield+=_ps;echoMsgs.push('盾+'+_ps);queueEffect(()=>{flashShield();flashShieldAdd('player',_ps);sfxShield();}, 2800);}
+      if(pef.shield){const _ps=pef.shield;G.shield+=_ps;echoMsgs.push('盾+'+_ps);queueEffect(()=>{flashShield();flashShieldAdd('player',_ps);sfxShield();}, 800);}
       if(pef.heal){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+pef.heal);echoMsgs.push('HP+'+pef.heal);sfxHeal();queueEffect(()=>spawnDmgNum('+'+pef.heal,'heal'),270);}
-      if(pef.draw){echoMsgs.push(pef.draw+'枚ドロー');queueEffect(()=>{flashDrawCard(pef.draw);setTimeout(()=>{drawCards(pef.draw);renderHand();},500);}, 2800);}
+      if(pef.draw){echoMsgs.push(pef.draw+'枚ドロー');queueEffect(()=>{flashDrawCard(pef.draw);setTimeout(()=>{drawCards(pef.draw);renderHand();},500);}, 800);}
       if(pef.poison){G.enemyPoison=(G.enemyPoison||0)+pef.poison;echoMsgs.push('毒'+pef.poison);}
       if(pef.breakShield){G.enemyShield=0;echoMsgs.push('敵盾0に');}
       if(pef.buff==='atk'){G.atkBuff+=pef.val;echoMsgs.push('攻撃+'+pef.val);queueEffect(()=>showEffectPopup('Ekougeki.png','攻撃力+'+pef.val,'#ff6b35'), 800);}
@@ -2018,10 +1992,10 @@ function playCard(idx, _isChain){
   if(ef.shield){
     const shieldAmt=ef.shield+(G.shieldBuff||0);
     G.shield+=shieldAmt; msgs.push('シールド+'+shieldAmt+(G.shieldBuff>0?' (+'+G.shieldBuff+'強化)':''));
-    queueEffect(()=>{flashShield();flashShieldAdd('player',shieldAmt);sfxShield();}, 2800);
+    queueEffect(()=>{flashShield();flashShieldAdd('player',shieldAmt);sfxShield();}, 800);
     if(G.chargeType==='teppeki') addCharge(1);
   }
-  if(ef.draw){msgs.push(ef.draw+'枚ドロー');queueEffect(()=>{flashDrawCard(ef.draw);setTimeout(()=>{drawCards(ef.draw);renderHand();},1200);}, 2800);}
+  if(ef.draw){msgs.push(ef.draw+'枚ドロー');queueEffect(()=>{flashDrawCard(ef.draw);setTimeout(()=>{drawCards(ef.draw);renderHand();},500);}, 800);}
   if(ef.mana){G.mana=Math.min(G.manaMax,G.mana+ef.mana);msgs.push('マナ+'+ef.mana);}
   if(ef.nextMana){G.nextManaBonus=(G.nextManaBonus||0)+ef.nextMana;msgs.push('次ターンマナ+'+ef.nextMana);}
   if(ef.buff==='atk'){G.atkBuff=G.atkBuff+ef.val;msgs.push('攻撃+'+(ef.val)+'(このターン中)');queueEffect(()=>showEffectPopup('Ekougeki.png','攻撃力+'+ef.val,'#ff6b35'), 800);}
@@ -2031,7 +2005,8 @@ function playCard(idx, _isChain){
     G.enemyPoison=(G.enemyPoison||0)+poisonAmt;
     msgs.push('毒+'+poisonAmt+(G.poisonAddBonus>0?' (猛毒+'+G.poisonAddBonus+')':'')+(G.poisonDoubleTurn?' (2倍！)':''));
     const _pAmt=poisonAmt;
-    queueEffect(()=>showEffectPopup('Edoku.png','毒+'+_pAmt,'#9b59b6','enemy'), 800);
+    const _useHeavyImg=(G.poisonDoubleTurn||G.poisonAddBonus>0);
+    queueEffect(()=>{showEffectPopup(_useHeavyImg?'Emoudoku.png':'Edoku.png','毒+'+_pAmt,'#9b59b6','enemy');sfxPoison();}, 800);
     if(G.chargeType==='dokushi') addCharge(1);
   }
   if(ef.debuff==='atk'){G.enemyAtkDebuff+=ef.val;G.weakenTurns=(G.weakenTurns||0)+(ef.turns||1);msgs.push('敵ATK-'+ef.val+' ('+ef.turns+'T)');}
@@ -2041,13 +2016,13 @@ function playCard(idx, _isChain){
     const healBase=ef.heal+(G.healBuff||0);
     const _ha=healPlayer(Math.max(1,Math.floor(healBase*healMult)));
     msgs.push('HP+'+_ha+(G.heavyWoundTurns>0?' (重傷半減)':'')+(G.healBuff>0?' (+'+G.healBuff+'強化)':''));
-    queueEffect(()=>{sfxHeal();spawnDmgNum('+'+_ha,'heal');flashHealEffect(_ha);}, 2800);
+    queueEffect(()=>{sfxHeal();spawnDmgNum('+'+_ha,'heal');flashHealEffect(_ha);}, 800);
   }
   // 回復カードタイプ全般で僧侶チャージ（ef.healだけでなくregenTurns等も含む）
   if(ct_now&&ct_now.triggerType==='healCard'&&c.type==='heal') addCharge(1);
   if(ef.invincible){G.invincibleTurns=(G.invincibleTurns||0)+ef.invincible;msgs.push('1T無敵');}
   if(ef.nextDmgHalfTurn){G.nextDmgHalfTurns=(G.nextDmgHalfTurns||0)+ef.nextDmgHalfTurn;msgs.push('1Tダメ半減');}
-  if(ef.mirror){G.mirrorActive=true;msgs.push('魔鏡発動');queueEffect(()=>{flashReflectEffect();sfxShield();}, 2800);}
+  if(ef.mirror){G.mirrorActive=true;msgs.push('魔鏡発動');queueEffect(()=>{flashReflectEffect();sfxShield();}, 800);}
   if(ef.exile){G.exileOnBattle=G.exileOnBattle||[];G.exileOnBattle.push(cid);}
   // 毒滅：敵が毒でない場合使用不可
   if(ef.requirePoisonHigh && G.enemyPoison<10){addLog('💢 敵の毒カウントが10以上でないと使えない！','sys');G.mana+=c.cost;G.hand.splice(G.hand.indexOf(cid)-1,0,cid);G.discard.pop();clampPage();updateUI();return;}
@@ -2071,10 +2046,10 @@ function playCard(idx, _isChain){
       let dmgLeft=finalDmg;
       if(G.enemyShield>0){const abs=Math.min(G.enemyShield,dmgLeft);G.enemyShield-=abs;dmgLeft-=abs;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-dmgLeft);
-      if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+      if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
       G.totalDmgDealt=(G.totalDmgDealt||0)+dmgLeft;
       msgs.push('盾の一撃: '+(doubleApplied?sd+'×2=':'')+finalDmg+'ダメ 盾'+(remain>0?remain+'に':'0に'));
-      queueEffect(()=>{spawnDmgNum('-'+finalDmg,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold');}, 2800);
+      queueEffect(()=>{spawnDmgNum('-'+finalDmg,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold'); sfxDamage();}, 800);
     } else {
       msgs.push('盾の一撃: 盾なし (0ダメ)');
     }
@@ -2143,10 +2118,10 @@ function playCard(idx, _isChain){
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,hd);G.enemyShield-=a;hd-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-hd);
     G.totalDmgDealt=(G.totalDmgDealt||0)+hd;
-    if(G.soulEaterActive && hd>0){const _seH=Math.floor(hd/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && hd>0){const _seH=Math.floor(hd/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.stageHealSum=0; // 使用後カウントリセット
     msgs.push('神聖なる拳: 回復合計'+healTotal+'→'+d+'ダメ（カウントリセット）');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     if(G.enemy.curHp<=0){G.phase='block';}
   }
   // 魂食らい：このターンの与ダメ合計を記録してHP回復（ターン終了時に処理）
@@ -2158,12 +2133,12 @@ function playCard(idx, _isChain){
     let fd=furyDmg;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,fd);G.enemyShield-=a;fd-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-fd);
-    if(G.soulEaterActive && furyDmg>0){const _seH=Math.floor(furyDmg/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && furyDmg>0){const _seH=Math.floor(furyDmg/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+fd;
     G.furyDanceBonus=(G.furyDanceBonus||0)+3;
     msgs.push('憤怒の舞: '+(furyBonus>0?'(+'+furyBonus+'累積) ':'')+furyDmg+'ダメ+ドロー1 次の舞+3累積');
-    queueEffect(()=>{spawnDmgNum('-'+furyDmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
-    queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},1200);}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+furyDmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
+    queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);
     if(G.enemy.curHp<=0){G.phase='block';}
   }
 
@@ -2178,10 +2153,10 @@ function playCard(idx, _isChain){
     if(G.doubleNext){G.doubleNext=false;G.doubleMultiplier=1;}
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('追撃: '+(isSecondAtk?'2枚目↑ 攻撃'+bonusVal:'1枚目 攻撃4')+' → '+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     if(G.enemy.curHp<=0){G.phase='block';}
   }
   // 二段構え・三段構え：ターン終了時に盾付与
@@ -2246,10 +2221,10 @@ function playCard(idx, _isChain){
       let d=sv;
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
       G.totalDmgDealt=(G.totalDmgDealt||0)+d;
       msgs.push('反転(旧): 盾'+sv+'→'+d+'ダメ');
-      queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+      queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     } else msgs.push('反転: 盾なし');
   }
   // 反転：盾の半分の値で攻撃しその値分盾を減らす
@@ -2262,9 +2237,9 @@ function playCard(idx, _isChain){
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
       G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
       msgs.push('反転: 盾-'+sv+' → '+d+'ダメ');
-      queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+      queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
       if(G.enemy.curHp<=0){G.phase='block';}
     } else msgs.push('反転: 盾なし');
   }
@@ -2278,7 +2253,7 @@ function playCard(idx, _isChain){
   }
 
   // 猛毒：毒付与時の毒量+N（累積）
-  if(ef.poisonAddBonus){G.poisonAddBonus=(G.poisonAddBonus||0)+ef.poisonAddBonus;msgs.push('毒付与量+'+ef.poisonAddBonus+'（累積+'+G.poisonAddBonus+'）');queueEffect(()=>showEffectPopup('Emoudoku.png','猛毒+'+ef.poisonAddBonus,'#9b59b6','enemy'),800);}
+  if(ef.poisonAddBonus){G.poisonAddBonus=(G.poisonAddBonus||0)+ef.poisonAddBonus;msgs.push('毒付与量+'+ef.poisonAddBonus+'（累積+'+G.poisonAddBonus+'）');queueEffect(()=>{showEffectPopup('Emoudoku.png','猛毒+'+ef.poisonAddBonus,'#9b59b6','enemy');sfxPoison();},800);}
   if(ef.statusBurstDmg){
     let count=0;
     if(G.enemyPoison>0) count++;
@@ -2289,10 +2264,10 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,bda);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-bda);
-    if(G.soulEaterActive && bda>0){const _seH=Math.floor(bda/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && bda>0){const _seH=Math.floor(bda/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+bda;
     msgs.push('呪い爆発: 状態異常'+count+'×8='+bda+'ダメージ');
-    queueEffect(()=>{spawnDmgNum('-'+bda,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+bda,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
   }
   if(ef.explodePoison){
     const pc=G.enemyPoison||0;
@@ -2302,29 +2277,29 @@ function playCard(idx, _isChain){
       let epd=pd;
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,epd);G.enemyShield-=a;epd-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-epd);
-      if(G.soulEaterActive && epd>0){const _seH=Math.floor(epd/2);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+      if(G.soulEaterActive && epd>0){const _seH=Math.floor(epd/2);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
       G.totalDmgDealt=(G.totalDmgDealt||0)+epd;
       const halfPoison=Math.ceil(pc/2);
       G.enemyPoison=halfPoison;
       msgs.push('爆毒: 毒'+pc+'→'+pd+'ダメ / 毒カウント'+pc+'→'+halfPoison);
-      queueEffect(()=>{spawnDmgNum('-'+pd,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold');}, 2800);
+      queueEffect(()=>{spawnDmgNum('-'+pd,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold'); sfxDamage();}, 800);
     } else {
       msgs.push('爆毒: 毒なし');
     }
   }
   if(ef.lifeSteal){
     const lsDmg=ef.atk+G.atkBuff; const _lsha=healPlayer(lsDmg);
-    msgs.push('吸血回復+'+_lsha); queueEffect(()=>{spawnDmgNum('+'+_lsha,'heal');sfxHeal();}, 2800);
+    msgs.push('吸血回復+'+_lsha); queueEffect(()=>{spawnDmgNum('+'+_lsha,'heal');sfxHeal();}, 800);
   }
   // 鎧抜き：敵シールドを無視して攻撃
   if(ef.ignoreShield&&ef.atk){
     const _mult=(G.doubleNext)?(G.doubleMultiplier||2):1;if(G.doubleNext){G.doubleNext=false;G.doubleMultiplier=1;}
     let d=(ef.atk+G.atkBuff)*_mult;
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('鎧抜き: 盾無視'+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     if(G.enemy.curHp<=0){G.phase='block';}
   }
   // 無謀な一撃：自分のシールドを0にする
@@ -2352,10 +2327,10 @@ function playCard(idx, _isChain){
     let d=baseDmg*_mult;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('殴り返し: '+d+'ダメ'+(prevLoss>0?' (前敵T減HP:'+prevLoss+'含む)':''));
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     if(G.enemy.curHp<=0){G.phase='block';}
   }
   // 妨害除外 攻撃（邪悪な連撃）
@@ -2366,14 +2341,14 @@ function playCard(idx, _isChain){
       let d=(ef.atk+G.atkBuff)*_mult;
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
       msgs.push('連撃: '+d+'ダメ');
-      (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);})(d);
+      (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);})(d);
     }
     if(G.enemy.curHp<=0){G.phase='block';}
   }
   // 妨害除外 盾（呪いの盾）
-  if(ef.bougaiExile_shield){G.shield+=(ef.bougaiExile_shield||30);msgs.push('盾+'+(ef.bougaiExile_shield||30));queueEffect(()=>{flashShield();flashShieldAdd('player',ef.bougaiExile_shield||30);sfxShield();}, 2800);}
+  if(ef.bougaiExile_shield){G.shield+=(ef.bougaiExile_shield||30);msgs.push('盾+'+(ef.bougaiExile_shield||30));queueEffect(()=>{flashShield();flashShieldAdd('player',ef.bougaiExile_shield||30);sfxShield();}, 800);}
   // 憤怒の盾：盾+5 + 次の敵ターンで減った盾分のダメージ
   if(ef.retaliateShield){
     G.retaliateShieldActive=true;
@@ -2386,7 +2361,7 @@ function playCard(idx, _isChain){
     const hMult=G.heavyWoundTurns>0?0.5:1;
     const _ha=healPlayer(Math.floor(healAmt*hMult));
     msgs.push('HP+'+(Math.floor(healAmt*hMult))+(G.heavyWoundTurns>0?' (重傷半減)':''));
-    queueEffect(()=>{sfxHeal();spawnDmgNum('+'+_ha,'heal');flashHealEffect(_ha);}, 2800);
+    queueEffect(()=>{sfxHeal();spawnDmgNum('+'+_ha,'heal');flashHealEffect(_ha);}, 800);
   }
   // 妨害除外 呪い（呪詛返し）
   if(ef.bougaiExile_curse){
@@ -2395,9 +2370,9 @@ function playCard(idx, _isChain){
     let d=cd*_mult;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 2800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     msgs.push('呪詛返し: '+d+'ダメ');
-    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     if(G.enemy.curHp<=0){G.phase='block';}
   }
   // 妨害除外 or ドロー（解呪）
@@ -2409,10 +2384,10 @@ function playCard(idx, _isChain){
     if(!_hasNeg){addLog('✨ 解呪: 状態異常がないため使用不可！','sys');return;}
     const bIdx=G.hand.findIndex(id=>DB[id]&&DB[id].type==='bougai');
     if(bIdx>=0){const bid=G.hand.splice(bIdx,1)[0];msgs.push('妨害「'+DB[bid].name+'」除外');}
-    else{msgs.push('ドロー1');queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},1200);}, 2800);}
+    else{msgs.push('ドロー1');queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);}
   }
   // 汚染世界：毒5付与 + このターン与える毒が2倍
-  if(ef.doublePoison){G.poisonDoubleTurn=true;msgs.push('このT毒付与2倍');queueEffect(()=>showEffectPopup('Emoudoku.png','毒2倍','#9b59b6','enemy'),800);}
+  if(ef.doublePoison){G.poisonDoubleTurn=true;msgs.push('このT毒付与2倍');queueEffect(()=>{showEffectPopup('Emoudoku.png','毒2倍','#9b59b6','enemy');sfxPoison();},800);}
   // 致死無効（驚異の生命力）
   if(ef.deathSave){
     // HP50%以上の場合のみ使用可
@@ -2550,7 +2525,7 @@ function processPlayerTurnEnd(onDone){
     addStep((next)=>{
       const val=(G.endTurnShieldVal||0)+(G.shieldBuff||0);
       G.shield+=val;
-      queueEffect(()=>{flashShield();flashShieldAdd('player',val);sfxShield();}, 2800);
+      queueEffect(()=>{flashShield();flashShieldAdd('player',val);sfxShield();}, 800);
       if(G.chargeType==='teppeki') addCharge(1);
       addLog('🛡️ 構え: ターン終了時 盾+'+val,'sys');
       G.endTurnShieldTurns--;
@@ -2567,7 +2542,7 @@ function processPlayerTurnEnd(onDone){
       const burnDmg=burnCount*5;
       G.playerHp=Math.max(0,G.playerHp-burnDmg);
       addLog('🔥 火傷D×'+burnCount+': HP-'+burnDmg,'enemy');
-      queueEffect(()=>{spawnDmgNum('-'+burnDmg,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 2800);
+      queueEffect(()=>{spawnDmgNum('-'+burnDmg,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 800);
       updateUI();
       if(G.playerHp<=0){ G.phase='block'; const wvb=()=>{if(effectQueue.length>0||effectRunning){setTimeout(wvb,100);return;}defeat('燃焼ダメージ');}; setTimeout(wvb,100); return; }
       setTimeout(next,400);
@@ -2697,13 +2672,13 @@ function enemyTurn(){
       G.enemyShield+=8;
       addLog('🛡️ '+e.name+'がシールド+8','enemy');
       updateUI();
-      queueEffect(()=>{showEffectPopup('Etate.png','+8 シールド','#5dade2','enemy');sfxShield();}, 2800);
+      queueEffect(()=>{showEffectPopup('Etate.png','+8 シールド','#5dade2','enemy');sfxShield();}, 800);
     }
     else if(act==='bigdef'){
       G.enemyShield+=16;
       addLog('🛡️🛡️ '+e.name+'がシールド+16！','enemy');
       updateUI();
-      queueEffect(()=>{showEffectPopup('Etate.png','+16 シールド','#5dade2','enemy');sfxShield();}, 2800);
+      queueEffect(()=>{showEffectPopup('Etate.png','+16 シールド','#5dade2','enemy');sfxShield();}, 800);
     }
     else if(act==='curse'){
       dealDirectToPlayer(ea,e.name+'の呪い');
@@ -2727,7 +2702,7 @@ function enemyTurn(){
       G.enemyShield+=15;
       addLog('🌑 '+e.name+'が闇を召喚！シールド+15','enemy');
       updateUI();
-      queueEffect(()=>{showEffectPopup('Etate.png','+15 シールド','#5dade2','enemy');sfxShield();}, 2800);
+      queueEffect(()=>{showEffectPopup('Etate.png','+15 シールド','#5dade2','enemy');sfxShield();}, 800);
       enemySpriteAttack();
       dealToPlayer(15,e.name+'の召喚攻撃');
     }
@@ -2736,7 +2711,7 @@ function enemyTurn(){
       G.enemyShield+=24;
       addLog('🛡️🛡️🛡️ '+e.name+'が超防御！シールド+24！','enemy');
       updateUI();
-      queueEffect(()=>{showEffectPopup('Etate.png','+24 シールド','#5dade2','enemy');sfxShield();}, 2800);
+      queueEffect(()=>{showEffectPopup('Etate.png','+24 シールド','#5dade2','enemy');sfxShield();}, 800);
     }
     else if(act==='quake'){
       // 地響き：ATK + 次のプレイヤーターン中コスト1カード使用不可
@@ -2898,6 +2873,7 @@ function enemyTurn(){
     G.freePassUsedThisTurn=false; // 踏み倒しは毎ターンリセット（1ターン1度のみ）
     G.poisonDoubleTurn=false; // 汚染世界は1ターン限り
     G.chargeUsedThisTurn=false; // チャージ使用済みリセット
+    G.dokushiNextAtkPoison=false; // 錬金術師チャージ：未使用でも次ターンへ引き継がない
     // 狂戦士：累積ターン開始マナ+N
     if(G.berserkManaBonus>0){
       G.mana=Math.min(G.manaMax,G.mana+G.berserkManaBonus);
@@ -2921,7 +2897,7 @@ function enemyTurn(){
       const _asa=G.absorbShieldAccum;
       G.shield+=_asa;
       addLog('📘 守護の学び: シールド+'+_asa,'sys');
-      queueEffect(()=>{flashShield();flashShieldAdd('player',_asa);sfxShield();}, 2800);
+      queueEffect(()=>{flashShield();flashShieldAdd('player',_asa);sfxShield();}, 800);
     }
     G.absorbShieldPending=false; G.absorbShieldAccum=0;
     // 応急処置：前ターンの被ダメ分を回復に
@@ -2944,7 +2920,7 @@ function enemyTurn(){
       if(rd>0){
         G.enemy.curHp=Math.max(0,G.enemy.curHp-rd);
         addLog('⚔️ 憤怒の盾: 敵に'+rd+'ダメージ！','player');
-        queueEffect(()=>{spawnDmgNum('-'+rd,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 2800);
+        queueEffect(()=>{spawnDmgNum('-'+rd,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
         updateUI();
         if(G.enemy.curHp<=0){G.phase='block';const wv2=()=>{if(effectQueue.length>0||effectRunning){setTimeout(wv2,100);return;}const sp=document.getElementById('enemy-sprite');if(sp){sfxEnemyDefeated();spawnDeathEffect(sp);sp.style.transition='opacity 0.6s ease-out';sp.style.opacity='0';}setTimeout(victory,2000);};setTimeout(wv2,100);return;}
       } else {
@@ -3007,7 +2983,7 @@ function enemyTurn(){
       const hv=Math.max(1,Math.floor(G.playerMaxHp*G.turnStartHealPct/100));
       const _ha2=healPlayer(hv);
       addLog('💚 ターン回復: HP+'+_ha2,'sys');
-      setTimeout(()=>{spawnDmgNum('+'+_ha2,'heal'); updateUI();}, 2800);
+      setTimeout(()=>{spawnDmgNum('+'+_ha2,'heal'); updateUI();}, 800);
     }
     // 回復予約：前ターンに使用した分を回復
     if(G.nextTurnHealBonus>0){
@@ -3022,7 +2998,7 @@ function enemyTurn(){
     if(G.turnStartShieldBonus>0){
       G.shield+=G.turnStartShieldBonus;
       addLog('🛡️ ターン盾: +'+G.turnStartShieldBonus,'sys');
-      queueEffect(()=>{flashShield();flashShieldAdd('player',G.turnStartShieldBonus);sfxShield();}, 2800);
+      queueEffect(()=>{flashShield();flashShieldAdd('player',G.turnStartShieldBonus);sfxShield();}, 800);
       updateUI();
     }
     // 聖域再生（healBuff適用）
@@ -3092,7 +3068,7 @@ function dealToPlayer(dmg,lbl){
     G.mirrorActive=false;
     G.enemy.curHp=Math.max(0,G.enemy.curHp-dmg);
     addLog('🪞 魔鏡: '+dmg+'ダメ反射！','player');
-    queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold');}, 2800);
+    queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold');}, 800);
     updateUI(); if(G.enemy.curHp<=0){G.phase='block';const wv=()=>{if(effectQueue.length>0||effectRunning){setTimeout(wv,100);return;}const sp=document.getElementById('enemy-sprite');if(sp){sfxEnemyDefeated();spawnDeathEffect(sp);sp.style.transition='opacity 0.6s ease-out';sp.style.opacity='0';}setTimeout(victory,2000);};setTimeout(wv,100);} return;
   }
   let d=dmg;
@@ -3123,8 +3099,8 @@ function dealToPlayer(dmg,lbl){
     if(G.absorbHealPending) G.absorbHealAccum=(G.absorbHealAccum||0)+d;
   }
   addLog('🔴 '+lbl+': '+d+'ダメ','enemy');
-  if(d>0){queueEffect(()=>{spawnDmgNum('-'+d,'player-dmg'); shakePlayerArea(); flashScreen('flash-red'); sfxDamage();}, 2800);}
-  else{queueEffect(()=>{spawnDmgNum('GUARD','player-dmg');}, 2800);} // 全シールド吸収時
+  if(d>0){queueEffect(()=>{spawnDmgNum('-'+d,'player-dmg'); shakePlayerArea(); flashScreen('flash-red'); sfxDamage();}, 800);}
+  else{queueEffect(()=>{spawnDmgNum('GUARD','player-dmg');}, 800);} // 全シールド吸収時
   updateUI(); if(G.playerHp<=0)defeat(G.enemy?(G.enemy.name+'の攻撃'):undefined);
 }
 // 妨害カード追加ヘルパー：デッキとdrawPileの両方に追加する
@@ -3365,25 +3341,25 @@ function victory(){
     setTimeout(()=>{
       if(clrMsg.parentNode) clrMsg.parentNode.removeChild(clrMsg);
       _doVictoryReward();
-    }, 2800);
+    }, 800);
   },2000);
 }
 
 function _doVictoryReward(){
   stopBgm();
-  const _maxStage=(G.currentArea==='cave')?CAVE_ENEMIES.length-1:ENEMIES.length-1;
-  if(G.stage>=_maxStage){
+  if(G.stage>=ENEMIES.length-1){
     // ===== ステージ15クリア：豪華エンディング演出 =====
     _showGrandEnding();
     return;
   }
   playEventBgm(); // 報酬画面→event.mp3
   const pool=getRewards(G.stage),rc=document.getElementById('reward-cards');
-      rc.innerHTML='';
+  rc.innerHTML='';
+  rc.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;';
       pool.forEach(cid=>{
     const c=DB[cid];if(!c)return;
     const d=document.createElement('div');
-    d.className='reward-card '+c.rarity;
+    d.className='card '+c.rarity+' playable';
     const rFrameImg=FRAME_IMGS[c.rarity]||'';
     if(rFrameImg){d.style.backgroundImage='url('+rFrameImg+')';d.style.backgroundSize='100% 100%';}
     const rCorner={common:'◆',uncommon:'◆',rare:'◆',epic:'◈',legendary:'★'}[c.rarity]||'◆';
@@ -3398,37 +3374,22 @@ function _doVictoryReward(){
       '</div>'+
       '<div class="card-corner tl">'+rCorner+'</div>'+
       '<div class="card-corner br">'+rCorner+'</div>';
-    const pick=(ev)=>{
-      if(ev&&ev.type==='touchend') ev.preventDefault();
-      if(selectedRewardEl) selectedRewardEl.style.outline='';
-      selectedRewardEl=d;
-      d.style.outline='3px solid #fff';
-      d.style.boxShadow='0 0 16px rgba(255,255,255,.8)';
-      const cb=document.getElementById('confirm-box');
-      document.getElementById('cb-title').textContent='「'+c.name+'」をデッキに追加？';
-      document.getElementById('cb-ok').onclick=()=>{
-        G.deck.push(cid);
-        sfxPickCard();
-        addLog('📖「'+c.name+'」をデッキに追加！','sys');
-        selectedRewardEl=null;
-        cb.classList.remove('show');
-        setTimeout(()=>closeReward(),100);
-      };
-      document.getElementById('cb-cancel').onclick=()=>{
-        d.style.outline=''; selectedRewardEl=null; cb.classList.remove('show');
-      };
-      cb.classList.add('show');
+    const doAddDeck=()=>{
+      G.deck.push(cid);
+      sfxPickCard();
+      addLog('📖「'+c.name+'」をデッキに追加！','sys');
+      selectedRewardEl=null;
+      setTimeout(()=>closeReward(),100);
     };
-    // タップで詳細表示→決定/キャンセル
+    // タップで詳細表示→決定/キャンセル（このままデッキ追加まで完結）
     let rMoved=false, rStartY=0, rStartX=0;
     d.addEventListener('touchstart',(e)=>{rMoved=false;rStartY=e.touches[0].clientY;rStartX=e.touches[0].clientX;},{passive:true});
     d.addEventListener('touchmove',(e)=>{const dy=Math.abs(e.touches[0].clientY-rStartY),dx=Math.abs(e.touches[0].clientX-rStartX);if(dy>5||dx>5)rMoved=true;},{passive:true});
-    d.addEventListener('touchend',(ev)=>{if(rMoved)return;ev.preventDefault();showCardDetailWithConfirm(c,()=>pick(ev));});
-    d.addEventListener('click',(ev)=>{if(!rMoved)showCardDetailWithConfirm(c,()=>pick(ev));});
+    d.addEventListener('touchend',(ev)=>{if(rMoved)return;ev.preventDefault();showCardDetailWithConfirm(c,doAddDeck);});
+    d.addEventListener('click',(ev)=>{if(!rMoved)showCardDetailWithConfirm(c,doAddDeck);});
     rc.appendChild(d);
   });
   selectedRewardEl=null;
-  document.getElementById('confirm-box').classList.remove('show');
   showOv('ov-reward');
 }
 // ===== ステージ15クリア：豪華エンディング演出 =====
@@ -3510,7 +3471,7 @@ function _showGrandEnding(){
         if(fadeOverlay.parentNode) (function(){var _el=fadeOverlay;if(_el&&_el.parentNode)_el.parentNode.removeChild(_el);})();
         showClearStats();
         showOv('ov-clear');
-      }, 2800);
+      }, 800);
     },7000);
   },1100);
 }
@@ -3544,6 +3505,10 @@ function applyExile(){
   }
 }
 function closeReward(){
+  // 暗幕を先に出してからrewardを閉じる（チラ見え防止）
+  const curtain=document.getElementById('ov-curtain');
+  if(curtain){ curtain.style.display='block'; }
+  if(window._curtainSafeTimer){ clearTimeout(window._curtainSafeTimer); window._curtainSafeTimer=null; }
   hideOv('ov-reward');
   const cb=document.getElementById('confirm-box');
   cb.classList.remove('show');
@@ -3551,37 +3516,31 @@ function closeReward(){
   document.getElementById('cb-cancel').onclick=null;
   G.stage++;
   document.getElementById('stage-num').textContent=G.stage+1;
-  playEventBgm(); // イベントBGM（再生中なら継続）
-  // STAGE1=限定強化, S2/4/7=強化, S3=泉 or 鍛冶屋→強化, S5=複製師or泉→強化, S6=廃棄→強化
-  // S8=泉 or 鍛冶屋→強化, S9=超強化, S10=泉 or 鍛冶屋→強化, S11=超強化, S12=複製師→強化
-  // S13=廃棄→強化, S14=超強化
+  playEventBgm();
+  // 暗幕の裏で即座に次の画面を準備（setTimeoutをなくして隙間を消す）
   if(G.stage===1){
-    setTimeout(()=>showStatUpEvent(true),150);
+    showStatUpEvent(true);
   } else if(G.stage===2||G.stage===4||G.stage===7){
-    setTimeout(()=>showStatUpEvent(false),150);
+    showStatUpEvent(false);
   } else if(G.stage===3||G.stage===8||G.stage===10){
     G._postEventStatUp=true;
-    setTimeout(()=>showSpringOrSmithChoice(),150);
+    showSpringOrSmithChoice();
   } else if(G.stage===5){
     G._postEventStatUp=true;
-    setTimeout(()=>showStage5Choice(),150);
+    showStage5Choice();
   } else if(G.stage===6){
     G._postEventStatUp=true;
-    setTimeout(()=>showBanishEvent(),150);
+    showBanishEvent();
   } else if(G.stage===9||G.stage===11||G.stage===14){
-    // 超ステータス強化（2つ選択）
-    setTimeout(()=>showSuperStatUpEvent(),150);
+    showSuperStatUpEvent();
   } else if(G.stage===12){
     G._postEventStatUp=true;
-    setTimeout(()=>showStage5Choice(),150);
+    showStage5Choice();
   } else if(G.stage===13){
     G._postEventStatUp=true;
-    setTimeout(()=>showBanishEvent(),150);
+    showBanishEvent();
   } else if(G.stage===15){
-    // Stage15クリア後：呪いの祭壇（ご褒美イベント）→エンディングへ
-    setTimeout(()=>showAltarBeforeEnding(),150);
-  } else if(G.stage>=16){
-    startStage();
+    showAltarBeforeEnding();
   } else {
     startStage();
   }
@@ -3600,9 +3559,9 @@ function showSpringOrSmithChoice(){
   list.innerHTML='';
   const choices=[
     {icon:'💧', name:'等価交換の泉', desc:'デッキから1枚を渡して、同レアリティ以下のカード1枚を獲得する',
-     action:()=>{if(title)title.textContent='⬆️ ステータス強化';if(sub)sub.textContent='強化を1つ選んでください';hideOv('ov-statup');setTimeout(()=>showSpringEvent(),150);}},
+     action:()=>{hideOv('ov-statup');showSpringEvent();}},
     {icon:'⚒️', name:'鍛冶屋', desc:'持っているカード1枚と同じ名前のカードを全て強化する（対象カードを持っている場合のみ）',
-     action:()=>{if(title)title.textContent='⬆️ ステータス強化';if(sub)sub.textContent='強化を1つ選んでください';hideOv('ov-statup');setTimeout(()=>showSmithEvent(),150);}},
+     action:()=>{hideOv('ov-statup');showSmithEvent();}},
   ];
   choices.forEach(ch=>{
     const d=document.createElement('div');
@@ -3701,7 +3660,7 @@ function showSmithEvent(){
     backBtn.className='ov-btn';
     backBtn.style.cssText='background:rgba(80,80,80,.3);border-color:rgba(200,200,200,.3);color:#aaa;font-size:11px;width:100%;margin-top:8px;';
     backBtn.textContent='← イベント選択に戻る';
-    bindTouch(backBtn,()=>{restoreSmithBg();hideOv('ov-statup');setTimeout(()=>showSpringOrSmithChoice(),150);});
+    bindTouch(backBtn,()=>{restoreSmithBg();hideOv('ov-statup');showSpringOrSmithChoice();});
     list.appendChild(backBtn);
     showOv('ov-statup');
     return;
@@ -3733,7 +3692,7 @@ function showSmithEvent(){
   backBtn.className='ov-btn';
   backBtn.style.cssText='background:rgba(80,80,80,.3);border-color:rgba(200,200,200,.3);color:#aaa;font-size:11px;width:100%;margin-top:4px;';
   backBtn.textContent='← イベント選択に戻る';
-  bindTouch(backBtn,()=>{restoreSmithBg();hideOv('ov-statup');setTimeout(()=>showSpringOrSmithChoice(),150);});
+  bindTouch(backBtn,()=>{restoreSmithBg();hideOv('ov-statup');showSpringOrSmithChoice();});
   list.appendChild(backBtn);
 
   showOv('ov-statup');
@@ -3825,62 +3784,7 @@ function showSmithConfirm(origId, origC, upg){
 }
 
 // STAGE5/12：複製師 or 等価交換の泉 選択
-
-function showCaveStatupChoices(){
-  // 始まりの洞窟専用ステータス強化
-  const choices=[];
-  if((G.permAtkCount||0)<2) choices.push({
-    id:'permAtk', icon:'⚔️', label:'攻撃力強化',
-    desc:'常時攻撃力+1',
-    apply:()=>{G.permAtkBonus=(G.permAtkBonus||0)+1;G.permAtkCount=(G.permAtkCount||0)+1;}
-  });
-  if((G.permAtkBuff2Count||0)<2) choices.push({
-    id:'permAtkBuff2', icon:'⚡', label:'攻撃力強化2',
-    desc:'最初の一撃のみ+3',
-    apply:()=>{G.permAtkBuff2=(G.permAtkBuff2||0)+3;G.permAtkBuff2Count=(G.permAtkBuff2Count||0)+1;}
-  });
-  if(!(G.gotMaxHpUp)) choices.push({
-    id:'maxHp', icon:'❤️', label:'最大HP強化',
-    desc:'最大HP+10（現HP+10）',
-    apply:()=>{G.playerMaxHp+=10;G.playerHp=Math.min(G.playerHp+10,G.playerMaxHp);G.gotMaxHpUp=true;}
-  });
-  if(!(G.gotFirstTurnMana)) choices.push({
-    id:'firstTurnMana', icon:'💎', label:'初ターンマナ',
-    desc:'各バトル初ターン マナ+1',
-    apply:()=>{G.firstTurnManaBonus=(G.firstTurnManaBonus||0)+1;G.gotFirstTurnMana=true;}
-  });
-  if(!(G.gotHandPlus)) choices.push({
-    id:'handPlus', icon:'🃏', label:'ハンドプラス',
-    desc:'ステージ開始時の手札+1',
-    apply:()=>{G.initHandBonus=(G.initHandBonus||0)+1;G.gotHandPlus=true;}
-  });
-
-  // ランダムに3つ選ぶ
-  const shuffled=choices.sort(()=>Math.random()-.5).slice(0,Math.min(3,choices.length));
-  if(shuffled.length===0){afterEventNext();return;}
-
-  showOv('ov-statup');
-  const list=document.getElementById('statup-list');
-  if(!list){afterEventNext();return;}
-  list.innerHTML='';
-  shuffled.forEach(ch=>{
-    const d=document.createElement('div');
-    d.style.cssText='background:rgba(0,0,0,.7);border:2px solid rgba(201,168,76,.5);border-radius:10px;padding:14px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;gap:12px;';
-    d.innerHTML='<div style="font-size:28px;">'+ch.icon+'</div>'
-      +'<div><div style="font-family:Cinzel,serif;font-size:13px;color:#c9a84c;font-weight:bold;">'+ch.label+'</div>'
-      +'<div style="font-size:11px;color:#aaa;margin-top:3px;">'+ch.desc+'</div></div>';
-    const pick=()=>{ch.apply();updateUI();sfxConfirm();hideOv('ov-statup');afterEventNext();};
-    d.onclick=pick;
-    d.ontouchend=(e)=>{e.preventDefault();pick();};
-    list.appendChild(d);
-  });
-}
-
 function showStage5Choice(){
-  if(G.currentArea==='cave'){
-    showCaveStatupChoices();
-    return;
-  }
   const cb=document.getElementById('confirm-box');
   cb.classList.remove('show');
   // ov-statupのリストを流用して選択肢を表示
@@ -3893,9 +3797,9 @@ function showStage5Choice(){
   list.innerHTML='';
   const choices=[
     {icon:'🪄', name:'複製師', desc:'デッキから1枚を選んでコピーを1枚追加する（レジェンドは対象外）',
-     action:()=>{if(title)title.textContent='⬆️ ステータス強化';if(sub)sub.textContent='強化を1つ選んでください';hideOv('ov-statup');setTimeout(()=>showDuplicateEvent(),150);}},
+     action:()=>{hideOv('ov-statup');showDuplicateEvent();}},
     {icon:'💧', name:'等価交換の泉', desc:'デッキから1枚を渡して、同レアリティ以下のカード1枚を獲得する',
-     action:()=>{if(title)title.textContent='⬆️ ステータス強化';if(sub)sub.textContent='強化を1つ選んでください';hideOv('ov-statup');setTimeout(()=>showSpringEvent(),150);}},
+     action:()=>{hideOv('ov-statup');showSpringEvent();}},
   ];
   choices.forEach(ch=>{
     const d=document.createElement('div');
@@ -3914,27 +3818,12 @@ function showStage5Choice(){
 
 // イベント選択に戻る（複製・等価交換のキャンセル用）
 function showEventSelection(){
-  if(G.currentArea==='cave'){
-    // 始まりの洞窟イベント（全ステージ後ステータス強化、偶数ステージは鍛冶屋も）
-    showCaveStatupEvent();
-    return;
-  }
   if(G.stage===5||G.stage===12){
     showStage5Choice();
   } else if(G.stage===3||G.stage===8||G.stage===10){
     showSpringOrSmithChoice();
   } else {
     afterEventNext();
-  }
-}
-
-function showCaveStatupEvent(){
-  // 全ステージ後ステータス強化、奇数ステージ（1,3,5）後は鍛冶屋も
-  const stageNum=G.stage; // 0-indexed
-  if(stageNum===0||stageNum===2||stageNum===4){
-    showSpringOrSmithChoice(); // 鍛冶屋＋ステータス強化
-  } else {
-    showStage5Choice(); // ステータス強化のみ
   }
 }
 
@@ -3956,23 +3845,12 @@ function initAreaBackBtn(){
 
 const AREA_DATA = [
   {
-    name: '始まりの洞窟',
-    icon: '🪨',
-    stages: 5,
-    difficulty: '★',
-    desc: '初級ダンジョン。冒険の第一歩。',
-    areaKey: 'cave',
-    allowedCharges: ['renGeki','tameAtk'],
-  },
-  {
     name: '忘却の遺跡',
     icon: '🏚️',
     stages: 15,
     difficulty: '★★★',
     desc: 'スタンダード難易度のダンジョン',
-    areaKey: 'ruins',
-    allowedCharges: null, // 全チャージ選択可能
-  },
+  }
 ];
 
 function showAreaConfirm(idx){
@@ -3990,7 +3868,6 @@ function showAreaConfirm(idx){
   const doOk=()=>{
     pop.style.display='none';
     const sfx=new Audio('se_confirm.mp3'); sfx.volume=0.7; sfx.play().catch(()=>{});
-    if(typeof G!=='undefined') G.currentArea=a.areaKey||'ruins';
     hideOv('ov-area-select');
     showChargeSelect();
   };
@@ -4005,19 +3882,16 @@ function showAreaConfirm(idx){
 }
 function showAreaSelect(){
   const ov=document.getElementById('ov-area-select');
-  ov.classList.add('show');
+  showOv('ov-area-select');
   initAreaBackBtn();
-  [0,1].forEach(i=>{
-    const btn=document.getElementById('area-btn-'+i);
-    if(btn){
-      const go=()=>{ showAreaConfirm(i); };
-      btn.onclick=go;
-      btn.ontouchend=(e)=>{e.preventDefault();go();};
-    }
-  });
+  const btn=document.getElementById('area-btn-0');
+  if(btn){
+    const go=()=>{ showAreaConfirm(0); };
+    btn.onclick=go;
+    btn.ontouchend=(e)=>{e.preventDefault();go();};
+  }
 }
 function showChargeSelect(){
-
   const CHARGE_TRAITS={
     renGeki:   '手数で連続攻撃を得意とする',
     tameAtk:   '動きが重いが必殺の一撃を放てる',
@@ -4030,9 +3904,7 @@ function showChargeSelect(){
   const ov=document.getElementById('ov-charge-select');
   const list=document.getElementById('charge-select-list');
   list.innerHTML='';
-  const _areaData=AREA_DATA.find(a=>a.areaKey===(G.currentArea||'ruins'));
-  const _chargeFilter=_areaData&&_areaData.allowedCharges?_areaData.allowedCharges:null;
-  Object.values(CHARGE_TYPES).filter(ct=>!_chargeFilter||_chargeFilter.includes(ct.id)).forEach(ct=>{
+  Object.values(CHARGE_TYPES).forEach(ct=>{
     const d=document.createElement('div');
     d.style.cssText='background:rgba(0,0,0,.6);border:2px solid '+ct.color+';border-radius:10px;padding:10px 12px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;gap:10px;';
     // ランプ表示
@@ -4083,7 +3955,7 @@ function showChargeSelect(){
       hint.style.display=(listEl&&listEl.scrollHeight>listEl.clientHeight)?'block':'none';
     });
   }
-  ov.classList.add('show');
+  showOv(ov.id||'ov-charge-select');
 }
 function showSpringEvent(){
   const ov=document.getElementById('ov-spring');
@@ -4127,31 +3999,17 @@ function showSpringEvent(){
 
     const selectCard=(ev)=>{
       if(ev&&ev.type==='touchend') ev.preventDefault();
-      // 全選択解除
-      list.querySelectorAll('.card').forEach(el=>{el.style.outline='';el.style.boxShadow='';});
-      d.style.outline='3px solid #c9a84c';
-      d.style.boxShadow='0 0 16px rgba(201,168,76,.8)';
-      // 確認ボックス
-      const cb=document.getElementById('confirm-box');
-      document.getElementById('cb-title').textContent='「'+c.name+'」を渡しますか？';
-      document.getElementById('cb-ok').onclick=()=>{
-        cb.classList.remove('show');
+      showCardDetailWithConfirm(c, ()=>{
         const i=G.deck.indexOf(id);
         if(i>=0) G.deck.splice(i,1);
         addLog('💧「'+c.name+'」を泉に渡した','sys');
-        // 報酬表示へ
         showSpringRewards(c.rarity, list, rewardArea, rewardList);
-      };
-      document.getElementById('cb-cancel').onclick=()=>{
-        d.style.outline=''; d.style.boxShadow='';
-        cb.classList.remove('show');
-      };
-      cb.classList.add('show');
+      });
     };
     bindCardTouch(d, c, selectCard);
     list.appendChild(d);
   });
-  ov.classList.add('show');
+  showOv('ov-spring');
 }
 
 function showSpringRewards(rarity, list, rewardArea, rewardList){
@@ -4207,23 +4065,12 @@ function showSpringRewards(rarity, list, rewardArea, rewardList){
 
     const pick=(ev)=>{
       if(ev&&ev.type==='touchend') ev.preventDefault();
-      rewardList.querySelectorAll('.card').forEach(el=>{el.style.outline='';el.style.boxShadow='';});
-      d.style.outline='3px solid #fff';
-      d.style.boxShadow='0 0 16px rgba(255,255,255,.8)';
-      const cb=document.getElementById('confirm-box');
-      document.getElementById('cb-title').textContent='「'+c.name+'」を獲得しますか？';
-      document.getElementById('cb-ok').onclick=()=>{
+      showCardDetailWithConfirm(c, ()=>{
         G.deck.push(cid);
         addLog('💧「'+c.name+'」を獲得！','sys');
-        cb.classList.remove('show');
         hideOv('ov-spring');
         afterEventNext();
-      };
-      document.getElementById('cb-cancel').onclick=()=>{
-        d.style.outline=''; d.style.boxShadow='';
-        cb.classList.remove('show');
-      };
-      cb.classList.add('show');
+      });
     };
     bindCardTouch(d, c, pick);
     rewardList.appendChild(d);
@@ -4421,46 +4268,30 @@ function showBanishEvent(){
       '</div>'+
       '<div class="card-corner tl">'+corner+'</div>'+
       '<div class="card-corner br">'+corner+'</div>';
-    const banish=(ev)=>{
-      if(ev&&ev.type==='touchend') ev.preventDefault();
-      if(selectedBanishEl) selectedBanishEl.style.outline='';
-      selectedBanishEl=d;
-      d.style.outline='3px solid #e74c3c';
-      d.style.boxShadow='0 0 16px rgba(231,76,60,.8)';
-      const cb=document.getElementById('confirm-box');
-      document.getElementById('cb-title').textContent='「'+c.name+'」を廃棄しますか？';
-      document.getElementById('cb-ok').onclick=()=>{
-        const i=G.deck.indexOf(id);
-        if(i>=0){G.deck.splice(i,1);addLog('🗑️「'+c.name+'」を廃棄した','sys');}
-        selectedBanishEl=null;
-        cb.classList.remove('show');
-        hideOv('ov-banish');
-        afterEventNext();
-      };
-      document.getElementById('cb-cancel').onclick=()=>{
-        d.style.outline=''; selectedBanishEl=null; cb.classList.remove('show');
-      };
-      cb.classList.add('show');
+    const doBanish=()=>{
+      const i=G.deck.indexOf(id);
+      if(i>=0){G.deck.splice(i,1);addLog('🗑️「'+c.name+'」を廃棄した','sys');}
+      selectedBanishEl=null;
+      hideOv('ov-banish');
+      afterEventNext();
     };
-    // 長押しで拡大・タップで選択を完全分離
+    // タップで詳細表示→決定で廃棄
     let bMoved=false,bStartY=0,bStartX=0;
     d.addEventListener('touchstart',(e)=>{bMoved=false;bStartY=e.touches[0].clientY;bStartX=e.touches[0].clientX;},{passive:true});
     d.addEventListener('touchmove',(e)=>{const dy=Math.abs(e.touches[0].clientY-bStartY),dx=Math.abs(e.touches[0].clientX-bStartX);if(dy>5||dx>5)bMoved=true;},{passive:true});
     d.addEventListener('touchend',(ev)=>{
       if(bMoved)return;
       ev.preventDefault();
-      list.querySelectorAll('.card').forEach(el=>{el.style.outline='';el.style.boxShadow='';});
-      showCardDetailWithConfirm(c,()=>banish(ev));
+      showCardDetailWithConfirm(c,doBanish);
     });
     d.addEventListener('click',(ev)=>{
       if(bMoved)return;
-      list.querySelectorAll('.card').forEach(el=>{el.style.outline='';el.style.boxShadow='';});
-      showCardDetailWithConfirm(c,()=>banish(ev));
+      showCardDetailWithConfirm(c,doBanish);
     });
     list.appendChild(d);
   });
   selectedBanishEl=null;
-  ov.classList.add('show');
+  showOv('ov-banish');
 }
 function defeat(reason){
   if(G.phase==='gameover') return;
@@ -4806,7 +4637,7 @@ function spawnLegendaryEffect(){
     flash.style.background='rgba(201,168,76,0.35)';
     flash.style.opacity='1';
     flash.style.transition='opacity 0.6s ease-out';
-    setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>{flash.style.background='';},700);}, 2800);
+    setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>{flash.style.background='';},700);}, 800);
   }
 }
 
@@ -5213,10 +5044,35 @@ function renderHand(){  clampPage();
           const dmg=_d((c.effect.atk||4)+_atk);
           return '攻'+_hi(dmg)+' ドロー1';
         }
+        case 'combo':{
+          const t=c.effect.times||3;
+          const dmg=_d((c.effect.atk||5)+_atk);
+          const total=dmg*t;
+          return '攻'+_hi(dmg)+'×'+t+'<br><span style="font-size:8px;color:#aaa;">合計'+_hi(total)+'</span>';
+        }
+        case 'stormSlash':{
+          const t=c.effect.times||6;
+          const dmg=_d((c.effect.atk||3)+_atk);
+          const total=dmg*t;
+          return '攻'+_hi(dmg)+'×'+t+'<br><span style="font-size:8px;color:#aaa;">合計'+_hi(total)+'</span>';
+        }
+        case 'karuren':{
+          const t=c.effect.times||2;
+          const dmg=_d((c.effect.atk||2)+_atk);
+          const total=dmg*t;
+          return '攻'+_hi(dmg)+'×'+t+'<br><span style="font-size:8px;color:#aaa;">合計'+_hi(total)+'</span>';
+        }
+        case 'evilCombo':{
+          const t=c.effect.times||4;
+          const dmg=_d((c.effect.atk||2)+_atk);
+          const total=dmg*t;
+          return '妨害除外:<br>攻'+_hi(dmg)+'×'+t+'<br><span style="font-size:8px;color:#aaa;">合計'+_hi(total)+'</span>';
+        }
         case 'twin':{
           const t=c.effect.times||2;
           const dmg=_d((c.effect.atk||6)+_atk);
-          return '攻'+_hi(dmg)+'×'+t;
+          const total=dmg*t;
+          return '攻'+_hi(dmg)+'×'+t+'<br><span style="font-size:8px;color:#aaa;">合計'+_hi(total)+'</span>';
         }
         case 'anger':{
           const bv=c.effect.val||2;
@@ -5263,8 +5119,17 @@ function renderHand(){  clampPage();
             }
           }
           // 攻撃カード
-          if(c.type==='attack'&&_atk>0&&c.effect&&c.effect.atk){
-            return '攻'+_hi(c.effect.atk+_atk)+'<span style="color:#e74c3c;font-size:9px;">(+'+_atk+')</span>';
+          if(c.type==='attack'&&c.effect&&c.effect.atk){
+            const t=c.effect.times||1;
+            const dmg=_d(c.effect.atk+_atk);
+            const total=dmg*t;
+            if(t>1){
+              return '攻'+_hi(dmg)+'×'+t+'<br><span style="font-size:8px;color:#aaa;">合計'+_hi(total)+'</span>'
+                +(_atk>0?'<br><span style="color:#e74c3c;font-size:8px;">(ATK+'+_atk+')</span>':'');
+            }
+            if(_atk>0){
+              return '攻'+_hi(dmg)+'<span style="color:#e74c3c;font-size:9px;">(+'+_atk+')</span>';
+            }
           }
           return c.shortDesc||c.desc.slice(0,18)+(c.desc.length>18?'…':'');
         }
@@ -5538,19 +5403,12 @@ function showDuplicateEvent(){
       '<div class="card-corner br">'+corner+'</div>';
     const pick=(ev)=>{
       if(ev&&ev.type==='touchend') ev.preventDefault();
-      list.querySelectorAll('.card').forEach(el=>{el.style.outline='';el.style.boxShadow='';});
-      d.style.outline='3px solid #c9a84c'; d.style.boxShadow='0 0 16px rgba(201,168,76,.8)';
-      const cb=document.getElementById('confirm-box');
-      document.getElementById('cb-title').textContent='「'+c.name+'」を複製しますか？';
-      document.getElementById('cb-ok').onclick=()=>{
+      showCardDetailWithConfirm(c, ()=>{
         G.deck.push(id);
         addLog('🪄「'+c.name+'」を複製！デッキに追加','sys');
-        cb.classList.remove('show');
         hideOv('ov-duplicate');
         afterEventNext();
-      };
-      document.getElementById('cb-cancel').onclick=()=>{d.style.outline='';d.style.boxShadow='';cb.classList.remove('show');};
-      cb.classList.add('show');
+      });
     };
     bindCardTouch(d, c, pick);
     list.appendChild(d);
@@ -5785,8 +5643,7 @@ function updateGaugeLamps(){
     box.style.borderColor='';
     box.style.backgroundColor=''; // backgroundImageは維持
     box.style.opacity='';
-    box.style.pointerEvents=''; // 使用済みでも詳細確認は可能
-    box.style.opacity=chargeUsed?'0.6':''; // 使用済みは薄く表示
+    box.style.pointerEvents=''; // 使用済みでもタップ可能（詳細確認のため）
   }
 
   for(let i=0;i<max;i++){
@@ -5894,25 +5751,31 @@ function queueEffect(fn, delay){
   effectQueue.push({fn,delay});
   if(!effectRunning) runEffectQueue();
 }
-const _LOCK_IDS=['hand-area','end-turn-btn','btn-deck-view','charge-gauge-box','curse-timer-box','player-statup-box','player-status-box','enemy-intent','enemy-area'];
-function _setAllLock(locked){
-  _LOCK_IDS.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.style.pointerEvents=locked?'none':'';
-  });
-  if(typeof G!=='undefined') G._effectLocked=locked;
-}
 function runEffectQueue(){
   if(effectQueue.length===0){
     effectRunning=false;
-    _setAllLock(false);
+    // 演出終了後の操作ロック解除
+    if(typeof G!=='undefined'&&G._effectLocked){
+      G._effectLocked=false;
+      const ha=document.getElementById('hand-area');
+      const eb=document.getElementById('end-turn-btn');
+      if(ha) ha.style.pointerEvents='';
+      if(eb) eb.style.pointerEvents='';
+    }
     return;
   }
   effectRunning=true;
-  _setAllLock(true);
+  // 演出中操作ロック
+  if(typeof G!=='undefined'&&!G._effectLocked){
+    G._effectLocked=true;
+    const ha=document.getElementById('hand-area');
+    const eb=document.getElementById('end-turn-btn');
+    if(ha) ha.style.pointerEvents='none';
+    if(eb) eb.style.pointerEvents='none';
+  }
   const {fn,delay}=effectQueue.shift();
   fn();
-  setTimeout(runEffectQueue, delay||2800);
+  setTimeout(runEffectQueue, delay||800);
 }
 function clearEffectQueue(){effectQueue=[];effectRunning=false;}
 
@@ -6082,7 +5945,8 @@ function showOv(id){
   const el=document.getElementById(id);
   if(el) el.classList.add('show');
   const curtain=document.getElementById('ov-curtain');
-  if(curtain) curtain.style.display='none';
+  if(curtain){ curtain.style.display='none'; }
+  if(window._curtainSafeTimer){ clearTimeout(window._curtainSafeTimer); window._curtainSafeTimer=null; }
 }
 function hideOv(id){
   const el=document.getElementById(id);
@@ -6091,11 +5955,16 @@ function hideOv(id){
   if(id==='ov-charge-info') return;
   // 他にオーバーレイが表示中か確認
   const anyShown=document.querySelectorAll('.overlay.show').length>0;
-  // オーバーレイが全て消えた＆ゲーム中（報酬・イベント間の遷移）のみ暗幕表示
+  // オーバーレイが全て消えたとき、ゲーム中なら暗幕を出したままにして
+  // 次のshowOv/showStageIntro/showStartScreenで消す（チラ見え防止）
   const curtain=document.getElementById('ov-curtain');
-  if(curtain && !anyShown && G && G.phase && G.phase!=='block' && G.stage>0){
+  if(curtain && !anyShown && G && G.phase && G.stage>0){
     curtain.style.display='block';
-    setTimeout(()=>{ curtain.style.display='none'; }, 2800);
+    // 安全弁：4秒以内に次の画面が来なければ自動で消す（ハングアップ防止）
+    if(window._curtainSafeTimer) clearTimeout(window._curtainSafeTimer);
+    window._curtainSafeTimer=setTimeout(()=>{
+      curtain.style.display='none';
+    }, 4000);
   }
 }
 function bind(id,fn){const el=document.getElementById(id);if(!el)return;el.addEventListener('click',fn);el.addEventListener('touchend',e=>{e.preventDefault();fn();});}
@@ -6135,50 +6004,57 @@ function bindTouch(el, fn){
 // イベント系カードに長押し拡大＋タップ処理を付けるヘルパー
 
 // タップで詳細表示＋決定/キャンセル（報酬・イベント用）
+// ステージ中のカード選択と同じ見た目・操作感で統一
 function showCardDetailWithConfirm(c, onConfirm){
   const existing=document.getElementById('card-use-popup');
   if(existing&&existing.parentNode) existing.parentNode.removeChild(existing);
   const popup=document.createElement('div');
   popup.id='card-use-popup';
-  popup.style.cssText='position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.75);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:manipulation;';
-  // カード詳細表示
-  const cardDiv=document.createElement('div');
-  cardDiv.style.cssText='transform:scale(1.5);margin-bottom:32px;';
+  popup.style.cssText='position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:manipulation;gap:0;';
+  // カード拡大表示（ステージ中のcard-detail-popupと同様のスタイル）
+  const cardWrap=document.createElement('div');
+  cardWrap.style.cssText='width:140px;position:relative;margin-bottom:24px;';
   const d=document.createElement('div');
   const fImg=FRAME_IMGS[c.rarity]||'';
   if(fImg){d.style.backgroundImage='url('+fImg+')';d.style.backgroundSize='100% 100%';}
   d.className='card '+c.rarity;
+  d.style.cssText+='width:100%;';
   const corner={common:'◆',uncommon:'◆',rare:'◆',epic:'◈',legendary:'★',gauge:'⚡',bougai:'☠️'}[c.rarity]||'◆';
   d.innerHTML='<div class="card-band" style="'+(fImg?'display:none':'')+'""></div>'+
     '<div class="card-inner">'+
       '<div class="card-type-label card-type-'+c.type+'">'+({attack:'攻',shield:'防',heal:'回',skill:'技',curse:'呪',bougai:'妨'}[c.type]||'')+'</div>'+
       '<div class="card-cost '+c.rarity+'">'+c.cost+'</div>'+
       cardIconHtml(c)+
-      '<div class="card-name" style="font-size:16.5px;">'+c.name+'</div>'+
+      '<div class="card-name" style="font-size:14px;">'+c.name+'</div>'+
       '<div class="card-divider"></div>'+
-      '<div class="card-desc" style="font-size:12px;">'+c.desc+'</div>'+
+      '<div class="card-desc" style="font-size:10.5px;">'+c.desc+'</div>'+
     '</div>'+
     '<div class="card-corner tl">'+corner+'</div>'+
     '<div class="card-corner br">'+corner+'</div>';
-  cardDiv.appendChild(d);
-  popup.appendChild(cardDiv);
-  // ボタン
-  const btnArea=document.createElement('div');
-  btnArea.style.cssText='display:flex;gap:16px;margin-top:8px;';
-  const okBtn=document.createElement('button');
+  cardWrap.appendChild(d);
+  popup.appendChild(cardWrap);
+
+  // ボタンエリア：ステージ中confirm-boxと同じ順序・色（決定→キャンセル）
+  const btnWrap=document.createElement('div');
+  btnWrap.style.cssText='display:flex;gap:12px;width:220px;';
+  const okBtn=document.createElement('div');
+  okBtn.style.cssText='flex:1;background:rgba(22,68,34,.8);border:2px solid #4aaa70;border-radius:7px;padding:10px 0;text-align:center;font-family:\'Cinzel\',serif;font-size:12px;color:#4ee88a;cursor:pointer;touch-action:manipulation;font-weight:bold;letter-spacing:1px;';
   okBtn.textContent='決　定';
-  okBtn.style.cssText='background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.15));border:2px solid #c9a84c;border-radius:8px;padding:12px 28px;color:#c9a84c;font-size:14px;font-weight:bold;cursor:pointer;font-family:Cinzel,serif;';
-  const cancelBtn=document.createElement('button');
+  const cancelBtn=document.createElement('div');
+  cancelBtn.style.cssText='flex:1;background:rgba(60,20,20,.8);border:2px solid #aa4444;border-radius:7px;padding:10px 0;text-align:center;font-family:\'Cinzel\',serif;font-size:12px;color:#ee4444;cursor:pointer;touch-action:manipulation;letter-spacing:1px;';
   cancelBtn.textContent='キャンセル';
-  cancelBtn.style.cssText='background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:12px 20px;color:#aaa;font-size:13px;cursor:pointer;font-family:sans-serif;';
+
   const close=()=>{if(popup.parentNode)popup.parentNode.removeChild(popup);};
-  okBtn.onclick=okBtn.ontouchend=(e)=>{if(e.type==='touchend')e.preventDefault();close();onConfirm();};
-  cancelBtn.onclick=cancelBtn.ontouchend=(e)=>{if(e.type==='touchend')e.preventDefault();close();};
-  popup.addEventListener('click',(e)=>{if(e.target===popup)close();});
-  btnArea.appendChild(cancelBtn);
-  btnArea.appendChild(okBtn);
-  popup.appendChild(btnArea);
-  document.body.appendChild(popup);
+  const doOk=(e)=>{if(e.type==='touchend')e.preventDefault();sfxConfirm();close();onConfirm();};
+  const doCancel=(e)=>{if(e.type==='touchend')e.preventDefault();sfxCancel();close();};
+  okBtn.addEventListener('click',doOk); okBtn.addEventListener('touchend',doOk);
+  cancelBtn.addEventListener('click',doCancel); cancelBtn.addEventListener('touchend',doCancel);
+  popup.addEventListener('click',(e)=>{if(e.target===popup)doCancel(e);});
+
+  btnWrap.appendChild(okBtn);
+  btnWrap.appendChild(cancelBtn);
+  popup.appendChild(btnWrap);
+  appendToApp(popup);
 }
 
 function bindCardTouch(el, c, tapFn){
@@ -6493,7 +6369,7 @@ function openChargeInfo(){
   const isFull=ct&&G.chargeCount>=ct.maxCount;
   const hakiMax=false; // 狂戦士は回数制限なし
   const isEffectActive=G.chargeEffectActive&&G.chargeType!=='dokushi';
-  const canActivate=isFull&&!hakiMax&&(G.phase==='player'||G.phase==='block')&&!isEffectActive;
+  const canActivate=isFull&&!hakiMax&&(G.phase==='player'||G.phase==='block')&&!isEffectActive&&!G.chargeUsedThisTurn;
 
   if(el&&ct){
     el.innerHTML='<div style="background:rgba(0,0,0,.6);border:2px solid '+ct.color+';border-radius:10px;padding:14px 16px;font-family:sans-serif;">'
@@ -6501,6 +6377,7 @@ function openChargeInfo(){
       +'<div style="font-family:\'Cinzel\',serif;font-size:15px;color:'+ct.color+';font-weight:bold;margin-bottom:6px;">'+ct.name+'</div>'
       +'<div style="font-size:11px;color:#ccc;line-height:1.8;">'+ct.desc+'</div>'
       +'<div style="margin-top:10px;font-size:10px;color:#888;">カウント: '+G.chargeCount+' / '+ct.maxCount+(isFull?'　<span style="color:#e74c3c;font-weight:bold;">発動可能！</span>':'')+'</div>'
+      +(G.chargeUsedThisTurn?'<div style="margin-top:6px;font-size:11px;color:#aaa;">このターンは使用済みです</div>':'')
       +(isEffectActive?'<div style="margin-top:6px;font-size:11px;color:#f39c12;font-weight:bold;">⚡ 発動中（効果適用中）</div>':'')
       +'</div>';
   }
@@ -6542,7 +6419,7 @@ function executeChargeEffect(){
     G.atkBuff=G.atkBuff+(ct.effectVal||4);
     addLog('⚡ このターン攻撃力+'+ct.effectVal+' + ドロー1！','sys');
     queueEffect(()=>showEffectPopup('Ekougeki.png','攻撃力+'+(ct.effectVal||4),'#ff6b35'), 800);
-    queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},1200);}, 2800);
+    queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);
     updateUI();
   } else if(ct.effectType==='doubleNext'){
     G.doubleNext=true;
@@ -6553,8 +6430,8 @@ function executeChargeEffect(){
     const hv=ct.effectVal||12;
     const _mha=healPlayer(hv);
     addLog('💚 HP+'+_mha+'！ + ドロー1','sys');
-    queueEffect(()=>{sfxHeal();spawnDmgNum('+'+_mha,'heal');flashHealEffect(_mha);}, 2800);
-    queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},1200);}, 2800);
+    queueEffect(()=>{sfxHeal();spawnDmgNum('+'+_mha,'heal');flashHealEffect(_mha);}, 800);
+    queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);
     G.chargeEffectActive=false;
     updateUI();
   } else if(ct.effectType==='nextDmgNull'){
@@ -6621,7 +6498,7 @@ function executeChargeEffect(){
       };
       // 長押し操作は不要になったため削除（タップのみ）
       let _inoriTimer=null;
-      d.addEventListener('touchstart',()=>{_inoriTimer=setTimeout(()=>{_inoriTimer=null;}, 2800)},{passive:true});
+      d.addEventListener('touchstart',()=>{_inoriTimer=setTimeout(()=>{_inoriTimer=null;}, 800)},{passive:true});
       d.addEventListener('touchend',(e)=>{e.preventDefault();if(_inoriTimer){clearTimeout(_inoriTimer);_inoriTimer=null;}doUse(e);});
       d.addEventListener('click',(e)=>{doUse(e);});
       grid.appendChild(d);
@@ -6663,7 +6540,7 @@ function checkAdminPw(){
     openAdminMode();
   } else {
     input.style.borderColor='rgba(231,76,60,.8)';
-    setTimeout(()=>{input.style.borderColor='rgba(201,168,76,.3)';}, 2800);
+    setTimeout(()=>{input.style.borderColor='rgba(201,168,76,.3)';}, 800);
     input.value='';
   }
 }
@@ -6850,7 +6727,7 @@ bind('btn-admin-start',()=>{
     logoScreen.style.display='none';
     appDiv.style.display='flex';
     
-  }, 2800);
+  }, 800);
   stopOpBgm();
   updateGaugeLamps();
   showStartScreen(()=>startStage());
@@ -6953,11 +6830,11 @@ window.addEventListener('load',()=>{
               setTimeout(()=>{
                 opScr.style.display='none';
                 logoScreen.style.opacity='1';
-              }, 2800);
+              }, 800);
             },2000);
           },600);
         },2000);
-      }, 2800);
+      }, 800);
     };
     tapScreen.addEventListener('touchend',(e)=>{e.preventDefault();doStart();},{once:true});
     tapScreen.addEventListener('click',doStart,{once:true});
@@ -7002,7 +6879,7 @@ function showLogoThenTitle(){
               logoScreen.style.opacity='1';
               _registerStartListeners();
             }));
-          }, 2800);
+          }, 800);
         },2000);
       } else {
         logoScreen.style.display='flex';
@@ -7029,6 +6906,10 @@ function showStartScreen(callback){
     startScr.style.opacity='1';
     startScr.style.display='flex';
   }
+  // 暗幕クリア（start.pngが手前にあるので安全）
+  const _curtainSS=document.getElementById('ov-curtain');
+  if(_curtainSS) _curtainSS.style.display='none';
+  if(window._curtainSafeTimer){ clearTimeout(window._curtainSafeTimer); window._curtainSafeTimer=null; }
   // ② appDiv・戦闘画面を準備（start.pngの裏で）
   appDiv.style.display='flex';
   
@@ -7045,7 +6926,7 @@ function showStartScreen(callback){
       setTimeout(()=>{
         startScr.style.display='none';
         startScr.style.transition='opacity .5s';
-      }, 2800);
+      }, 800);
     },2000);
   } else {
     if(callback) callback();
@@ -7073,7 +6954,7 @@ function startGame(){
       showAreaSelect();
       _gameStarting=false;
     },50);
-  }, 2800);
+  }, 800);
 }
 
 // タイトルへ戻るボタン
@@ -7116,7 +6997,7 @@ setTimeout(()=>{
       if(img.complete&&img.naturalWidth>0){img.style.display='block';tx.style.display='none';}
     }
   });
-}, 2800);
+}, 800);
 
 function _onTapStart_touch(e){
   if(e.target.id==='btn-rules-title'||e.target.closest('#btn-rules-title')) return;
@@ -7226,6 +7107,10 @@ function showStageIntro(stageNum, enemyData, onStart){
   } else {
     appendToApp(div);
   }
+  // IntroがDOMに追加されてから暗幕を消す（チラ見え防止）
+  const curtain=document.getElementById('ov-curtain');
+  if(curtain) curtain.style.display='none';
+  if(window._curtainSafeTimer){ clearTimeout(window._curtainSafeTimer); window._curtainSafeTimer=null; }
 }
 
 function showStageSlide(stageText, enemyName){
