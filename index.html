@@ -5,7 +5,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="DWicon.png">
   <link rel="icon" type="image/png" sizes="180x180" href="DWicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>DUNGEON WALKER DWCver19</title>
+<title>DUNGEON WALKER DWCver32</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 :root{--bg:#07050e;--panel:#110d1a;--panel2:#180f28;--border:#2a1e42;--gold:#c9a84c;--text:#e8dcc8;--dim:#5a4a3a;--common:#8a9aaa;--uncommon:#50b450;--rare:#4a8aff;--epic:#d040ff;--legendary:#ff9500;}
@@ -64,7 +64,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #enemy-area.boss-overflow{overflow:visible;}
 #enemy-area.torch,#enemy-area.wave{background-image:none !important;}/* ::beforeで描画 */
 #enemy-sprite{line-height:1;display:flex;align-items:center;justify-content:center;height:100%;position:relative;z-index:3;}
-#enemy-sprite img.enemy-img{display:block;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 0 6px rgba(255,255,255,.5));}
+#enemy-sprite img.enemy-img{display:block;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 0 4px rgba(255,255,255,.6));}
 #enemy-sprite img.scale-small{width:auto;height:115px;}
 #enemy-sprite img.scale-mid{width:auto;height:132px;}
 #enemy-sprite img.scale-large{width:auto;height:165px;}
@@ -79,9 +79,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #player-status-box{background:rgba(0,0,0,.75);border:2px solid rgba(255,255,255,.2);border-radius:6px;padding:3px 8px;font-size:9px;color:#fff;min-height:20px;display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-family:sans-serif;flex-shrink:0;}
 
 /* ログエリア */
-#log-area{flex-shrink:0;height:72px;overflow-y:auto;background:rgba(0,0,0,.5);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3px 8px;display:flex;flex-direction:column;gap:1px;touch-action:pan-y;-webkit-overflow-scrolling:touch;}
-.log-line{font-size:8px;color:var(--dim);line-height:1.5;font-family:sans-serif;}
-.log-line.player{color:#6ecf9a;}
+#log-area{flex-shrink:0;height:80px;overflow-y:auto;background:rgba(0,0,0,.5);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4px 10px;display:flex;flex-direction:column;gap:1px;touch-action:pan-y;-webkit-overflow-scrolling:touch;}
+.log-line{font-size:10px;color:rgba(255,255,255,.55);line-height:1.6;font-family:sans-serif;}
+.log-line.player{color:#e8dcc8;}
 .log-line.enemy{color:#e07878;}
 .log-line.sys{color:var(--gold);}
 
@@ -92,7 +92,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #mana-area{background:rgba(0,0,30,.6);border:3px solid #3060d0;border-radius:7px;padding:2px 7px;display:flex;align-items:center;gap:3px;}
 #mana-gems{display:flex;gap:2px;}
 .gem{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);transition:all .25s;}
-.gem.full{background:radial-gradient(circle at 35% 35%,#90b8ff,#1a40d0);border-color:#3060d0;box-shadow:0 0 6px rgba(70,110,255,.7);animation:mana-gem-pulse 2.4s ease-in-out infinite;}
+.gem.full{background:radial-gradient(circle at 35% 35%,#90b8ff,#1a40d0);border-color:#3060d0;}
 #mana-text{font-size:10px;color:#fff;margin-left:3px;font-weight:bold;}
 
 /* 手札ナビゲーター */
@@ -114,7 +114,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   display:flex;flex-direction:column;
   flex-shrink:0;position:relative;
   touch-action:manipulation;overflow:hidden;
-  box-shadow:0 4px 12px rgba(0,0,0,.6);
+  box-shadow:0 3px 8px rgba(0,0,0,.5);
   aspect-ratio:5/6.6;
 }
 /* 端末幅が狭く縦1.5倍が収まらない場合は正方形に戻す */
@@ -139,7 +139,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .card.uncommon .card-band{ background:linear-gradient(90deg,#206020,#60cc60,#206020); }
 .card.rare    .card-band{ background:linear-gradient(90deg,#1a50b0,#70b0ff,#1a50b0); }
 .card.epic    .card-band{ background:linear-gradient(90deg,#8010c0,#f060ff,#8010c0); }
-.card.legendary .card-band{ background:linear-gradient(90deg,#a05000,#ffb030,#ff6000,#ffb030,#a05000);background-size:200%;animation:shimmer 1.8s linear infinite; }
+.card.legendary .card-band{ background:linear-gradient(90deg,#a05000,#ffb030,#ff6000,#ffb030,#a05000); }
 
 /* コーナー装飾 */
 .card-corner{display:none;}
@@ -215,15 +215,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .rarity-dot.uncommon{color:var(--uncommon);}
 .rarity-dot.rare    {color:var(--rare);}
 .rarity-dot.epic    {color:var(--epic);}
-.rarity-dot.legendary{color:var(--legendary);animation:glow-legend 1.5s ease-in-out infinite alternate;}
+.rarity-dot.legendary{color:var(--legendary);}
 
 /* 発動可能グロー */
-.card.playable.common  {box-shadow:0 0 8px rgba(138,154,170,.4),0 4px 12px rgba(0,0,0,.6);}
-.card.playable.uncommon{box-shadow:0 0 8px rgba(80,180,80,.5),0 4px 12px rgba(0,0,0,.6);}
-.card.playable.rare    {box-shadow:0 0 12px rgba(74,138,255,.55),0 4px 12px rgba(0,0,0,.6);}
-.card.playable.epic    {box-shadow:0 0 14px rgba(208,64,255,.55),0 4px 12px rgba(0,0,0,.6);}
-.card.playable.legendary{box-shadow:0 0 18px rgba(255,149,0,.65),0 4px 12px rgba(0,0,0,.6);}
-.card.playable:active  {transform:scale(.91) translateY(2px);}
+.card.playable.common  {box-shadow:0 0 6px rgba(138,154,170,.35);}
+.card.playable.uncommon{box-shadow:0 0 6px rgba(80,180,80,.4);}
+.card.playable.rare    {box-shadow:0 0 8px rgba(74,138,255,.5);}
+.card.playable.epic    {box-shadow:0 0 8px rgba(208,64,255,.5);}
+.card.playable.legendary{box-shadow:0 0 10px rgba(255,149,0,.55);}
+.card.playable:active  {transform:scale(.93);}
 .card.unplayable{opacity:.34;}
 .card.selected-card{outline:3px solid #fff;box-shadow:0 0 16px rgba(255,255,255,.8),0 0 32px rgba(255,255,255,.4)!important;transform:translateY(-4px);}
 
@@ -366,8 +366,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   0%,100%{box-shadow:0 0 6px rgba(255,149,0,.4),0 0 12px rgba(255,120,0,.2);}
   50%{box-shadow:0 0 18px rgba(255,149,0,.9),0 0 32px rgba(255,100,0,.5),0 0 48px rgba(255,60,0,.2);}
 }
-.card.legendary{animation:legendary-border-glow 2s ease-in-out infinite;}
-.card.legendary.playable{animation:legendary-border-glow 1.4s ease-in-out infinite;}
+.card.legendary{box-shadow:0 0 6px rgba(255,149,0,.3);}
+.card.legendary.playable{box-shadow:0 0 8px rgba(255,149,0,.4);}
 
 /* 敵被ダメ赤フラッシュ */
 #enemy-area.enemy-red-flash{animation:enemy-red-flash .35s ease-out;}
@@ -434,10 +434,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   box-shadow:0 0 30px rgba(0,0,0,.8);
   touch-action:manipulation;
 }
-@keyframes mist-flow{0%{transform:translateX(110%)}100%{transform:translateX(-110%)}}
-@keyframes mist-flow-slow{0%{transform:translateX(115%) scaleY(1)}50%{transform:translateX(0%) scaleY(1.3)}100%{transform:translateX(-115%) scaleY(1)}}
-@keyframes mist-flow-rev{0%{transform:translateX(-110%)}100%{transform:translateX(110%)}}
-@keyframes mist-flow-rev-slow{0%{transform:translateX(-115%) scaleY(1)}50%{transform:translateX(0%) scaleY(1.3)}100%{transform:translateX(115%) scaleY(1)}}
+@keyframes mist-flow-rev{0%{transform:translateX(110%)}100%{transform:translateX(-110%)}}
+@keyframes mist-flow-rev-slow{0%{transform:translateX(115%) scaleY(1)}50%{transform:translateX(0%) scaleY(1.2)}100%{transform:translateX(-115%) scaleY(1)}}
+/* 中段ミスト非表示 */
+.mid-mist-strip{display:none;}
+/* 下段ミスト（右→左）*/
 .mist-strip{
   position:absolute;
   left:-10%;right:-10%;
@@ -446,26 +447,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   will-change:transform;
   filter:blur(22px);
 }
-/* 下部3分の1のみ（top:67%以下）に限定 */
-.mist-1{height:28%;top:70%;background:radial-gradient(ellipse 70% 100% at 40% 85%,rgba(160,140,210,.9) 0%,transparent 75%);animation:mist-flow 16s linear infinite;opacity:.9;will-change:transform;}
-.mist-2{height:26%;top:68%;background:radial-gradient(ellipse 50% 100% at 60% 90%,rgba(200,180,240,.8) 0%,transparent 78%);animation:mist-flow 24s linear infinite 6s;opacity:.85;will-change:transform;}
-.mist-3{height:22%;top:75%;background:radial-gradient(ellipse 80% 100% at 30% 88%,rgba(140,160,230,.9) 0%,transparent 78%);animation:mist-flow-slow 20s ease-in-out infinite 11s;opacity:.9;will-change:transform;}
-/* 中段逆向きモヤ（左→右流れ、背景上・モンスター下） */
-.mid-mist-strip{
-  position:absolute;
-  left:-10%;right:-10%;
-  border-radius:50%;
-  pointer-events:none;
-  will-change:transform;
-  filter:blur(28px);
-}
-.mid-mist-1{height:22%;top:40%;background:radial-gradient(ellipse 70% 100% at 60% 50%,rgba(140,120,190,.45) 0%,transparent 75%);animation:mist-flow-rev 20s linear infinite 3s;opacity:.6;will-change:transform;}
-.mid-mist-2{height:18%;top:44%;background:radial-gradient(ellipse 50% 100% at 40% 55%,rgba(170,150,220,.4) 0%,transparent 78%);animation:mist-flow-rev 28s linear infinite 10s;opacity:.55;will-change:transform;}
-.mid-mist-3{height:20%;top:42%;background:radial-gradient(ellipse 80% 100% at 55% 50%,rgba(120,140,200,.45) 0%,transparent 78%);animation:mist-flow-rev-slow 24s ease-in-out infinite 2s;opacity:.5;will-change:transform;}
+.mist-1{height:28%;top:70%;background:radial-gradient(ellipse 70% 100% at 40% 85%,rgba(160,140,210,.9) 0%,transparent 75%);animation:mist-flow-rev 16s linear infinite;opacity:.9;will-change:transform;}
+.mist-2{height:26%;top:68%;background:radial-gradient(ellipse 50% 100% at 60% 90%,rgba(200,180,240,.8) 0%,transparent 78%);animation:mist-flow-rev 24s linear infinite 4s;opacity:.85;will-change:transform;}
+.mist-3{height:22%;top:75%;background:radial-gradient(ellipse 80% 100% at 30% 88%,rgba(140,160,230,.9) 0%,transparent 78%);animation:mist-flow-rev-slow 20s ease-in-out infinite 8s;opacity:.9;will-change:transform;}
 
 /* ステージ非表示時はミストアニメーションを停止してCPU節約 */
-.overlay.show ~ #app .mist-strip,
-.overlay.show ~ #app .mid-mist-strip{
+.overlay.show ~ #app .mist-strip{
   animation-play-state:paused;
 }
 @keyframes charge-complete-in{0%{opacity:0;transform:translate(-50%,-50%) scale(0.4)}60%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
@@ -523,33 +510,19 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* 初回ガイド矢印 */
 @keyframes bounce-arrow{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 /* チャージゲージ枠 光る */
-@keyframes charge-box-glow{
-  0%,100%{box-shadow:0 0 6px rgba(201,168,76,.3);}
-  50%{box-shadow:0 0 16px rgba(201,168,76,.9),0 0 28px rgba(201,168,76,.45);}
-}
-#card-gauge-box{animation:charge-box-glow 2s ease-in-out infinite;}
-/* チャージ満タン時：強い赤橙グロー */
+/* チャージ満タン時のみglow */
 @keyframes charge-box-full-glow{
   0%,100%{box-shadow:0 0 10px rgba(231,76,60,.5);}
   50%{box-shadow:0 0 24px rgba(231,76,60,1),0 0 40px rgba(255,120,0,.6);}
 }
 #card-gauge-box.charge-full{animation:charge-box-full-glow 0.9s ease-in-out infinite!important;}
-/* 呪縛タイマー枠 光る */
-@keyframes curse-box-glow{
-  0%,100%{box-shadow:0 0 6px rgba(200,40,40,.25);}
-  50%{box-shadow:0 0 16px rgba(231,76,60,.9),0 0 28px rgba(180,0,0,.4);}
-}
+/* 呪縛アクティブ時のみglow */
 @keyframes curse-box-active-glow{
   0%,100%{box-shadow:0 0 12px rgba(231,76,60,.7);}
   50%{box-shadow:0 0 28px rgba(255,60,60,1),0 0 50px rgba(200,0,0,.6);}
 }
-#curse-timer-box{animation:curse-box-glow 2.4s ease-in-out infinite;}
 #curse-timer-box.curse-active{animation:curse-box-active-glow 0.8s ease-in-out infinite!important;}
-/* マナエリア ゆっくり明滅 */
-@keyframes mana-gem-pulse{
-  0%,100%{box-shadow:0 0 4px rgba(70,110,255,.5);opacity:1;}
-  50%{box-shadow:0 0 12px rgba(100,160,255,1),0 0 20px rgba(70,110,255,.5);opacity:0.7;}
-}
+/* マナgem pulse 削除済み */
 
 
 .blink-arrow{transition:opacity 0.5s ease-in-out;}
@@ -620,13 +593,196 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   text-shadow:0 0 6px rgba(255,255,255,0.5);
   white-space:nowrap;
 }
+
+/* ========================================
+   カード発動エフェクト（段階①）
+   - #card-effect-enemy : 敵エリアに重なるdiv
+   - #card-effect-player: プレイヤーエリアに重なるdiv
+   ======================================== */
+#card-effect-enemy,
+#card-effect-player{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:50;
+  overflow:hidden;
+}
+/* 共通ベース */
+.ce{position:absolute;pointer-events:none;border-radius:50%;opacity:0;}
+
+/* ① 斬撃 - 右上→左下 太い1本 */
+@keyframes ce-slash{
+  0%  {opacity:0;clip-path:polygon(20% 0%,25% 0%,5%  20%,0%  20%);}
+  10% {opacity:1;clip-path:polygon(20% 0%,25% 0%,5%  20%,0%  20%);}
+  55% {opacity:1;clip-path:polygon(95% 0%,100% 0%,80% 100%,75% 100%);}
+  100%{opacity:0;clip-path:polygon(95% 0%,100% 0%,80% 100%,75% 100%);}
+}
+.ce-slash{
+  inset:0;border-radius:0;
+  background:linear-gradient(125deg,
+    transparent 30%,
+    rgba(255,255,220,.3) 36%,
+    rgba(255,255,255,.95) 42%,
+    rgba(255,230,100,.8) 48%,
+    transparent 54%);
+  animation:ce-slash .35s ease-in forwards;
+}
+
+/* ② 打撃 - 放射線がJSで複数生成される */
+@keyframes ce-blunt-line{
+  0%  {opacity:1;transform:scaleY(0);transform-origin:bottom center;}
+  50% {opacity:.8;transform:scaleY(1);transform-origin:bottom center;}
+  100%{opacity:0;transform:scaleY(1.1);transform-origin:bottom center;}
+}
+.ce-blunt-line{
+  position:absolute;
+  bottom:50%;left:50%;
+  width:3px;height:45px;
+  background:linear-gradient(to top,rgba(255,200,60,1),rgba(255,255,180,.6),transparent);
+  border-radius:2px;
+  transform-origin:bottom center;
+  animation:ce-blunt-line .35s ease-out forwards;
+}
+
+/* ③ 爆発 - メイン円＋サブ円はJSで生成 */
+@keyframes ce-explode-main{
+  0%  {opacity:1;transform:translate(-50%,-50%) scale(0);}
+  40% {opacity:.9;transform:translate(-50%,-50%) scale(1);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.3);}
+}
+@keyframes ce-explode-sub{
+  0%  {opacity:.9;transform:translate(-50%,-50%) scale(0);}
+  50% {opacity:.7;transform:translate(-50%,-50%) scale(1);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.2);}
+}
+.ce-explode-main{
+  position:absolute;left:50%;top:50%;
+  width:90px;height:90px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,240,100,1) 0%,rgba(255,120,20,.9) 40%,rgba(200,40,0,.5) 70%,transparent 100%);
+  box-shadow:0 0 20px rgba(255,140,0,.8);
+  animation:ce-explode-main .5s ease-out forwards;
+}
+.ce-explode-sub{
+  position:absolute;border-radius:50%;
+  width:28px;height:28px;
+  background:radial-gradient(circle,rgba(255,200,60,.95) 0%,rgba(255,80,0,.6) 60%,transparent 100%);
+  animation:ce-explode-sub .45s ease-out forwards;
+}
+
+/* ④ 回復 - HPバー発光＋緑小泡はJSで生成 */
+@keyframes ce-heal-bar{
+  0%  {opacity:0;}
+  20% {opacity:1;}
+  70% {opacity:.8;}
+  100%{opacity:0;}
+}
+@keyframes ce-heal-bubble{
+  0%  {opacity:.9;transform:translateY(0) scale(1);}
+  100%{opacity:0;transform:translateY(-40px) scale(.5);}
+}
+.ce-heal-bar{
+  position:absolute;inset:0;border-radius:inherit;
+  background:rgba(60,255,120,.18);
+  box-shadow:0 0 12px rgba(60,255,120,.6);
+  animation:ce-heal-bar .7s ease-out forwards;
+}
+.ce-heal-bubble{
+  position:absolute;border-radius:50%;
+  width:8px;height:8px;
+  background:radial-gradient(circle,rgba(120,255,160,1),rgba(40,200,80,.6));
+  animation:ce-heal-bubble .8s ease-out forwards;
+}
+
+/* ⑤ 盾 - プレイヤーエリア全体が青く光る */
+@keyframes ce-shield-flash{
+  0%  {opacity:0;}
+  20% {opacity:1;}
+  70% {opacity:.7;}
+  100%{opacity:0;}
+}
+.ce-shield-flash{
+  position:absolute;inset:0;border-radius:0;
+  background:rgba(60,140,255,.2);
+  box-shadow:inset 0 0 30px rgba(60,140,255,.5);
+  animation:ce-shield-flash .6s ease-out forwards;
+}
+
+/* ⑥ 毒 - 紫の小泡がわきあがる（JSで複数生成） */
+@keyframes ce-poison-bubble{
+  0%  {opacity:.9;transform:translateY(0) scale(1);}
+  80% {opacity:.6;transform:translateY(-35px) scale(.8);}
+  100%{opacity:0;transform:translateY(-42px) scale(.3);}
+}
+.ce-poison-bubble{
+  position:absolute;border-radius:50%;
+  width:9px;height:9px;
+  background:radial-gradient(circle,rgba(200,100,255,1),rgba(120,30,180,.6));
+  box-shadow:0 0 4px rgba(180,60,255,.7);
+  animation:ce-poison-bubble .9s ease-out forwards;
+}
+
+/* ⑦ 強化 - 黄色い線が下から上へ（JSで複数生成） */
+@keyframes ce-buff-line{
+  0%  {opacity:1;transform:translateY(0) scaleY(1);}
+  100%{opacity:0;transform:translateY(-55px) scaleY(.4);}
+}
+.ce-buff-line{
+  position:absolute;
+  bottom:10px;
+  width:3px;height:40px;
+  background:linear-gradient(to top,rgba(255,200,40,.9),rgba(255,240,120,.7),transparent);
+  border-radius:2px;
+  animation:ce-buff-line .65s ease-out forwards;
+}
+
+/* ⑧ 弱体 - 紫の線が上から下へ（JSで複数生成） */
+@keyframes ce-debuff-line{
+  0%  {opacity:1;transform:translateY(0);}
+  100%{opacity:0;transform:translateY(50px);}
+}
+.ce-debuff-line{
+  position:absolute;
+  top:10px;
+  width:3px;height:40px;
+  background:linear-gradient(to bottom,rgba(140,40,200,.9),rgba(80,10,140,.7),transparent);
+  border-radius:2px;
+  animation:ce-debuff-line .6s ease-out forwards;
+}
+
+/* ⑨ 状態異常 - 紫の渦（2リング） */
+@keyframes ce-ailment-r{
+  0%  {opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0deg);}
+  30% {opacity:.9;}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.1) rotate(360deg);}
+}
+.ce-ailment-ring{
+  position:absolute;left:50%;top:50%;border-radius:50%;
+  border:4px solid rgba(180,60,255,.9);
+  box-shadow:0 0 8px rgba(180,60,255,.6);
+  animation:ce-ailment-r .75s ease-out forwards;
+}
+
+/* ⑩ 特殊 - 画面全体が黄色く光る */
+@keyframes ce-special-flash{
+  0%  {opacity:0;}
+  15% {opacity:1;}
+  60% {opacity:.6;}
+  100%{opacity:0;}
+}
+.ce-special-flash{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(255,220,60,.25);
+  box-shadow:inset 0 0 60px rgba(255,200,40,.5);
+  pointer-events:none;
+  animation:ce-special-flash .5s ease-out forwards;
+}
 </style>
 </head>
 <body oncontextmenu="return false;">
 
 <div id="tap-to-start-screen" style="display:none;position:fixed;inset:0;background:#07050e;z-index:1100;align-items:center;justify-content:center;flex-direction:column;gap:24px;cursor:pointer;touch-action:manipulation;transition:opacity .3s;opacity:1;">
   <div style="font-family:'Cinzel',serif;font-size:22px;color:#c9a84c;letter-spacing:6px;text-shadow:0 0 24px rgba(201,168,76,.8);animation:logo-pulse 1.5s ease-in-out infinite;">DUNGEON WALKER</div>
-  <div style="font-family:'Cinzel',serif;font-size:13px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;">▶ TAP TO START</div>
+  <div style="font-family:'Cinzel',serif;font-size:13px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;margin-bottom:18px;">▶ TAP TO START</div>
 </div>
 <div id="op-screen" style="display:none;position:fixed;inset:0;background:#000;z-index:1003;align-items:center;justify-content:center;opacity:0;transition:opacity .5s;pointer-events:all;touch-action:none;">
   <img src="op.png" id="op-img" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.style.display='none';document.getElementById('op-fallback').style.display='block'">
@@ -659,8 +815,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:#b8d4ff;letter-spacing:8px;text-shadow:0 0 20px rgba(100,160,255,.8),0 0 40px rgba(100,160,255,.3),1px 1px 0 #0a2060;text-align:center;">CHARGE</div>
     <div style="height:2px;width:220px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin-top:6px;"></div>
     <div style="font-family:'Cinzel',serif;font-size:10px;color:rgba(201,168,76,.5);letter-spacing:3px;">CARD BATTLE RPG</div>
+    <div style="font-family:sans-serif;font-size:9px;color:rgba(201,168,76,.35);letter-spacing:1px;margin-top:2px;">ver32</div>
+    <div style="font-family:'Cinzel',serif;font-size:12px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;margin-top:10px;">▶ TAP TO START</div>
   </div>
-  <div style="font-family:'Cinzel',serif;font-size:12px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;margin-top:12px;">▶ TAP TO START</div>
   <div id="tap-start-zone" style="position:absolute;top:33.33%;left:0;right:0;height:33.33%;cursor:pointer;touch-action:manipulation;z-index:5;"></div>
   
   <div id="btn-rules-title" style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
@@ -756,6 +913,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </div>
     
     <div id="enemy-area">
+      <!-- カード発動エフェクト（敵エリア） -->
+      <div id="card-effect-enemy"></div>
       <!-- 中段逆向きモヤ：背景::before上(z1)・enemy-sprite下(z3) -->
       <div id="mid-mist-layer" style="position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;">
         <div class="mid-mist-strip mid-mist-1"></div>
@@ -795,6 +954,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <div class="blink-arrow" style="font-size:6px;color:#e74c3c;">▼</div>
       </div>
     </div><!-- /enemy-area -->
+    <!-- カード発動エフェクト（プレイヤーエリア） -->
+    <div id="card-effect-player" style="position:relative;height:0;overflow:visible;"></div>
     <div id="player-statup-box" style="background:rgba(20,10,40,.7);border:2px solid rgba(201,168,76,.5);border-radius:5px;padding:3px 8px;font-size:9px;color:#e0d080;min-height:18px;display:none;align-items:center;flex-wrap:wrap;gap:5px;font-family:sans-serif;cursor:pointer;touch-action:manipulation;margin-bottom:2px;" onclick="showStatupDetail()" ontouchend="event.preventDefault();showStatupDetail()"></div>
     <div id="player-status-box" style="background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.25);border-radius:5px;padding:3px 8px;font-size:9px;color:#fff;min-height:20px;display:flex;align-items:center;flex-wrap:wrap;gap:5px;font-family:sans-serif;cursor:pointer;touch-action:manipulation;" onclick="showStatusDetail('player')" ontouchend="event.preventDefault();showStatusDetail('player')"></div>
     
@@ -808,6 +969,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div id="effect-layer" style="position:fixed;inset:0;pointer-events:none;z-index:9999;"></div>
   
   <div id="log-area"></div>
+
   <div id="hand-area">
     
     <div id="hand-meta">
@@ -867,8 +1029,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       </div>
       <div id="acp-desc" style="font-size:12px;color:#ccc;text-align:center;line-height:1.6;"></div>
       <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
-        <button id="acp-cancel" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:10px;color:#aaa;font-size:13px;cursor:pointer;touch-action:manipulation;font-family:sans-serif;">キャンセル</button>
-        <button id="acp-ok" style="flex:1;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.15));border:2px solid #c9a84c;border-radius:8px;padding:10px;color:#c9a84c;font-size:13px;font-weight:bold;cursor:pointer;touch-action:manipulation;font-family:'Cinzel',serif;">決　定</button>
+        <button id="acp-ok" style="flex:1;background:#1a4020;border:2px solid #4a8;border-radius:6px;padding:10px;color:#4e4;font-size:13px;font-weight:bold;cursor:pointer;touch-action:manipulation;font-family:'Cinzel',serif;">決定</button>
+        <button id="acp-cancel" style="flex:1;background:#2a1010;border:2px solid #a44;border-radius:6px;padding:10px;color:#e44;font-size:13px;cursor:pointer;touch-action:manipulation;font-family:'Cinzel',serif;">キャンセル</button>
       </div>
     </div>
   </div>
@@ -1021,7 +1183,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </a>
   </div>
 
-  <div class="overlay" id="ov-over">
+  <div class="overlay" id="ov-over" style="z-index:1200;">
     <div class="ov-title" style="color:#e74c3c;">💀 DEFEAT</div>
     <div id="over-enemy-text" style="background:rgba(231,76,60,.15);border:2px solid rgba(231,76,60,.5);border-radius:8px;padding:8px 14px;font-family:'Cinzel',serif;font-size:13px;color:#e74c3c;text-align:center;width:100%;box-sizing:border-box;"></div>
     <div class="ov-sub" id="over-sub">力尽きた…</div>
@@ -1634,12 +1796,95 @@ function showReconsiderUI(){
   cancel.addEventListener('click',doCancel);cancel.addEventListener('touchend',doCancel);
   appendToApp(overlay);
 }
+/* ========================================
+   カードエフェクト対応表
+   各カードIDに { type, target } を設定
+   複合効果は配列で複数指定可
+======================================== */
+const CARD_EFFECTS = {
+  // 斬撃系
+  strike:      [{type:'slash',  target:'enemy'}],
+  bash:        [{type:'slash',  target:'enemy'}],
+  heavy:       [{type:'slash',  target:'enemy'}],
+  twin:        [{type:'slash',  target:'enemy'}],
+  combo:       [{type:'slash',  target:'enemy'}],
+  stormSlash:  [{type:'slash',  target:'enemy'}],
+  godstrike:   [{type:'slash',  target:'enemy'},{type:'special',target:'enemy'}],
+  pierce:      [{type:'slash',  target:'enemy'}],
+  armorPierce: [{type:'slash',  target:'enemy'}],
+  thinIce:     [{type:'slash',  target:'enemy'}],
+  knowledge:   [{type:'slash',  target:'enemy'}],
+  guideStrike: [{type:'slash',  target:'enemy'}],
+  // 打撃系
+  shieldBash:  [{type:'blunt',  target:'enemy'}],
+  muboAtk:     [{type:'blunt',  target:'enemy'}],
+  kyougeki:    [{type:'blunt',  target:'enemy'}],
+  desperate:   [{type:'blunt',  target:'enemy'}],
+  chainBlast:  [{type:'blunt',  target:'enemy'}],
+  accumulate:  [{type:'blunt',  target:'enemy'}],
+  composure:   [{type:'blunt',  target:'enemy'}],
+  lastStand:   [{type:'blunt',  target:'enemy'}],
+  poisonKill:  [{type:'blunt',  target:'enemy'}],
+  // 爆発系
+  soulPact:    [{type:'explode',target:'enemy'}],
+  // 吸血系（攻撃→回復）
+  lifesteal:   [{type:'slash',  target:'enemy'},{type:'heal',target:'player'}],
+  bloodPact:   [{type:'explode',target:'enemy'}],
+  // 毒系
+  poisonNeedle:[{type:'poison', target:'enemy'}],
+  chainPoison: [{type:'poison', target:'enemy'}],
+  // 回復系
+  heal:        [{type:'heal',   target:'player'}],
+  superheal:   [{type:'heal',   target:'player'}],
+  sanctuary:   [{type:'heal',   target:'player'}],
+  breath:      [{type:'heal',   target:'player'},{type:'shield',target:'player'}],
+  firstAid:    [{type:'heal',   target:'player'}],
+  // 盾系
+  guard:       [{type:'shield', target:'player'}],
+  fortify:     [{type:'shield', target:'player'}],
+  dodge:       [{type:'shield', target:'player'}],
+  superdodge:  [{type:'shield', target:'player'}],
+  steelBody:   [{type:'shield', target:'player'}],
+  godshield:   [{type:'shield', target:'player'},{type:'special',target:'player'}],
+  smallShield: [{type:'shield', target:'player'}],
+  allIn:       [{type:'shield', target:'player'}],
+  studyGuard:  [{type:'shield', target:'player'}],
+  // 強化系
+  rage:        [{type:'buff',   target:'player'}],
+  anger:       [{type:'buff',   target:'player'}],
+  bigMana:     [{type:'buff',   target:'player'}],
+  dragonGod:   [{type:'buff',   target:'player'}],
+  manaRelease: [{type:'buff',   target:'player'}],
+  manaDrain:   [{type:'buff',   target:'player'}],
+  superMana:   [{type:'buff',   target:'player'}],
+  swiftBlade:  [{type:'buff',   target:'player'}],
+  // 弱体系
+  freeze:      [{type:'debuff', target:'enemy'}],
+  // 状態異常系
+  echo:        [{type:'ailment',target:'player'}],
+  freePass:    [{type:'ailment',target:'player'}],
+  // 特殊系
+  redraw:      [{type:'special',target:'player'}],
+  swift:       [{type:'special',target:'player'}],
+};
+
+function triggerCardEffect(cid){
+  var effects = CARD_EFFECTS[cid];
+  if(!effects||effects.length===0) return;
+  effects.forEach(function(e, i){
+    // 複合エフェクトは少しずらして発動
+    setTimeout(function(){ showCardEffect(e.type, e.target); }, i*220);
+  });
+}
+
 function playCard(idx, _isChain){
   // _isChain=true: 連鎖起動による再発動（マナ消費・手札操作なし）
   const c = (typeof idx==='object') ? idx : DB[G.hand[idx]];
   const cid = c ? c.id : null;
   if(!c||!cid)return;
   if(G.phase!=='player')return;
+  // カードエフェクト発動（チェーン再発動時はスキップ）
+  if(!_isChain) triggerCardEffect(cid);
   // カード効果中操作ロック
   const _lockTargets=['hand-area','end-turn-btn','btn-deck-view','charge-gauge-box','curse-timer-box'];
   _lockTargets.forEach(id=>{const el=document.getElementById(id);if(el)el.style.pointerEvents='none';});
@@ -5944,6 +6189,869 @@ function updateGaugeLamps(){
 }
 
 // エフェクトキュー（複数効果を順番に表示）
+/* ========================================
+   カード発動エフェクト表示関数（段階①）
+   showCardEffect(type, target)
+     type  : 'slash'|'blunt'|'explode'|'heal'|'shield'|
+             'poison'|'buff'|'debuff'|'ailment'|'special'
+     target: 'enemy' | 'player'
+   ======================================== */
+/* ---- Canvas エフェクトエンジン ---- */
+function showCardEffect(type, target){
+  const areaId = target==='player' ? 'card-effect-player' : 'card-effect-enemy';
+  const area   = document.getElementById(areaId);
+  if(!area) return;
+
+  // エリアのサイズとページ上の位置を取得
+  const rect = (target==='player'
+    ? document.getElementById('player-status-box') || area
+    : document.getElementById('enemy-area') || area
+  ).getBoundingClientRect();
+
+  // Canvas を生成してbody直下に固定配置（エリアに重ねる）
+  const cv = document.createElement('canvas');
+  cv.width  = Math.round(rect.width)  || 320;
+  cv.height = Math.round(rect.height) || 160;
+  cv.style.cssText = [
+    'position:fixed',
+    'left:'+Math.round(rect.left)+'px',
+    'top:'+Math.round(rect.top)+'px',
+    'width:'+cv.width+'px',
+    'height:'+cv.height+'px',
+    'pointer-events:none',
+    'z-index:8000',
+  ].join(';');
+  document.body.appendChild(cv);
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const cx = W/2, cy = H/2;
+
+  function rnd(a,b){return Math.random()*(b-a)+a;}
+  function lerp(a,b,t){return a+(b-a)*t;}
+
+  let startTime = null;
+  let rafId;
+
+  // ---------- 各エフェクト定義 ----------
+
+  // ① 斬撃：白く光る軌跡が走り、黒い斬り傷が残る
+  if(type==='slash'){
+    var DUR=600;
+    const x0=W*.88, y0=H*.04, x1=W*.12, y1=H*.96;
+    let slashDone=false;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const elapsed=ts-startTime;
+      const t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+
+      // フェーズ1（0〜0.35）：白い光の線が右上から左下へ走る
+      const drawT=Math.min(t/0.35,1);
+      const hx=lerp(x0,x1,drawT);
+      const hy=lerp(y0,y1,drawT);
+
+      if(drawT<1){
+        // 太い白光芯
+        ctx.save();
+        ctx.strokeStyle='rgba(255,255,255,0.95)';
+        ctx.lineWidth=22;
+        ctx.lineCap='round';
+        ctx.shadowColor='rgba(200,220,255,1)';
+        ctx.shadowBlur=28;
+        ctx.beginPath();
+        ctx.moveTo(x0,y0);
+        ctx.lineTo(hx,hy);
+        ctx.stroke();
+        // 細い芯（真っ白）
+        ctx.strokeStyle='rgba(255,255,255,1)';
+        ctx.lineWidth=6;
+        ctx.shadowBlur=10;
+        ctx.beginPath();
+        ctx.moveTo(x0,y0);
+        ctx.lineTo(hx,hy);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // フェーズ2（0.3〜1.0）：光が消えて黒い斬り傷が残る
+      if(t>0.28){
+        const scar=(t-0.28)/0.72; // 0→1
+        const scarAlpha=Math.min(scar*3,1); // 素早く出現
+        const fadeAlpha=scar<0.7?1:1-(scar-0.7)/0.3; // 後半フェードアウト
+        const a=scarAlpha*fadeAlpha;
+        // 斬り傷（細い暗い線）
+        ctx.save();
+        ctx.strokeStyle=`rgba(20,10,30,${a*0.9})`;
+        ctx.lineWidth=4;
+        ctx.lineCap='round';
+        ctx.shadowColor=`rgba(80,40,120,${a*0.5})`;
+        ctx.shadowBlur=6;
+        ctx.beginPath();
+        ctx.moveTo(x0,y0);
+        ctx.lineTo(x1,y1);
+        ctx.stroke();
+        // 傷の縁（薄紫の光）
+        ctx.strokeStyle=`rgba(180,160,255,${a*0.35})`;
+        ctx.lineWidth=9;
+        ctx.shadowColor=`rgba(160,140,255,${a*0.3})`;
+        ctx.shadowBlur=12;
+        ctx.beginPath();
+        ctx.moveTo(x0,y0);
+        ctx.lineTo(x1,y1);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ② 打撃パターンA：拳が当たった瞬間のフラッシュ＋放射クラック
+  }else if(type==='blunt_a'){
+    var DUR=450;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const elapsed=ts-startTime;
+      const t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      // 衝撃フラッシュ（中央が白く弾ける）
+      var fa=t<0.15?t/0.15:1-(t-0.15)/0.85;
+      const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,lerp(5,Math.min(W,H)*0.55,t));
+      gr.addColorStop(0,`rgba(255,255,240,${fa*0.95})`);
+      gr.addColorStop(0.25,`rgba(255,220,140,${fa*0.7})`);
+      gr.addColorStop(0.6,`rgba(220,160,60,${fa*0.3})`);
+      gr.addColorStop(1,'rgba(180,100,0,0)');
+      ctx.fillStyle=gr;
+      ctx.beginPath();
+      ctx.arc(cx,cy,Math.min(W,H)*0.55,0,Math.PI*2);
+      ctx.fill();
+      // 放射クラック（6本の亀裂）
+      if(t>0.05 && t<0.7){
+        const ca=t<0.3?1:1-(t-0.3)/0.4;
+        for(let i=0;i<6;i++){
+          const angle=(i/6)*Math.PI*2+0.3;
+          const len=lerp(0,Math.min(W,H)*0.38,Math.min((t-0.05)/0.4,1));
+          ctx.save();
+          ctx.strokeStyle=`rgba(255,240,180,${ca*0.9})`;
+          ctx.lineWidth=i%2===0?3:2;
+          ctx.lineCap='round';
+          ctx.shadowColor=`rgba(255,200,80,${ca})`;
+          ctx.shadowBlur=8;
+          ctx.beginPath();
+          ctx.moveTo(cx,cy);
+          ctx.lineTo(cx+Math.cos(angle)*len, cy+Math.sin(angle)*len);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ② 打撃パターンB：星（火花）が飛び散る
+  }else if(type==='blunt_b'){
+    var DUR=500;
+    var stars=Array.from({length:10},(_,i)=>({
+      angle:(i/10)*Math.PI*2+rnd(-0.2,0.2),
+      speed:rnd(1.2,2.2), r:rnd(3,6), trail:[]
+    }));
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const elapsed=ts-startTime;
+      const t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      // 中央フラッシュ
+      if(t<0.2){
+        var fa=1-t/0.2;
+        ctx.fillStyle=`rgba(255,240,160,${fa*0.8})`;
+        ctx.beginPath();
+        ctx.arc(cx,cy,28,0,Math.PI*2);
+        ctx.fill();
+      }
+      stars.forEach(s=>{
+        const dist=elapsed*s.speed*0.12;
+        const x=cx+Math.cos(s.angle)*dist;
+        const y=cy+Math.sin(s.angle)*dist;
+        const a=t<0.4?1:1-(t-0.4)/0.6;
+        // 星形
+        ctx.save();
+        ctx.globalAlpha=a;
+        ctx.fillStyle='rgba(255,220,80,1)';
+        ctx.shadowColor='rgba(255,180,40,.9)';
+        ctx.shadowBlur=10;
+        ctx.beginPath();
+        for(let p=0;p<5;p++){
+          const ang=p*Math.PI*2/5-Math.PI/2;
+          const ang2=ang+Math.PI/5;
+          p===0?ctx.moveTo(x+Math.cos(ang)*s.r,y+Math.sin(ang)*s.r):ctx.lineTo(x+Math.cos(ang)*s.r,y+Math.sin(ang)*s.r);
+          ctx.lineTo(x+Math.cos(ang2)*s.r*0.45,y+Math.sin(ang2)*s.r*0.45);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ② 打撃パターンC：衝撃波の輪＋火花
+  }else if(type==='blunt_c'){
+    var DUR=500;
+    var sparks=Array.from({length:8},()=>({
+      angle:rnd(0,Math.PI*2), speed:rnd(0.8,1.6), r:rnd(2,4)
+    }));
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const elapsed=ts-startTime;
+      const t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      // 衝撃波リング
+      const r=lerp(0,Math.min(W,H)*0.48,t);
+      const ra=t<0.15?t/0.15:1-(t-0.15)/0.85;
+      ctx.save();
+      ctx.strokeStyle=`rgba(255,220,140,${ra})`;
+      ctx.lineWidth=lerp(10,1,t);
+      ctx.shadowColor=`rgba(255,180,60,${ra})`;
+      ctx.shadowBlur=18;
+      ctx.beginPath();
+      ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2);
+      ctx.stroke();
+      ctx.restore();
+      // 細い2番目のリング
+      if(t>0.08){
+        const r2=lerp(0,Math.min(W,H)*0.42,t-0.08);
+        const ra2=(1-(t-0.08)/0.92)*0.6;
+        ctx.save();
+        ctx.strokeStyle=`rgba(255,255,200,${ra2})`;
+        ctx.lineWidth=3;
+        ctx.shadowColor=`rgba(255,240,160,${ra2})`;
+        ctx.shadowBlur=8;
+        ctx.beginPath();
+        ctx.arc(cx,cy,Math.max(r2,1),0,Math.PI*2);
+        ctx.stroke();
+        ctx.restore();
+      }
+      // 火花
+      sparks.forEach(s=>{
+        if(t<0.05) return;
+        const dist=elapsed*s.speed*0.1;
+        const sx=cx+Math.cos(s.angle)*dist;
+        const sy=cy+Math.sin(s.angle)*dist;
+        const sa=t<0.3?1:1-(t-0.3)/0.7;
+        ctx.save();
+        ctx.globalAlpha=sa;
+        ctx.fillStyle='rgba(255,220,100,1)';
+        ctx.shadowColor='rgba(255,180,40,.8)';
+        ctx.shadowBlur=6;
+        ctx.beginPath();
+        ctx.arc(sx,sy,s.r,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ② 打撃（確定: 丸が飛び散る・高速）
+  }else if(type==='blunt'||type==='blunt_b'){
+    var DUR=380;
+    var stars=Array.from({length:10},function(_,i){
+      return {angle:(i/10)*Math.PI*2+rnd(-0.2,0.2), speed:rnd(1.8,3.0), r:rnd(4,8)};
+    });
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      var elapsed=ts-startTime;
+      var t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      // 中央フラッシュ
+      if(t<0.18){
+        var fa=1-t/0.18;
+        ctx.fillStyle=`rgba(255,240,160,${fa*0.85})`;
+        ctx.beginPath();
+        ctx.arc(cx,cy,32,0,Math.PI*2);
+        ctx.fill();
+      }
+      // 丸が飛び散る
+      stars.forEach(function(s){
+        var dist=elapsed*s.speed*0.14;
+        var x=cx+Math.cos(s.angle)*dist;
+        var y=cy+Math.sin(s.angle)*dist;
+        var a=t<0.3?1:1-(t-0.3)/0.7;
+        ctx.save();
+        ctx.globalAlpha=a;
+        ctx.fillStyle='rgba(255,220,80,1)';
+        ctx.shadowColor='rgba(255,180,40,.9)';
+        ctx.shadowBlur=10;
+        ctx.beginPath();
+        ctx.arc(x,y,s.r*(1-t*0.4),0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+  }else if(type==='blunt_d'){
+    var fcv2=document.createElement('canvas');
+    fcv2.width=window.innerWidth; fcv2.height=window.innerHeight;
+    fcv2.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
+    document.body.appendChild(fcv2);
+    var fctx2=fcv2.getContext('2d');
+    cv.remove();
+    var DUR_D=320;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      var t=Math.min((ts-startTime)/DUR_D,1);
+      fctx2.clearRect(0,0,fcv2.width,fcv2.height);
+      // 0〜0.2: 白く光る、0.2〜0.5: 黒く暗転、0.5〜1.0: 戻る
+      var a;
+      if(t<0.15)      a=t/0.15;
+      else if(t<0.4)  a=1-(t-0.15)/0.25*0.7; // 白から黒へ
+      else            a=0.3*(1-(t-0.4)/0.6);
+      var r=Math.round(255*(t<0.3?1:1-(t-0.3)/0.4));
+      fctx2.fillStyle=`rgba(${r},${r},${r},${Math.min(a,1)})`;
+      fctx2.fillRect(0,0,fcv2.width,fcv2.height);
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { fcv2.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ② 打撃パターンE：中央から光が超高速で弾けて即消える
+  }else if(type==='blunt_e'){
+    var DUR_E=280;
+    var rays=Array.from({length:12},function(_,i){
+      return {angle:(i/12)*Math.PI*2+rnd(-0.15,0.15), len:rnd(0.35,0.55), w:rnd(3,7)};
+    });
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      var t=Math.min((ts-startTime)/DUR_E,1);
+      ctx.clearRect(0,0,W,H);
+      // 中央白フラッシュ
+      var fa=t<0.12?t/0.12:1-(t-0.12)/0.88;
+      var gr=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.5);
+      gr.addColorStop(0,`rgba(255,255,255,${fa*0.95})`);
+      gr.addColorStop(0.2,`rgba(255,240,200,${fa*0.7})`);
+      gr.addColorStop(1,'rgba(255,200,100,0)');
+      ctx.fillStyle=gr;
+      ctx.beginPath();
+      ctx.arc(cx,cy,Math.min(W,H)*0.5,0,Math.PI*2);
+      ctx.fill();
+      // 12本の光線が超高速で広がる
+      var ra=t<0.15?1:1-(t-0.15)/0.85;
+      rays.forEach(function(r2){
+        var len=lerp(0,Math.min(W,H)*r2.len,Math.min(t*3,1));
+        ctx.save();
+        ctx.strokeStyle=`rgba(255,255,220,${ra*0.9})`;
+        ctx.lineWidth=r2.w*(1-t*0.7);
+        ctx.lineCap='round';
+        ctx.shadowColor=`rgba(255,220,100,${ra})`;
+        ctx.shadowBlur=10;
+        ctx.beginPath();
+        ctx.moveTo(cx+Math.cos(r2.angle)*8, cy+Math.sin(r2.angle)*8);
+        ctx.lineTo(cx+Math.cos(r2.angle)*len, cy+Math.sin(r2.angle)*len);
+        ctx.stroke();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+  }else if(type==='debuff_a'){
+    var DUR=750;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      const a=t<0.3?t/0.3:1-(t-0.3)/0.7;
+      // 霧（複数の楕円を重ねる）
+      [[cx,cy,W*.7,H*.6],[cx*0.5,cy*1.2,W*.5,H*.4],[cx*1.5,cy*0.8,W*.4,H*.5]].forEach(([x,y,rw,rh])=>{
+        ctx.save();
+        ctx.globalAlpha=a*0.45;
+        const gr=ctx.createRadialGradient(x,y,0,x,y,Math.max(rw,rh));
+        gr.addColorStop(0,'rgba(60,0,80,0.9)');
+        gr.addColorStop(0.5,'rgba(40,0,60,0.6)');
+        gr.addColorStop(1,'rgba(20,0,40,0)');
+        ctx.fillStyle=gr;
+        ctx.scale(rw/Math.max(rw,rh),rh/Math.max(rw,rh));
+        ctx.beginPath();
+        ctx.arc(x*(Math.max(rw,rh)/rw),y*(Math.max(rw,rh)/rh),Math.max(rw,rh),0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑧ 弱体パターンB：太い紫の線が複数、上から叩きつける
+  }else if(type==='debuff_b'){
+    var DUR=600;
+    var lines=Array.from({length:5},()=>({
+      x:rnd(W*.1,W*.9), w:rnd(6,14), delay:rnd(0,150)
+    }));
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const elapsed=ts-startTime;
+      const t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      lines.forEach(l=>{
+        if(elapsed<l.delay) return;
+        const lt=Math.min((elapsed-l.delay)/400,1);
+        const y1=lerp(-20,H*1.1,lt);
+        const la=lt<0.5?1:1-(lt-0.5)/0.5;
+        ctx.save();
+        ctx.globalAlpha=la;
+        const gr=ctx.createLinearGradient(l.x,0,l.x,y1);
+        gr.addColorStop(0,'rgba(180,60,255,0)');
+        gr.addColorStop(0.3,'rgba(160,40,220,0.9)');
+        gr.addColorStop(0.8,'rgba(100,10,160,1)');
+        gr.addColorStop(1,'rgba(60,0,100,0.8)');
+        ctx.strokeStyle=gr;
+        ctx.lineWidth=l.w;
+        ctx.lineCap='round';
+        ctx.shadowColor='rgba(160,40,255,0.8)';
+        ctx.shadowBlur=16;
+        ctx.beginPath();
+        ctx.moveTo(l.x,0);
+        ctx.lineTo(l.x,y1);
+        ctx.stroke();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑧ 弱体パターンC：エリア全体が紫に暗く染まる
+  }else if(type==='debuff_c'){
+    var DUR=700;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      const a=t<0.25?t/0.25:1-(t-0.25)/0.75;
+      ctx.fillStyle=`rgba(60,0,90,${a*0.55})`;
+      ctx.fillRect(0,0,W,H);
+      // 中央から暗い渦
+      const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.5);
+      gr.addColorStop(0,`rgba(100,0,140,${a*0.6})`);
+      gr.addColorStop(1,'rgba(40,0,60,0)');
+      ctx.fillStyle=gr;
+      ctx.fillRect(0,0,W,H);
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑤ 盾パターンA：画面全体が青く光る（シンプル）
+  }else if(type==='shield_a'){
+    var DUR=500;
+    var fcv=document.createElement('canvas');
+    fcv.width=window.innerWidth; fcv.height=window.innerHeight;
+    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
+    document.body.appendChild(fcv);
+    var fctx=fcv.getContext('2d');
+    cv.remove();
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      fctx.clearRect(0,0,fcv.width,fcv.height);
+      const a=t<0.15?t/0.15:1-(t-0.15)/0.85;
+      fctx.fillStyle=`rgba(40,120,255,${a*0.4})`;
+      fctx.fillRect(0,0,fcv.width,fcv.height);
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { fcv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑤ 盾パターンB：青い波紋が中央から広がる
+  }else if(type==='shield_b'){
+    var DUR=650;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const elapsed=ts-startTime;
+      const t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      [0,0.15,0.3].forEach((offset)=>{
+        const rt=Math.max(t-offset,0)/(1-offset);
+        if(rt<=0) return;
+        const r=lerp(0,Math.max(W,H)*0.7,rt);
+        const a=(1-rt)*0.8;
+        ctx.save();
+        ctx.strokeStyle=`rgba(80,160,255,${a})`;
+        ctx.lineWidth=lerp(6,1,rt);
+        ctx.shadowColor=`rgba(60,140,255,${a})`;
+        ctx.shadowBlur=14;
+        ctx.beginPath();
+        ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2);
+        ctx.stroke();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑤ 盾パターンC：画面全体＋縁が強く光る
+  }else if(type==='shield_c'){
+    var DUR=550;
+    var fcv=document.createElement('canvas');
+    fcv.width=window.innerWidth; fcv.height=window.innerHeight;
+    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
+    document.body.appendChild(fcv);
+    var fctx=fcv.getContext('2d');
+    cv.remove();
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      fctx.clearRect(0,0,fcv.width,fcv.height);
+      const a=t<0.18?t/0.18:1-(t-0.18)/0.82;
+      fctx.fillStyle=`rgba(30,100,255,${a*0.35})`;
+      fctx.fillRect(0,0,fcv.width,fcv.height);
+      fctx.strokeStyle=`rgba(120,200,255,${a*0.95})`;
+      fctx.lineWidth=8;
+      fctx.shadowColor=`rgba(80,180,255,${a})`;
+      fctx.shadowBlur=24;
+      fctx.strokeRect(4,4,fcv.width-8,fcv.height-8);
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { fcv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+    var DUR=500;
+    // 輪を3本、タイミングをずらす
+    var rings=[
+      {delay:0,   maxR:Math.min(W,H)*0.46, lw:6,  col:'rgba(220,200,160,'},
+      {delay:60,  maxR:Math.min(W,H)*0.38, lw:4,  col:'rgba(255,230,180,'},
+      {delay:120, maxR:Math.min(W,H)*0.28, lw:3,  col:'rgba(255,255,220,'},
+    ];
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const elapsed=ts-startTime;
+      const t=Math.min(elapsed/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      // 中央の衝撃フラッシュ（最初だけ）
+      if(elapsed<120){
+        var fa=1-elapsed/120;
+        const fg=ctx.createRadialGradient(cx,cy,0,cx,cy,35);
+        fg.addColorStop(0,`rgba(255,240,200,${fa*0.8})`);
+        fg.addColorStop(1,'rgba(255,200,100,0)');
+        ctx.fillStyle=fg;
+        ctx.beginPath();
+        ctx.arc(cx,cy,35,0,Math.PI*2);
+        ctx.fill();
+      }
+      rings.forEach(ring=>{
+        if(elapsed<ring.delay) return;
+        const rt=Math.min((elapsed-ring.delay)/(DUR-ring.delay),1);
+        const r=lerp(0,ring.maxR,rt);
+        const a=rt<0.2?rt/0.2:1-(rt-0.2)/0.8;
+        ctx.save();
+        ctx.strokeStyle=ring.col+a+')';
+        ctx.lineWidth=ring.lw*(1-rt*0.5);
+        ctx.shadowColor=ring.col+'0.6)';
+        ctx.shadowBlur=14;
+        ctx.beginPath();
+        ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2);
+        ctx.stroke();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ③ 爆発：中央大円＋周囲に小円が散らばる
+  }else if(type==='explode'){
+    var DUR=550;
+    // サブ爆発の位置・遅延・サイズをランダムに事前決定
+    const subs=Array.from({length:5},()=>({
+      ox:rnd(-W*.28,W*.28), oy:rnd(-H*.28,H*.28),
+      delay:rnd(60,180), r:rnd(14,26), life:0
+    }));
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      ctx.clearRect(0,0,W,H);
+
+      // メイン爆発
+      const mr=lerp(0, Math.min(W,H)*0.48, Math.min(t*1.6,1));
+      const ma=t<0.4?1:1-(t-0.4)/0.6;
+      const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,mr);
+      gr.addColorStop(0,`rgba(255,255,180,${ma})`);
+      gr.addColorStop(0.3,`rgba(255,160,20,${ma*0.9})`);
+      gr.addColorStop(0.7,`rgba(200,40,0,${ma*0.5})`);
+      gr.addColorStop(1,'rgba(100,10,0,0)');
+      ctx.fillStyle=gr;
+      ctx.beginPath();
+      ctx.arc(cx,cy,mr,0,Math.PI*2);
+      ctx.fill();
+
+      // サブ爆発
+      const elapsed=(ts-startTime);
+      subs.forEach(s=>{
+        if(elapsed<s.delay) return;
+        const st=Math.min((elapsed-s.delay)/250,1);
+        const sr=lerp(0,s.r,Math.min(st*2,1));
+        const sa=st<0.4?1:1-(st-0.4)/0.6;
+        const sg=ctx.createRadialGradient(cx+s.ox,cy+s.oy,0,cx+s.ox,cy+s.oy,sr);
+        sg.addColorStop(0,`rgba(255,240,100,${sa})`);
+        sg.addColorStop(0.5,`rgba(255,100,20,${sa*0.8})`);
+        sg.addColorStop(1,'rgba(180,30,0,0)');
+        ctx.fillStyle=sg;
+        ctx.beginPath();
+        ctx.arc(cx+s.ox,cy+s.oy,Math.max(sr,0.1),0,Math.PI*2);
+        ctx.fill();
+      });
+
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ④ 回復：HPバー点滅＋小さい緑の泡が浮かぶ
+  }else if(type==='heal'){
+    var DUR=900;
+    const bar=document.getElementById('player-hp-bar');
+    // HPバーを点滅させる（3回）
+    if(bar){
+      let blink=0;
+      const blinkInterval=setInterval(()=>{
+        bar.style.filter=blink%2===0?'brightness(2.5)':'brightness(1)';
+        blink++;
+        if(blink>=6){ clearInterval(blinkInterval); bar.style.filter=''; }
+      },100);
+    }
+    // 小さい泡を10個（r:2〜4に縮小）
+    var bubbles=Array.from({length:10},()=>({
+      x:rnd(W*.08,W*.92), y:rnd(H*.45,H*.92),
+      r:rnd(2,4), delay:rnd(0,400), vx:rnd(-0.15,0.15)
+    }));
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      const elapsed=ts-startTime;
+      bubbles.forEach(b=>{
+        if(elapsed<b.delay) return;
+        const bt=Math.min((elapsed-b.delay)/600,1);
+        const by=lerp(b.y, b.y-H*.55, bt);
+        const bx=b.x+b.vx*elapsed*0.04;
+        const ba=bt<0.7?1:1-(bt-0.7)/0.3;
+        ctx.save();
+        ctx.globalAlpha=ba;
+        ctx.fillStyle='rgba(80,255,140,1)';
+        ctx.shadowColor='rgba(40,200,100,.6)';
+        ctx.shadowBlur=5;
+        ctx.beginPath();
+        ctx.arc(bx,by,b.r,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑤ 盾（確定: 画面全体が青く光る）
+  }else if(type==='shield'){
+    var fcvS=document.createElement('canvas');
+    fcvS.width=window.innerWidth; fcvS.height=window.innerHeight;
+    fcvS.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
+    document.body.appendChild(fcvS);
+    var fctxS=fcvS.getContext('2d');
+    cv.remove();
+    var DUR=500;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      var t=Math.min((ts-startTime)/DUR,1);
+      fctxS.clearRect(0,0,fcvS.width,fcvS.height);
+      var a=t<0.15?t/0.15:1-(t-0.15)/0.85;
+      fctxS.fillStyle=`rgba(40,120,255,${a*0.4})`;
+      fctxS.fillRect(0,0,fcvS.width,fcvS.height);
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { fcvS.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+  // ⑥ 毒：紫の小泡がわきあがる
+  }else if(type==='poison'){
+    var DUR=900;
+    var bubbles=Array.from({length:8},()=>({
+      x:rnd(W*.1,W*.9), y:rnd(H*.5,H*.9),
+      r:rnd(3,7), delay:rnd(0,350), vx:rnd(-0.2,0.2)
+    }));
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      const elapsed=ts-startTime;
+      bubbles.forEach(b=>{
+        if(elapsed<b.delay) return;
+        const bt=Math.min((elapsed-b.delay)/600,1);
+        const by=lerp(b.y, b.y-H*.6, bt);
+        const bx=b.x+b.vx*elapsed*0.05;
+        const ba=bt<0.7?1:1-(bt-0.7)/0.3;
+        ctx.save();
+        ctx.globalAlpha=ba;
+        ctx.fillStyle='rgba(180,60,255,1)';
+        ctx.shadowColor='rgba(160,40,255,.8)';
+        ctx.shadowBlur=8;
+        ctx.beginPath();
+        ctx.arc(bx,by,b.r,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑦ 強化：画面中央から光の円が全体に広がる
+  }else if(type==='buff'){
+    var DUR=600;
+    var fcv=document.createElement('canvas');
+    fcv.width=window.innerWidth;
+    fcv.height=window.innerHeight;
+    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
+    document.body.appendChild(fcv);
+    var fctx=fcv.getContext('2d');
+    cv.remove();
+    var fcx=fcv.width/2, fcy=fcv.height/2;
+    var maxR=Math.sqrt(fcx*fcx+fcy*fcy)*1.1;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      fctx.clearRect(0,0,fcv.width,fcv.height);
+      // 広がる輪（2本）
+      [0, 0.12].forEach((offset,i)=>{
+        const rt=Math.max(t-offset,0)/(1-offset);
+        if(rt<=0) return;
+        const r=lerp(0,maxR,rt);
+        const a=(1-rt)*0.85;
+        fctx.save();
+        fctx.strokeStyle=`rgba(255,210,40,${a})`;
+        fctx.lineWidth=i===0?8:4;
+        fctx.shadowColor=`rgba(255,200,40,${a})`;
+        fctx.shadowBlur=20;
+        fctx.beginPath();
+        fctx.arc(fcx,fcy,Math.max(r,1),0,Math.PI*2);
+        fctx.stroke();
+        fctx.restore();
+      });
+      // 中央フラッシュ（最初だけ）
+      if(t<0.25){
+        var fa=(0.25-t)/0.25;
+        const gr=fctx.createRadialGradient(fcx,fcy,0,fcx,fcy,60);
+        gr.addColorStop(0,`rgba(255,240,160,${fa*0.9})`);
+        gr.addColorStop(1,'rgba(255,200,40,0)');
+        fctx.fillStyle=gr;
+        fctx.beginPath();
+        fctx.arc(fcx,fcy,60,0,Math.PI*2);
+        fctx.fill();
+      }
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { fcv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑧ 弱体（確定: エリア全体が紫に暗く染まる）
+  }else if(type==='debuff'){
+    var DUR=700;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      var t=Math.min((ts-startTime)/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      var a=t<0.25?t/0.25:1-(t-0.25)/0.75;
+      ctx.fillStyle=`rgba(60,0,90,${a*0.55})`;
+      ctx.fillRect(0,0,W,H);
+      var gr=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.5);
+      gr.addColorStop(0,`rgba(100,0,140,${a*0.6})`);
+      gr.addColorStop(1,'rgba(40,0,60,0)');
+      ctx.fillStyle=gr;
+      ctx.fillRect(0,0,W,H);
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑨ 状態異常：点線の紫リング2つが回転しながら広がる
+  }else if(type==='ailment'){
+    var DUR=800;
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      ctx.clearRect(0,0,W,H);
+      const alpha=t<0.25?t/0.25:1-(t-0.25)/0.75;
+      const rot=ts*0.004; // 回転速度
+      // 外リング（大・時計回り）
+      const r1=lerp(8,Math.min(W,H)*0.42,t);
+      ctx.save();
+      ctx.strokeStyle=`rgba(180,60,255,${alpha})`;
+      ctx.lineWidth=4;
+      ctx.shadowColor='rgba(160,40,255,.8)';
+      ctx.shadowBlur=14;
+      ctx.setLineDash([14,9]);
+      ctx.lineDashOffset=-rot*60;
+      ctx.beginPath();
+      ctx.arc(cx,cy,r1,0,Math.PI*2);
+      ctx.stroke();
+      ctx.restore();
+      // 内リング（小・逆回転）
+      const r2=lerp(4,Math.min(W,H)*0.25,t);
+      ctx.save();
+      ctx.strokeStyle=`rgba(220,100,255,${alpha*0.8})`;
+      ctx.lineWidth=3;
+      ctx.shadowColor='rgba(200,80,255,.6)';
+      ctx.shadowBlur=10;
+      ctx.setLineDash([9,7]);
+      ctx.lineDashOffset=rot*50;
+      ctx.beginPath();
+      ctx.arc(cx,cy,r2,0,Math.PI*2);
+      ctx.stroke();
+      ctx.restore();
+      // 中央の小さい紫フラッシュ
+      if(t<0.3){
+        var fa=(0.3-t)/0.3;
+        ctx.save();
+        ctx.fillStyle=`rgba(200,80,255,${fa*0.5})`;
+        ctx.beginPath();
+        ctx.arc(cx,cy,18,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { cv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+
+  // ⑩ 特殊：画面全体が黄色く光る
+  }else if(type==='special'){
+    var DUR=500;
+    // 全画面用に別Canvas
+    var fcv=document.createElement('canvas');
+    fcv.width=window.innerWidth;
+    fcv.height=window.innerHeight;
+    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9500;';
+    document.body.appendChild(fcv);
+    var fctx=fcv.getContext('2d');
+    cv.remove(); // エリア用canvasは不要
+    function frame(ts){
+      if(!startTime) startTime=ts;
+      const t=Math.min((ts-startTime)/DUR,1);
+      fctx.clearRect(0,0,fcv.width,fcv.height);
+      const a=t<0.15?t/0.15:1-(t-0.15)/0.85;
+      fctx.fillStyle=`rgba(255,220,40,${a*0.3})`;
+      fctx.fillRect(0,0,fcv.width,fcv.height);
+      if(t<1){ rafId=requestAnimationFrame(frame); }
+      else { fcv.remove(); }
+    }
+    rafId=requestAnimationFrame(frame);
+  }
+}
+
 let effectQueue=[];
 let effectRunning=false;
 function queueEffect(fn, delay){
@@ -7121,6 +8229,8 @@ const logoScreen=document.getElementById('logo-screen');
 const appDiv=document.getElementById('app');
 
 window.addEventListener('load',()=>{
+  // 起動時に全overlayのshowをクリア（キャッシュ残り防止）
+  document.querySelectorAll('.overlay.show').forEach(el=>el.classList.remove('show'));
   // 最初に「タップでスタート」画面を表示（ユーザー操作を得てからBGM開始）
   const tapScreen=document.getElementById('tap-to-start-screen');
   if(tapScreen){
