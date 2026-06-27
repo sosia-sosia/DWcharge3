@@ -5,13 +5,13 @@
   <link rel="apple-touch-icon" sizes="180x180" href="DWicon.png">
   <link rel="icon" type="image/png" sizes="180x180" href="DWicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>DUNGEON WALKER DWCver32</title>
+<title>DUNGEON WALKER DWCver171</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 :root{--bg:#07050e;--panel:#110d1a;--panel2:#180f28;--border:#2a1e42;--gold:#c9a84c;--text:#e8dcc8;--dim:#5a4a3a;--common:#8a9aaa;--uncommon:#50b450;--rare:#4a8aff;--epic:#d040ff;--legendary:#ff9500;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-moz-user-select:none;-webkit-touch-callout:none;}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Cinzel',serif;}
-#app{max-width:420px;height:100%;height:100dvh;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;}
+#app{max-width:420px;height:100%;height:100dvh;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;position:relative;}
 
 /* PC対応：幅420px固定・中央表示 */
 @media (min-width:480px){
@@ -26,7 +26,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     flex-shrink:0;
   }
   /* fixed要素をappの幅に収める */
-  .overlay{position:absolute !important;}
+  .overlay:not(#ov-over):not(#ov-clear){position:absolute !important;}
+  /* ov-over/ov-clear は動的生成に変更したため position指定不要 */
   #ov-curtain,#confirm-box{position:absolute !important;width:100% !important;}
   #turn-slide{position:absolute !important;}
   #charge-center-display{position:absolute !important;}
@@ -114,7 +115,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   display:flex;flex-direction:column;
   flex-shrink:0;position:relative;
   touch-action:manipulation;overflow:hidden;
-  box-shadow:0 3px 8px rgba(0,0,0,.5);
+  box-shadow:0 4px 12px rgba(0,0,0,.6);
   aspect-ratio:5/6.6;
 }
 /* 端末幅が狭く縦1.5倍が収まらない場合は正方形に戻す */
@@ -233,6 +234,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #btn-end:active{background:rgba(201,168,76,.3);}
 #btn-end.disabled{opacity:.3;pointer-events:none;}
 
+@keyframes _scroll-blink{0%,100%{opacity:0.2;transform:translateY(0);}50%{opacity:1;transform:translateY(3px);}}
+.overlay.has-more::after{
+  content:'▼';
+  position:fixed;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:18px;
+  color:rgba(201,168,76,.85);
+  text-shadow:0 0 10px rgba(201,168,76,.7);
+  animation:_scroll-blink 0.8s ease-in-out infinite;
+  pointer-events:none;
+  z-index:9999;
+}
 .overlay{display:none;position:fixed;inset:0;z-index:50;background:rgba(5,3,10,.96);flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding:16px;overflow-y:auto;}
 .overlay.show{display:flex;}
 .ov-title{font-size:22px;color:var(--gold);letter-spacing:4px;text-shadow:0 0 24px rgba(201,168,76,.7);text-align:center;margin-top:12px;}
@@ -436,9 +451,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 }
 @keyframes mist-flow-rev{0%{transform:translateX(110%)}100%{transform:translateX(-110%)}}
 @keyframes mist-flow-rev-slow{0%{transform:translateX(115%) scaleY(1)}50%{transform:translateX(0%) scaleY(1.2)}100%{transform:translateX(-115%) scaleY(1)}}
-/* 中段ミスト非表示 */
-.mid-mist-strip{display:none;}
-/* 下段ミスト（右→左）*/
 .mist-strip{
   position:absolute;
   left:-10%;right:-10%;
@@ -447,9 +459,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   will-change:transform;
   filter:blur(22px);
 }
+/* 下部ミスト（右→左） */
 .mist-1{height:28%;top:70%;background:radial-gradient(ellipse 70% 100% at 40% 85%,rgba(160,140,210,.9) 0%,transparent 75%);animation:mist-flow-rev 16s linear infinite;opacity:.9;will-change:transform;}
 .mist-2{height:26%;top:68%;background:radial-gradient(ellipse 50% 100% at 60% 90%,rgba(200,180,240,.8) 0%,transparent 78%);animation:mist-flow-rev 24s linear infinite 4s;opacity:.85;will-change:transform;}
 .mist-3{height:22%;top:75%;background:radial-gradient(ellipse 80% 100% at 30% 88%,rgba(140,160,230,.9) 0%,transparent 78%);animation:mist-flow-rev-slow 20s ease-in-out infinite 8s;opacity:.9;will-change:transform;}
+/* 中段ミスト非表示 */
+.mid-mist-strip{display:none;}
 
 /* ステージ非表示時はミストアニメーションを停止してCPU節約 */
 .overlay.show ~ #app .mist-strip{
@@ -522,7 +537,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   50%{box-shadow:0 0 28px rgba(255,60,60,1),0 0 50px rgba(200,0,0,.6);}
 }
 #curse-timer-box.curse-active{animation:curse-box-active-glow 0.8s ease-in-out infinite!important;}
-/* マナgem pulse 削除済み */
+/* マナエリア ゆっくり明滅 */
+/* mana-gem-pulse 削除済み */
 
 
 .blink-arrow{transition:opacity 0.5s ease-in-out;}
@@ -593,196 +609,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   text-shadow:0 0 6px rgba(255,255,255,0.5);
   white-space:nowrap;
 }
-
-/* ========================================
-   カード発動エフェクト（段階①）
-   - #card-effect-enemy : 敵エリアに重なるdiv
-   - #card-effect-player: プレイヤーエリアに重なるdiv
-   ======================================== */
-#card-effect-enemy,
-#card-effect-player{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:50;
-  overflow:hidden;
-}
-/* 共通ベース */
-.ce{position:absolute;pointer-events:none;border-radius:50%;opacity:0;}
-
-/* ① 斬撃 - 右上→左下 太い1本 */
-@keyframes ce-slash{
-  0%  {opacity:0;clip-path:polygon(20% 0%,25% 0%,5%  20%,0%  20%);}
-  10% {opacity:1;clip-path:polygon(20% 0%,25% 0%,5%  20%,0%  20%);}
-  55% {opacity:1;clip-path:polygon(95% 0%,100% 0%,80% 100%,75% 100%);}
-  100%{opacity:0;clip-path:polygon(95% 0%,100% 0%,80% 100%,75% 100%);}
-}
-.ce-slash{
-  inset:0;border-radius:0;
-  background:linear-gradient(125deg,
-    transparent 30%,
-    rgba(255,255,220,.3) 36%,
-    rgba(255,255,255,.95) 42%,
-    rgba(255,230,100,.8) 48%,
-    transparent 54%);
-  animation:ce-slash .35s ease-in forwards;
-}
-
-/* ② 打撃 - 放射線がJSで複数生成される */
-@keyframes ce-blunt-line{
-  0%  {opacity:1;transform:scaleY(0);transform-origin:bottom center;}
-  50% {opacity:.8;transform:scaleY(1);transform-origin:bottom center;}
-  100%{opacity:0;transform:scaleY(1.1);transform-origin:bottom center;}
-}
-.ce-blunt-line{
-  position:absolute;
-  bottom:50%;left:50%;
-  width:3px;height:45px;
-  background:linear-gradient(to top,rgba(255,200,60,1),rgba(255,255,180,.6),transparent);
-  border-radius:2px;
-  transform-origin:bottom center;
-  animation:ce-blunt-line .35s ease-out forwards;
-}
-
-/* ③ 爆発 - メイン円＋サブ円はJSで生成 */
-@keyframes ce-explode-main{
-  0%  {opacity:1;transform:translate(-50%,-50%) scale(0);}
-  40% {opacity:.9;transform:translate(-50%,-50%) scale(1);}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1.3);}
-}
-@keyframes ce-explode-sub{
-  0%  {opacity:.9;transform:translate(-50%,-50%) scale(0);}
-  50% {opacity:.7;transform:translate(-50%,-50%) scale(1);}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1.2);}
-}
-.ce-explode-main{
-  position:absolute;left:50%;top:50%;
-  width:90px;height:90px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,240,100,1) 0%,rgba(255,120,20,.9) 40%,rgba(200,40,0,.5) 70%,transparent 100%);
-  box-shadow:0 0 20px rgba(255,140,0,.8);
-  animation:ce-explode-main .5s ease-out forwards;
-}
-.ce-explode-sub{
-  position:absolute;border-radius:50%;
-  width:28px;height:28px;
-  background:radial-gradient(circle,rgba(255,200,60,.95) 0%,rgba(255,80,0,.6) 60%,transparent 100%);
-  animation:ce-explode-sub .45s ease-out forwards;
-}
-
-/* ④ 回復 - HPバー発光＋緑小泡はJSで生成 */
-@keyframes ce-heal-bar{
-  0%  {opacity:0;}
-  20% {opacity:1;}
-  70% {opacity:.8;}
-  100%{opacity:0;}
-}
-@keyframes ce-heal-bubble{
-  0%  {opacity:.9;transform:translateY(0) scale(1);}
-  100%{opacity:0;transform:translateY(-40px) scale(.5);}
-}
-.ce-heal-bar{
-  position:absolute;inset:0;border-radius:inherit;
-  background:rgba(60,255,120,.18);
-  box-shadow:0 0 12px rgba(60,255,120,.6);
-  animation:ce-heal-bar .7s ease-out forwards;
-}
-.ce-heal-bubble{
-  position:absolute;border-radius:50%;
-  width:8px;height:8px;
-  background:radial-gradient(circle,rgba(120,255,160,1),rgba(40,200,80,.6));
-  animation:ce-heal-bubble .8s ease-out forwards;
-}
-
-/* ⑤ 盾 - プレイヤーエリア全体が青く光る */
-@keyframes ce-shield-flash{
-  0%  {opacity:0;}
-  20% {opacity:1;}
-  70% {opacity:.7;}
-  100%{opacity:0;}
-}
-.ce-shield-flash{
-  position:absolute;inset:0;border-radius:0;
-  background:rgba(60,140,255,.2);
-  box-shadow:inset 0 0 30px rgba(60,140,255,.5);
-  animation:ce-shield-flash .6s ease-out forwards;
-}
-
-/* ⑥ 毒 - 紫の小泡がわきあがる（JSで複数生成） */
-@keyframes ce-poison-bubble{
-  0%  {opacity:.9;transform:translateY(0) scale(1);}
-  80% {opacity:.6;transform:translateY(-35px) scale(.8);}
-  100%{opacity:0;transform:translateY(-42px) scale(.3);}
-}
-.ce-poison-bubble{
-  position:absolute;border-radius:50%;
-  width:9px;height:9px;
-  background:radial-gradient(circle,rgba(200,100,255,1),rgba(120,30,180,.6));
-  box-shadow:0 0 4px rgba(180,60,255,.7);
-  animation:ce-poison-bubble .9s ease-out forwards;
-}
-
-/* ⑦ 強化 - 黄色い線が下から上へ（JSで複数生成） */
-@keyframes ce-buff-line{
-  0%  {opacity:1;transform:translateY(0) scaleY(1);}
-  100%{opacity:0;transform:translateY(-55px) scaleY(.4);}
-}
-.ce-buff-line{
-  position:absolute;
-  bottom:10px;
-  width:3px;height:40px;
-  background:linear-gradient(to top,rgba(255,200,40,.9),rgba(255,240,120,.7),transparent);
-  border-radius:2px;
-  animation:ce-buff-line .65s ease-out forwards;
-}
-
-/* ⑧ 弱体 - 紫の線が上から下へ（JSで複数生成） */
-@keyframes ce-debuff-line{
-  0%  {opacity:1;transform:translateY(0);}
-  100%{opacity:0;transform:translateY(50px);}
-}
-.ce-debuff-line{
-  position:absolute;
-  top:10px;
-  width:3px;height:40px;
-  background:linear-gradient(to bottom,rgba(140,40,200,.9),rgba(80,10,140,.7),transparent);
-  border-radius:2px;
-  animation:ce-debuff-line .6s ease-out forwards;
-}
-
-/* ⑨ 状態異常 - 紫の渦（2リング） */
-@keyframes ce-ailment-r{
-  0%  {opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0deg);}
-  30% {opacity:.9;}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1.1) rotate(360deg);}
-}
-.ce-ailment-ring{
-  position:absolute;left:50%;top:50%;border-radius:50%;
-  border:4px solid rgba(180,60,255,.9);
-  box-shadow:0 0 8px rgba(180,60,255,.6);
-  animation:ce-ailment-r .75s ease-out forwards;
-}
-
-/* ⑩ 特殊 - 画面全体が黄色く光る */
-@keyframes ce-special-flash{
-  0%  {opacity:0;}
-  15% {opacity:1;}
-  60% {opacity:.6;}
-  100%{opacity:0;}
-}
-.ce-special-flash{
-  position:fixed;inset:0;z-index:9000;
-  background:rgba(255,220,60,.25);
-  box-shadow:inset 0 0 60px rgba(255,200,40,.5);
-  pointer-events:none;
-  animation:ce-special-flash .5s ease-out forwards;
-}
 </style>
 </head>
 <body oncontextmenu="return false;">
 
 <div id="tap-to-start-screen" style="display:none;position:fixed;inset:0;background:#07050e;z-index:1100;align-items:center;justify-content:center;flex-direction:column;gap:24px;cursor:pointer;touch-action:manipulation;transition:opacity .3s;opacity:1;">
   <div style="font-family:'Cinzel',serif;font-size:22px;color:#c9a84c;letter-spacing:6px;text-shadow:0 0 24px rgba(201,168,76,.8);animation:logo-pulse 1.5s ease-in-out infinite;">DUNGEON WALKER</div>
-  <div style="font-family:'Cinzel',serif;font-size:13px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;margin-bottom:18px;">▶ TAP TO START</div>
+  <div style="font-family:'Cinzel',serif;font-size:13px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;">▶ TAP TO START</div>
 </div>
 <div id="op-screen" style="display:none;position:fixed;inset:0;background:#000;z-index:1003;align-items:center;justify-content:center;opacity:0;transition:opacity .5s;pointer-events:all;touch-action:none;">
   <img src="op.png" id="op-img" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.style.display='none';document.getElementById('op-fallback').style.display='block'">
@@ -815,9 +648,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:#b8d4ff;letter-spacing:8px;text-shadow:0 0 20px rgba(100,160,255,.8),0 0 40px rgba(100,160,255,.3),1px 1px 0 #0a2060;text-align:center;">CHARGE</div>
     <div style="height:2px;width:220px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin-top:6px;"></div>
     <div style="font-family:'Cinzel',serif;font-size:10px;color:rgba(201,168,76,.5);letter-spacing:3px;">CARD BATTLE RPG</div>
-    <div style="font-family:sans-serif;font-size:9px;color:rgba(201,168,76,.35);letter-spacing:1px;margin-top:2px;">ver32</div>
+    <div style="font-family:sans-serif;font-size:9px;color:rgba(201,168,76,.35);letter-spacing:1px;margin-top:2px;">ver171</div>
     <div style="font-family:'Cinzel',serif;font-size:12px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;margin-top:10px;">▶ TAP TO START</div>
   </div>
+
   <div id="tap-start-zone" style="position:absolute;top:33.33%;left:0;right:0;height:33.33%;cursor:pointer;touch-action:manipulation;z-index:5;"></div>
   
   <div id="btn-rules-title" style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
@@ -866,8 +700,61 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </div>
   </div>
   <div class="ov-btn" id="btn-admin-start" style="background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.6);color:#e74c3c;font-weight:bold;">▶ 選択ステージで開始</div>
+  <div class="ov-btn" id="btn-admin-effect-check" style="background:rgba(80,120,200,.15);border-color:rgba(80,120,200,.6);color:#7db8f7;">🎆 エフェクト確認ページへ</div>
   <div class="ov-btn" id="btn-admin-close" style="font-size:10px;">閉じる</div>
 </div>
+
+<!-- エフェクト確認専用ページ -->
+<div class="overlay" id="ov-effect-check" style="gap:8px;padding:12px 10px;z-index:2200;">
+  <div class="ov-title" style="font-size:14px;color:#7db8f7;margin-top:0;">🎆 エフェクト確認</div>
+  <div style="width:100%;display:flex;flex-direction:column;gap:10px;overflow-y:auto;">
+
+    <!-- カード選択 -->
+    <div style="background:rgba(0,0,0,.5);border:1px solid rgba(80,120,200,.3);border-radius:8px;padding:8px;">
+      <div style="font-family:'Cinzel',serif;font-size:10px;color:#7db8f7;margin-bottom:6px;">🃏 カードを選択</div>
+      <select id="effect-check-select" style="width:100%;background:rgba(0,0,0,.7);border:1px solid rgba(80,120,200,.4);border-radius:6px;color:#c9a84c;font-size:13px;padding:6px;font-family:sans-serif;"></select>
+    </div>
+
+    <!-- エフェクト情報表示 -->
+    <div style="background:rgba(0,0,0,.5);border:1px solid rgba(80,120,200,.3);border-radius:8px;padding:8px;">
+      <div style="font-family:'Cinzel',serif;font-size:10px;color:#7db8f7;margin-bottom:6px;">📋 割り当てエフェクト</div>
+      <div id="effect-check-info" style="font-size:12px;color:#aaa;font-family:sans-serif;line-height:1.8;">カードを選択してください</div>
+    </div>
+
+    <!-- プレビューエリア -->
+    <div style="background:rgba(0,0,0,.5);border:1px solid rgba(80,120,200,.3);border-radius:8px;padding:8px;position:relative;min-height:120px;" id="effect-preview-area">
+      <div style="font-family:'Cinzel',serif;font-size:10px;color:#7db8f7;margin-bottom:6px;">👁 プレビュー</div>
+      <div id="effect-preview-enemy" style="position:absolute;inset:30px 50% 10px 10px;border:1px dashed rgba(255,80,80,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:9px;color:rgba(255,80,80,.4);font-family:sans-serif;">敵エリア</span>
+      </div>
+      <div id="effect-preview-player" style="position:absolute;inset:30px 10px 10px 50%;border:1px dashed rgba(80,200,255,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:9px;color:rgba(80,200,255,.4);font-family:sans-serif;">味方エリア</span>
+      </div>
+    </div>
+
+    <!-- 発動ボタン -->
+    <div class="ov-btn" id="btn-effect-play" style="background:rgba(80,120,200,.2);border-color:rgba(80,120,200,.6);color:#7db8f7;font-size:14px;">▶ エフェクト発動</div>
+
+    <!-- 種別単体テスト -->
+    <div style="background:rgba(0,0,0,.5);border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:8px;">
+      <div style="font-family:'Cinzel',serif;font-size:10px;color:#c9a84c;margin-bottom:6px;">🔧 種別単体テスト</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">
+        <button onclick="showCardEffect('slash','enemy')"   style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#ffd;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">斬撃</button>
+        <button onclick="showCardEffect('blunt','enemy')"   style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#ffd;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">打撃</button>
+        <button onclick="showCardEffect('explode','enemy')" style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#ffd;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">爆発</button>
+        <button onclick="showCardEffect('poison','enemy')"  style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#ffd;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">毒</button>
+        <button onclick="showCardEffect('debuff','enemy')"  style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#ffd;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">弱体</button>
+        <button onclick="showCardEffect('ailment','enemy')" style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#ffd;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">状態異常</button>
+        <button onclick="showCardEffect('heal','player')"   style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#aff;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">回復</button>
+        <button onclick="showCardEffect('shield','player')" style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#aff;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">盾</button>
+        <button onclick="showCardEffect('buff','player')"   style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#aff;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">強化</button>
+        <button onclick="showCardEffect('special','enemy')" style="font-size:10px;padding:3px 7px;background:#1a1a1a;color:#fc8;border:1px solid #555;border-radius:4px;touch-action:manipulation;font-family:sans-serif;">特殊</button>
+      </div>
+    </div>
+  </div>
+  <div class="ov-btn" id="btn-effect-check-back" style="font-size:10px;">← 管理者モードへ戻る</div>
+</div>
+
 <div id="app" style="display:none;flex-direction:column;height:100%;">
   <div id="top-bar">
     
@@ -913,8 +800,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </div>
     
     <div id="enemy-area">
-      <!-- カード発動エフェクト（敵エリア） -->
-      <div id="card-effect-enemy"></div>
       <!-- 中段逆向きモヤ：背景::before上(z1)・enemy-sprite下(z3) -->
       <div id="mid-mist-layer" style="position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;">
         <div class="mid-mist-strip mid-mist-1"></div>
@@ -954,8 +839,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <div class="blink-arrow" style="font-size:6px;color:#e74c3c;">▼</div>
       </div>
     </div><!-- /enemy-area -->
-    <!-- カード発動エフェクト（プレイヤーエリア） -->
-    <div id="card-effect-player" style="position:relative;height:0;overflow:visible;"></div>
     <div id="player-statup-box" style="background:rgba(20,10,40,.7);border:2px solid rgba(201,168,76,.5);border-radius:5px;padding:3px 8px;font-size:9px;color:#e0d080;min-height:18px;display:none;align-items:center;flex-wrap:wrap;gap:5px;font-family:sans-serif;cursor:pointer;touch-action:manipulation;margin-bottom:2px;" onclick="showStatupDetail()" ontouchend="event.preventDefault();showStatupDetail()"></div>
     <div id="player-status-box" style="background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.25);border-radius:5px;padding:3px 8px;font-size:9px;color:#fff;min-height:20px;display:flex;align-items:center;flex-wrap:wrap;gap:5px;font-family:sans-serif;cursor:pointer;touch-action:manipulation;" onclick="showStatusDetail('player')" ontouchend="event.preventDefault();showStatusDetail('player')"></div>
     
@@ -969,7 +852,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div id="effect-layer" style="position:fixed;inset:0;pointer-events:none;z-index:9999;"></div>
   
   <div id="log-area"></div>
-
   <div id="hand-area">
     
     <div id="hand-meta">
@@ -1150,23 +1032,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div id="card-detail-inner" style="position:relative;"></div>
   </div>
 
-  <div class="overlay" id="ov-clear" style="gap:0;padding:0;overflow:hidden;">
-    <div style="width:100%;height:100%;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 16px;box-sizing:border-box;">
-      <div style="font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:#f0d47a;letter-spacing:6px;text-shadow:0 0 30px rgba(201,168,76,.9),0 0 60px rgba(201,168,76,.4);text-align:center;animation:logo-pulse 1.5s ease-in-out infinite;">🏆 ALL CLEAR 🏆</div>
-      <div style="font-family:'Cinzel',serif;font-size:12px;color:rgba(201,168,76,.7);letter-spacing:3px;text-align:center;">全ての強敵を打ち倒した！</div>
-      <div style="height:1px;width:100%;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>
-      <div id="clear-stats" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:12px 16px;width:100%;font-family:sans-serif;box-sizing:border-box;">
-        <div style="font-family:'Cinzel',serif;font-size:11px;color:#c9a84c;margin-bottom:8px;text-align:center;letter-spacing:2px;">📊 BATTLE RECORDS</div>
-        <div id="stat-dealt" style="font-size:11px;color:#e07878;margin-bottom:4px;"></div>
-        <div id="stat-taken" style="font-size:11px;color:#78b0e0;margin-bottom:4px;"></div>
-        <div id="stat-cards" style="font-size:11px;color:#78e0a0;margin-bottom:4px;"></div>
-        <div id="stat-turns" style="font-size:11px;color:#e0c878;"></div>
-      </div>
-      <div id="clear-build" style="width:100%;"></div>
-      <div id="clear-log" style="display:none;"></div>
-      <div class="ov-btn" id="btn-clear-restart" style="margin-top:8px;">もう一度プレイ</div>
-    </div>
-  </div>
 
   <!-- 広告オーバーレイ -->
   <div id="ov-ad" style="display:none;position:fixed;inset:0;z-index:9500;background:#000;flex-direction:column;align-items:center;justify-content:center;">
@@ -1183,19 +1048,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </a>
   </div>
 
-  <div class="overlay" id="ov-over" style="z-index:1200;">
-    <div class="ov-title" style="color:#e74c3c;">💀 DEFEAT</div>
-    <div id="over-enemy-text" style="background:rgba(231,76,60,.15);border:2px solid rgba(231,76,60,.5);border-radius:8px;padding:8px 14px;font-family:'Cinzel',serif;font-size:13px;color:#e74c3c;text-align:center;width:100%;box-sizing:border-box;"></div>
-    <div class="ov-sub" id="over-sub">力尽きた…</div>
-    <div id="over-build" style="width:100%;max-height:35vh;overflow-y:auto;"></div>
-    <div id="over-log" style="display:none;"></div>
-    <!-- コンテニュー -->
-    <div id="btn-continue" style="width:100%;box-sizing:border-box;background:rgba(46,204,113,.15);border:2px solid rgba(46,204,113,.6);border-radius:10px;padding:12px 16px;text-align:center;cursor:pointer;touch-action:manipulation;">
-      <div style="font-family:'Cinzel',serif;font-size:15px;color:#2ecc71;font-weight:bold;">📺 広告を見てコンテニュー</div>
-      <div id="continue-count-text" style="font-size:10px;color:rgba(46,204,113,.7);margin-top:3px;font-family:sans-serif;">残り <span id="continue-remain">2</span> 回 / ステータス強化を1つ選んで復活</div>
-    </div>
-    <div class="ov-btn danger" id="btn-over-restart" style="margin-top:4px;">最初からやり直す</div>
-  </div>
 
   <div class="overlay" id="ov-charge-info">
     <div class="charge-popup-box">
@@ -1204,9 +1056,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <div id="charge-activate-btn" class="ov-btn" style="background:rgba(231,76,60,.2);border-color:rgba(231,76,60,.7);color:#e74c3c;font-weight:bold;">⚡ 発動</div>
       <div class="ov-btn" id="btn-close-charge-info">キャンセル</div>
     </div>
+  <!-- ov-clear / ov-over: 動的生成に変更（ver150） -->
+
   </div>
-</div>
-</div>
 <script>
 const RL={common:'COMMON',uncommon:'UNCOMMON',rare:'◆ RARE',epic:'◈ EPIC',legendary:'★ LEGEND',gauge:'⚡ GAUGE',D:'☠️ D',bougai:'☠️ D'};
 
@@ -1574,6 +1426,7 @@ function afterEventNext(){
 }
 
 function startStage(){
+  G._inVictory=false; G._victoryPending=false;
   // 暗幕を表示してからstageIntroへ（オーバーレイ→ステージ間のチラ見え防止）
   const curtain=document.getElementById('ov-curtain');
   if(curtain) curtain.style.display='block';
@@ -1796,85 +1649,23 @@ function showReconsiderUI(){
   cancel.addEventListener('click',doCancel);cancel.addEventListener('touchend',doCancel);
   appendToApp(overlay);
 }
-/* ========================================
-   カードエフェクト対応表
-   各カードIDに { type, target } を設定
-   複合効果は配列で複数指定可
-======================================== */
-const CARD_EFFECTS = {
-  // 斬撃系
-  strike:      [{type:'slash',  target:'enemy'}],
-  bash:        [{type:'slash',  target:'enemy'}],
-  heavy:       [{type:'slash',  target:'enemy'}],
-  twin:        [{type:'slash',  target:'enemy'}],
-  combo:       [{type:'slash',  target:'enemy'}],
-  stormSlash:  [{type:'slash',  target:'enemy'}],
-  godstrike:   [{type:'slash',  target:'enemy'},{type:'special',target:'enemy'}],
-  pierce:      [{type:'slash',  target:'enemy'}],
-  armorPierce: [{type:'slash',  target:'enemy'}],
-  thinIce:     [{type:'slash',  target:'enemy'}],
-  knowledge:   [{type:'slash',  target:'enemy'}],
-  guideStrike: [{type:'slash',  target:'enemy'}],
-  // 打撃系
-  shieldBash:  [{type:'blunt',  target:'enemy'}],
-  muboAtk:     [{type:'blunt',  target:'enemy'}],
-  kyougeki:    [{type:'blunt',  target:'enemy'}],
-  desperate:   [{type:'blunt',  target:'enemy'}],
-  chainBlast:  [{type:'blunt',  target:'enemy'}],
-  accumulate:  [{type:'blunt',  target:'enemy'}],
-  composure:   [{type:'blunt',  target:'enemy'}],
-  lastStand:   [{type:'blunt',  target:'enemy'}],
-  poisonKill:  [{type:'blunt',  target:'enemy'}],
-  // 爆発系
-  soulPact:    [{type:'explode',target:'enemy'}],
-  // 吸血系（攻撃→回復）
-  lifesteal:   [{type:'slash',  target:'enemy'},{type:'heal',target:'player'}],
-  bloodPact:   [{type:'explode',target:'enemy'}],
-  // 毒系
-  poisonNeedle:[{type:'poison', target:'enemy'}],
-  chainPoison: [{type:'poison', target:'enemy'}],
-  // 回復系
-  heal:        [{type:'heal',   target:'player'}],
-  superheal:   [{type:'heal',   target:'player'}],
-  sanctuary:   [{type:'heal',   target:'player'}],
-  breath:      [{type:'heal',   target:'player'},{type:'shield',target:'player'}],
-  firstAid:    [{type:'heal',   target:'player'}],
-  // 盾系
-  guard:       [{type:'shield', target:'player'}],
-  fortify:     [{type:'shield', target:'player'}],
-  dodge:       [{type:'shield', target:'player'}],
-  superdodge:  [{type:'shield', target:'player'}],
-  steelBody:   [{type:'shield', target:'player'}],
-  godshield:   [{type:'shield', target:'player'},{type:'special',target:'player'}],
-  smallShield: [{type:'shield', target:'player'}],
-  allIn:       [{type:'shield', target:'player'}],
-  studyGuard:  [{type:'shield', target:'player'}],
-  // 強化系
-  rage:        [{type:'buff',   target:'player'}],
-  anger:       [{type:'buff',   target:'player'}],
-  bigMana:     [{type:'buff',   target:'player'}],
-  dragonGod:   [{type:'buff',   target:'player'}],
-  manaRelease: [{type:'buff',   target:'player'}],
-  manaDrain:   [{type:'buff',   target:'player'}],
-  superMana:   [{type:'buff',   target:'player'}],
-  swiftBlade:  [{type:'buff',   target:'player'}],
-  // 弱体系
-  freeze:      [{type:'debuff', target:'enemy'}],
-  // 状態異常系
-  echo:        [{type:'ailment',target:'player'}],
-  freePass:    [{type:'ailment',target:'player'}],
-  // 特殊系
-  redraw:      [{type:'special',target:'player'}],
-  swift:       [{type:'special',target:'player'}],
-};
-
-function triggerCardEffect(cid){
-  var effects = CARD_EFFECTS[cid];
-  if(!effects||effects.length===0) return;
-  effects.forEach(function(e, i){
-    // 複合エフェクトは少しずらして発動
-    setTimeout(function(){ showCardEffect(e.type, e.target); }, i*220);
-  });
+// 敵HP0チェック共通関数：どこから呼ばれても確実にvictoryを起動
+function checkEnemyDeath(){
+  if(G.enemy.curHp>0) return false;
+  G.enemy.curHp=0;
+  G.phase='block';
+  updateUI();
+  if(!G._victoryPending){
+    G._victoryPending=true;
+    const _wv=()=>{
+      if(effectQueue.length>0||effectRunning){setTimeout(_wv,100);return;}
+      const sp=document.getElementById('enemy-sprite');
+      if(sp){spawnDeathEffect(sp);sp.style.transition='opacity 0.6s ease-out';sp.style.opacity='0';}
+      setTimeout(()=>{G._victoryPending=false;victory();},2000);
+    };
+    setTimeout(_wv,100);
+  }
+  return true;
 }
 
 function playCard(idx, _isChain){
@@ -2030,29 +1821,56 @@ function playCard(idx, _isChain){
       updateUI();if(G.playerHp<=0){defeat('反射ダメージ');return;}
       return;
     }
+    const _hpBefore=G.enemy.curHp;
+    const _hpPerHit=[];
     for(let i=0;i<t;i++){
       const _mult=(G.doubleNext&&i===0)?(G.doubleMultiplier||2):1;
       if(G.doubleNext&&i===0){G.doubleNext=false;G.doubleMultiplier=1;}
       let baseAtk=(ef.atk+G.atkBuff+miniBonus+(i===0?firstAtkBonus+nextAtkBonus:0));
-      // 脱力D：攻撃力-50%
       if(G._datsuryo_this_card) baseAtk=Math.max(1,Math.floor(baseAtk*0.5));
       let d=baseAtk*_mult;
       const shieldAbs=G.enemyShield>0?Math.min(G.enemyShield,d):0;
       if(!ef.pierceBreak&&G.enemyShield>0){const a=shieldAbs;G.enemyShield-=a;d-=a;if(a){msgs.push('シールド'+a+'吸収');sfxShield();flashShieldBlock('enemy');}}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
+      _hpPerHit.push({dmg:d, hp:G.enemy.curHp});
       G.totalDmgDealt=(G.totalDmgDealt||0)+d;
       if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
       if(G.swiftBladeActive && d>=10){queueEffect(()=>{addLog('⚡ 加速する刃: ドロー1','sys');flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);}
       msgs.push(c.name+': '+d+'ダメ');
-      (function(dmg){
+      // HP0になっても残りのヒットは通常通りダメージを与え続ける（オーバーキルも演出する＝爽快感優先）
+    }
+    // 先頭のqueueEffectでHPを_hpBeforeに一時戻し、1撃ごとに段階表示
+    if(t>1){
+      queueEffect(()=>{
+        G.enemy.curHp=_hpBefore;
+        const hpBar=document.getElementById('enemy-hp-bar');
+        const hpNum=document.getElementById('enemy-hp-num');
+        if(hpBar) hpBar.style.width=Math.max(0,_hpBefore/G.enemy.hp*100)+'%';
+        if(hpNum) hpNum.textContent=_hpBefore+'/'+G.enemy.hp;
+      }, 0);
+    }
+    _hpPerHit.forEach(function(hit){
+      (function(dmg, snapHp){
         queueEffect(()=>{
+          G.enemy.curHp=snapHp;
+          const hpBar=document.getElementById('enemy-hp-bar');
+          const hpNum=document.getElementById('enemy-hp-num');
+          if(hpBar) hpBar.style.width=Math.max(0,snapHp/G.enemy.hp*100)+'%';
+          if(hpNum) hpNum.textContent=snapHp+'/'+G.enemy.hp;
           spawnDmgNum('-'+dmg,'enemy-dmg');
           shakeEnemyArea();
           flashScreen('flash-gold');
           sfxDamage();
         }, 800);
-      })(d);
+      })(hit.dmg, hit.hp);
+    });
+    // 全ヒットの演出が終わった直後に死亡判定（演出中のHP巻き戻しの影響を受けないタイミングで判定するため）
+    if(_hpPerHit.length>0 && _hpPerHit[_hpPerHit.length-1].hp<=0){
+      queueEffect(()=>{ checkEnemyDeath(); }, 0);
     }
+    // 多段ヒット後：HP0でもここではreturnしない（このカードの他の効果＝盾/ドロー/毒付与等を継続処理するため）
+    // 死亡判定の発火自体はcheckEnemyDeath()内でG.enemy.curHpを見て予約され、
+    // 実際にプレイヤーへ見せる撃破処理は関数末尾の最終checkEnemyDeath()で確実に行われる
   }
   // 錬金術師チャージ発動中：この攻撃カードの与えたダメージ分の毒を付与
   if(G.dokushiNextAtkPoison && c.type==='attack'){
@@ -2161,7 +1979,7 @@ function playCard(idx, _isChain){
     G.totalDmgDealt=(G.totalDmgDealt||0)+dmgLeft;
     msgs.push('薄氷: 山札'+rem+'枚→'+(doubleApplied?d/2+'×2=':'')+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   if(ef.deckCountDmg){
     const d=(G.deck.length*ef.deckCountDmg+G.atkBuff)*(G.doubleNext?2:1);
@@ -2239,12 +2057,7 @@ function playCard(idx, _isChain){
       if(pef.buff==='atk'){G.atkBuff+=pef.val;echoMsgs.push('攻撃+'+pef.val);queueEffect(()=>showEffectPopup('Ekougeki.png','攻撃力+'+pef.val,'#ff6b35'), 800);}
       addLog('👥 '+echoMsgs.join(' / '),'player');
       updateUI();
-      if(G.enemy.curHp<=0){G.enemy.curHp=0;
-        const wv=()=>{if(effectQueue.length>0||effectRunning){setTimeout(wv,100);return;}
-          const sp=document.getElementById('enemy-sprite');if(sp){spawnDeathEffect(sp);sp.style.transition='opacity 0.6s ease-out';sp.style.opacity='0';}
-          G.phase='block';setTimeout(victory,2000);};
-        setTimeout(wv,100);return;
-      }
+      checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
     } else {
       msgs.push('残影: 前のカードなし');
     }
@@ -2382,7 +2195,7 @@ function playCard(idx, _isChain){
     G.stageHealSum=0; // 使用後カウントリセット
     msgs.push('神聖なる拳: 回復合計'+healTotal+'→'+d+'ダメ（カウントリセット）');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   // 魂食らい：このターンの与ダメ合計を記録してHP回復（ターン終了時に処理）
   if(ef.soulEater){G.soulEaterActive=true;G.soulEaterBonus=ef.soulEaterBonus||0;msgs.push('魂食らい：このターン与えたダメージの半分回復');queueEffect(()=>showEffectPopup('Ekaihuku.png','魂食らい発動','#bb8fce','player'),800);}
@@ -2399,7 +2212,7 @@ function playCard(idx, _isChain){
     msgs.push('憤怒の舞: '+(furyBonus>0?'(+'+furyBonus+'累積) ':'')+furyDmg+'ダメ+ドロー1 次の舞+3累積');
     queueEffect(()=>{spawnDmgNum('-'+furyDmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     queueEffect(()=>{flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
 
   // 追撃：1枚目の攻撃なら4、2枚目以降なら8
@@ -2417,7 +2230,7 @@ function playCard(idx, _isChain){
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('追撃: '+(isSecondAtk?'2枚目↑ 攻撃'+bonusVal:'1枚目 攻撃4')+' → '+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   // 二段構え・三段構え：ターン終了時に盾付与
   if(ef.endTurnShield){
@@ -2500,7 +2313,7 @@ function playCard(idx, _isChain){
       if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
       msgs.push('反転: 盾-'+sv+' → '+d+'ダメ');
       queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
-      if(G.enemy.curHp<=0){G.phase='block';}
+      checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
     } else msgs.push('反転: 盾なし');
   }
   // 自傷ダメージ（命懸け）
@@ -2560,7 +2373,7 @@ function playCard(idx, _isChain){
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('鎧抜き: 盾無視'+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   // 無謀な一撃：自分のシールドを0にする
   if(ef.selfShieldZero){G.shield=0;msgs.push('自シールド→0');updateUI();}
@@ -2591,7 +2404,7 @@ function playCard(idx, _isChain){
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('殴り返し: '+d+'ダメ'+(prevLoss>0?' (前敵T減HP:'+prevLoss+'含む)':''));
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   // 妨害除外 攻撃（邪悪な連撃）
   if(ef.bougaiExile_atk){
@@ -2605,7 +2418,7 @@ function playCard(idx, _isChain){
       msgs.push('連撃: '+d+'ダメ');
       (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);})(d);
     }
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   // 妨害除外 盾（呪いの盾）
   if(ef.bougaiExile_shield){G.shield+=(ef.bougaiExile_shield||30);msgs.push('盾+'+(ef.bougaiExile_shield||30));queueEffect(()=>{flashShield();flashShieldAdd('player',ef.bougaiExile_shield||30);sfxShield();}, 800);}
@@ -2633,7 +2446,7 @@ function playCard(idx, _isChain){
     if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
     msgs.push('呪詛返し: '+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
-    if(G.enemy.curHp<=0){G.phase='block';}
+    checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   // 妨害除外 or ドロー（解呪）
   if(ef.bougaiExile_or_draw){
@@ -2671,6 +2484,9 @@ function playCard(idx, _isChain){
   }
 
   addLog((c.rarity==='legendary'?'⭐ ':'▶ ')+msgs.join(' / '),c.rarity==='legendary'?'sys':'player');
+  // 全効果処理完了後：必ずHP0チェック（複数効果カード対策）
+  if(checkEnemyDeath()) return;
+
   // レジェンドカード使用時の特別エフェクト
   if(c.rarity==='legendary') spawnLegendaryEffect();
   // チャージ満タンチェック：満タンになってもカウンターを維持するだけ（発動しない）
@@ -2679,32 +2495,18 @@ function playCard(idx, _isChain){
     const _ct2=CHARGE_TYPES[G.chargeType];
     if(_ct2) updateGaugeLamps(); // 満タン表示の更新のみ
   }
-  if(G.enemy.curHp<=0){G.enemy.curHp=0;updateUI();
-    const waitVictory=()=>{
-      if(effectQueue.length>0||effectRunning){setTimeout(waitVictory,100);return;}
-      const spriteEl=document.getElementById('enemy-sprite');
-      if(spriteEl){
-        spawnDeathEffect(spriteEl);
-        spriteEl.style.transition='opacity 0.6s ease-out';
-        spriteEl.style.opacity='0';
-      }
-      G.phase='block';
-      setTimeout(victory,2000);
-    };
-    setTimeout(waitVictory,100);
-    return;
-  }
   updateUI();
   // 連鎖起動：このカードを2回発動するフラグ（連鎖起動自体は除く）
   if(G.doubleNextCard && c.id!=='chainStart'){
     G.doubleNextCard=false;
     addLog('⚙️ 連鎖起動: 「'+c.name+'」を再発動！','sys');
-    // playCardを再帰呼び出しして完全再現（マナは消費しない・手札からは取り除かない）
     const savedChainNoSkill=G.chainNoSkill;
-    G.chainNoSkill=false; // 再発動時はスキル制限を一時解除
-    playCard(c, true); // true=チェーン再発動フラグ（マナ消費・手札除去スキップ）
+    G.chainNoSkill=false;
+    playCard(c, true);
     G.chainNoSkill=savedChainNoSkill;
   }
+  // 連鎖起動後にも念のためチェック
+  checkEnemyDeath();
 } // end playCard
 function enemySpriteIdle(){
   const el=document.getElementById('enemy-sprite');
@@ -2869,7 +2671,7 @@ function enemyTurn(){
       sfxPoison();
       spawnDmgNum('-'+pd,'enemy-dmg'); shakeEnemyArea();
       updateUI();
-      if(e.curHp<=0){e.curHp=0;G.phase='block';const wv=()=>{if(effectQueue.length>0||effectRunning){setTimeout(wv,100);return;}const sp=document.getElementById('enemy-sprite');if(sp){sfxEnemyDefeated();spawnDeathEffect(sp);sp.style.transition='opacity 0.6s ease-out';sp.style.opacity='0';}setTimeout(victory,2000);};setTimeout(wv,100);return;}
+      G.enemy.curHp=e.curHp;if(checkEnemyDeath()) return;
     }
     setTimeout(nextStep,G.enemyPoison>0||true?1000:0);
   });
@@ -3182,7 +2984,7 @@ function enemyTurn(){
         addLog('⚔️ 憤怒の盾: 敵に'+rd+'ダメージ！','player');
         queueEffect(()=>{spawnDmgNum('-'+rd,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
         updateUI();
-        if(G.enemy.curHp<=0){G.phase='block';const wv2=()=>{if(effectQueue.length>0||effectRunning){setTimeout(wv2,100);return;}const sp=document.getElementById('enemy-sprite');if(sp){sfxEnemyDefeated();spawnDeathEffect(sp);sp.style.transition='opacity 0.6s ease-out';sp.style.opacity='0';}setTimeout(victory,2000);};setTimeout(wv2,100);return;}
+        if(checkEnemyDeath()) return;
       } else {
         addLog('⚔️ 憤怒の盾: 盾の減少なし（0ダメ）','sys');
       }
@@ -3329,7 +3131,7 @@ function dealToPlayer(dmg,lbl){
     G.enemy.curHp=Math.max(0,G.enemy.curHp-dmg);
     addLog('🪞 魔鏡: '+dmg+'ダメ反射！','player');
     queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold');}, 800);
-    updateUI(); if(G.enemy.curHp<=0){G.phase='block';const wv=()=>{if(effectQueue.length>0||effectRunning){setTimeout(wv,100);return;}const sp=document.getElementById('enemy-sprite');if(sp){sfxEnemyDefeated();spawnDeathEffect(sp);sp.style.transition='opacity 0.6s ease-out';sp.style.opacity='0';}setTimeout(victory,2000);};setTimeout(wv,100);} return;
+    updateUI(); if(checkEnemyDeath()) return;
   }
   let d=dmg;
   // 虚弱D：手札にある間、受けるダメージ+20
@@ -3513,6 +3315,9 @@ function showEnemyIntentDetail(act,detail,ea){
   popup.appendChild(box);appendToApp(popup);
 }
 function victory(){
+  if(G._inVictory) return; G._inVictory=true;
+  G._victoryPending=false;
+  clearEffectQueue();
   applyExile();
   // ===== 妨害カードをデッキから除去 =====
   G.deck=G.deck.filter(id=>!DB[id]||DB[id].type!=='bougai');
@@ -3689,7 +3494,7 @@ function _showGrandEnding(){
       {text:'DUNGEON WALKER', size:'28px', color:areaEndMsg.color, delay:500, glow:'rgba(201,168,76,0.8)'},
       {text:_stageLabel, size:'18px', color:'#fff', delay:1500, glow:'rgba(255,255,255,0.5)'},
       {text:areaEndMsg.sub, size:'14px', color:'#e8dcc8', delay:2800},
-      {text:'勇者よ、おめでとう。', size:'13px', color:areaEndMsg.color, delay:4000},
+      {text:'冒険者よ、おめでとう。', size:'13px', color:areaEndMsg.color, delay:4000},
     ];
     lines.forEach(({text,size,color,delay,glow})=>{
       const el=document.createElement('div');
@@ -3735,7 +3540,7 @@ function _showGrandEnding(){
         if(endingDiv.parentNode) (function(){var _el=endingDiv;if(_el&&_el.parentNode)_el.parentNode.removeChild(_el);})();
         if(fadeOverlay.parentNode) (function(){var _el=fadeOverlay;if(_el&&_el.parentNode)_el.parentNode.removeChild(_el);})();
         showClearStats();
-        showOv('ov-clear');
+        // showOv('ov-clear') は showClearStats内で動的生成済み
       }, 800);
     },7000);
   },1100);
@@ -3955,11 +3760,15 @@ function showSmithEvent(){
   upgradableIds.forEach(id=>{
     const c=DB[id];if(!c)return;
     const upg=SMITH_UPGRADES[id];
+    const count=G.deck.filter(cid=>cid===id).length;
     const d=document.createElement('div');
     d.style.cssText='background:rgba(0,0,0,.65);border:2px solid rgba(201,168,76,.5);border-radius:12px;padding:10px 12px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;gap:10px;width:100%;flex-shrink:0;box-sizing:border-box;';
     d.innerHTML=`<div style="font-size:26px;flex-shrink:0;">${c.icon}</div>
       <div style="flex:1;">
-        <div style="font-family:'Cinzel',serif;font-size:12px;color:#c9a84c;font-weight:bold;">${c.name} → ${c.name}・改</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-family:'Cinzel',serif;font-size:12px;color:#c9a84c;font-weight:bold;">${c.name} → ${c.name}・改</span>
+          <span style="font-size:9px;color:#f0d47a;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.5);border-radius:4px;padding:1px 6px;font-family:sans-serif;flex-shrink:0;">所持数 ${count}</span>
+        </div>
         <div style="font-size:9px;color:#888;font-family:sans-serif;margin-top:2px;line-height:1.4;">現在: ${upg.beforeDesc}</div>
         <div style="font-size:9px;color:#7dd4f8;font-family:sans-serif;margin-top:1px;line-height:1.4;">強化後: ${upg.afterDesc}</div>
       </div>`;
@@ -4173,11 +3982,12 @@ function showCaveStatUpThenSmith(){
 // 汎用ステータス強化UI表示（onDone: 選択後に呼ぶコールバック）
 function _showStatUpUI(opts, onDone){
   const ov=document.getElementById('ov-statup');
+  if(ov._smithBg){ restoreSmithBg(); }
   const list=document.getElementById('statup-list');
   list.innerHTML='';
-  list.style.cssText=''; // リセット
-  const title=document.getElementById('statup-title');
-  const sub=document.getElementById('statup-sub');
+  list.style.cssText='display:flex;flex-direction:column;gap:10px;width:100%;overflow-y:auto;max-height:65vh;';
+  const title=ov.querySelector('.ov-title');
+  const sub=ov.querySelector('.ov-sub');
   if(title) title.textContent='⬆️ ステータス強化';
   if(sub) sub.textContent='強化を1つ選んでください';
 
@@ -4191,7 +4001,7 @@ function _showStatUpUI(opts, onDone){
     const pick=()=>{
       // ステージ中カード選択と同じ見た目の確認ポップアップ
       const popup=document.createElement('div');
-      popup.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
+      popup.style.cssText='position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
       // 内容表示
       const infoBox=document.createElement('div');
       infoBox.style.cssText='background:rgba(0,0,0,.7);border:2px solid rgba(201,168,76,.6);border-radius:12px;padding:20px 24px;text-align:center;width:220px;';
@@ -4313,15 +4123,15 @@ function showChargeSelect(){
     d.innerHTML=chargeIconHtml+`
       <div style="flex:1;">
         <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
-          <span style="font-family:'Cinzel',serif;font-size:13px;color:${ct.color};font-weight:bold;">${ct.name}</span>
+          <span style="font-family:'Cinzel',serif;font-size:14px;color:${ct.color};font-weight:bold;letter-spacing:1px;">${ct.name}</span>
           <span style="font-size:9px;color:#ccc;font-family:sans-serif;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:1px 6px;letter-spacing:.5px;">${trait}</span>
         </div>
-        <div style="display:flex;align-items:center;gap:4px;margin:3px 0;">${lamps}<span style="font-size:8px;color:#888;font-family:Cinzel,serif;margin-left:4px;">×${ct.maxCount}</span></div>
-        <div style="font-size:10px;color:#aaa;font-family:sans-serif;line-height:1.4;">${ct.desc}</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:5px;">${lamps}<span style="font-size:8px;color:#888;font-family:Cinzel,serif;margin-left:4px;">×${ct.maxCount}</span></div>
+        <div style="font-size:10px;color:#aaa;font-family:sans-serif;line-height:1.4;margin-top:4px;">${ct.desc}</div>
       </div>`;
     const pick=(ev)=>{
       if(ev&&ev.type==='touchend') ev.preventDefault();
-      showSimpleConfirm('「'+ct.name+'」を選びますか？', ct.desc, ()=>{
+      showSimpleConfirm('「<span style="color:'+ct.color+';font-size:18px;letter-spacing:2px;">'+ct.name+'</span>」<br>を選びますか？', '', ()=>{
         G.chargeType=ct.id;
         G.chargeCount=0;
         G.deck=[...(CHARGE_DECKS[ct.id]||STARTER)];
@@ -4466,6 +4276,12 @@ function showSpringRewards(rarity, list, rewardArea, rewardList){
 function showStatUpEvent(stage2Only, onDone){
   const cb=document.getElementById('confirm-box');
   cb.classList.remove('show');
+  const ov=document.getElementById('ov-statup');
+  if(ov._smithBg){ restoreSmithBg(); }
+  const _title=ov.querySelector('.ov-title');
+  const _sub=ov.querySelector('.ov-sub');
+  if(_title) _title.textContent='⬆️ ステータス強化';
+  if(_sub) _sub.textContent='強化を1つ選んでください';
   const allOptions=_buildStatOptions();
   const options=allOptions.filter(o=>o.available&&(!stage2Only||o.stage2only));
   // 前提条件未達でかつ未取得の強化のみロック表示（取得済みは表示しない）
@@ -4482,6 +4298,7 @@ function showStatUpEvent(stage2Only, onDone){
   ].filter(Boolean));
   const hiddenOptions=stage2Only?[]:allOptions.filter(o=>!o.available&&o.hint&&!acquiredIds.has(o.id));
   const list=document.getElementById('statup-list');
+  list.style.cssText='display:flex;flex-direction:column;gap:10px;width:100%;overflow-y:auto;max-height:65vh;';
   list.innerHTML='';
   options.forEach(opt=>{
     const d=document.createElement('div');
@@ -4496,7 +4313,7 @@ function showStatUpEvent(stage2Only, onDone){
       if(ev&&ev.type==='touchend') ev.preventDefault();
       // ステージ中カード選択と同じ見た目の確認ポップアップ
       const popup=document.createElement('div');
-      popup.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
+      popup.style.cssText='position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
       const infoBox=document.createElement('div');
       infoBox.style.cssText='background:rgba(0,0,0,.7);border:2px solid rgba(201,168,76,.6);border-radius:12px;padding:20px 24px;text-align:center;width:220px;';
       infoBox.innerHTML='<div style="font-size:36px;margin-bottom:10px;">'+opt.icon+'</div>'
@@ -4573,7 +4390,7 @@ function _doSuperStatUp(){
     const pick=(ev)=>{
       if(ev&&ev.type==='touchend') ev.preventDefault();
       const popup=document.createElement('div');
-      popup.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
+      popup.style.cssText='position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
       const infoBox=document.createElement('div');
       infoBox.style.cssText='background:rgba(0,0,0,.7);border:2px solid rgba(255,100,0,.6);border-radius:12px;padding:20px 24px;text-align:center;width:220px;';
       infoBox.innerHTML='<div style="font-size:36px;margin-bottom:10px;">'+opt.icon+'</div>'
@@ -4708,62 +4525,150 @@ function showBanishEvent(){
 function defeat(reason){
   if(G.phase==='gameover') return;
   G.phase='gameover';
+  clearEffectQueue();
   G.playerHp=0; updateUI(); sfxDefeat();
-  // 暗幕も確実に消す（チラ見え防止のためov-curtainを先に消去）
+  // 暗幕・curtainを完全停止
   const curtain=document.getElementById('ov-curtain');
   if(curtain) curtain.style.display='none';
   if(window._curtainSafeTimer){clearTimeout(window._curtainSafeTimer);window._curtainSafeTimer=null;}
   const enemyName=G.enemy?G.enemy.name:'敵';
   const causeText=reason||enemyName+'の攻撃';
+  // 2秒間の演出メッセージ
   const defeatMsg=document.createElement('div');
-  // z-index:9998 で全ての要素（ov-curtainのz-index:200含む）より上に表示
-  defeatMsg.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:51;display:flex;align-items:center;justify-content:center;pointer-events:all;touch-action:none;';
+  defeatMsg.style.cssText='position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:9400;display:flex;align-items:center;justify-content:center;pointer-events:all;touch-action:none;';
   defeatMsg.innerHTML='<div style="font-family:\'Cinzel\',serif;font-size:18px;color:#e74c3c;text-align:center;text-shadow:0 0 20px rgba(231,76,60,.8);">あなたのぼうけんは<br>おわった。</div>';
   appendToApp(defeatMsg);
   setTimeout(()=>{
-    // defeatMsgを先に消してからov-overを表示
     if(defeatMsg.parentNode) defeatMsg.parentNode.removeChild(defeatMsg);
-    document.getElementById('over-sub').textContent=enemyName+'に敗れた…';
-    const et=document.getElementById('over-enemy-text');
-    if(et){
-      et.innerHTML='<div style="font-size:15px;margin-bottom:4px;">💀 '+enemyName+'に敗北した。</div>'
-        +'<div style="font-size:12px;color:#c0392b;">死因：'+causeText+'</div>';
-    }
-    const bd=document.getElementById('over-build');
-    if(bd) bd.innerHTML=buildDeckBuildHTML();
-    const cr=document.getElementById('continue-remain');
-    const cb=document.getElementById('btn-continue');
-    if(cr) cr.textContent=G.continueRemain;
-    if(cb){
-      if(G.continueRemain<=0){
-        cb.style.background='rgba(50,50,50,.4)';
-        cb.style.borderColor='rgba(80,80,80,.4)';
-        cb.style.opacity='0.4';
-        cb.style.pointerEvents='none';
-        cb.style.cursor='default';
-        const ct=cb.querySelector('div');
-        if(ct) ct.style.color='#555';
-      } else {
-        cb.style.background='rgba(46,204,113,.15)';
-        cb.style.borderColor='rgba(46,204,113,.6)';
-        cb.style.opacity='1';
-        cb.style.pointerEvents='auto';
-        cb.style.cursor='pointer';
-      }
-    }
-    const ol=document.getElementById('over-log');
-    if(ol&&G.battleLog){
-      ol.innerHTML='';
-      G.battleLog.forEach(({msg,type})=>{
-        const d=document.createElement('div');
-        d.className='log-line '+(type||'');
-        d.innerHTML=msg;
-        ol.appendChild(d);
-      });
-      ol.scrollTop=ol.scrollHeight;
-    }
-    showOv('ov-over');
+    _showResultOver(enemyName, causeText);
   },2000);
+}
+
+// ====== ゲームオーバー画面：動的生成 ======
+function _showResultOver(enemyName, causeText){
+  // 既存のリザルト画面が残っていれば完全削除
+  ['_result-over','_result-clear'].forEach(id=>{
+    const old=document.getElementById(id);
+    if(old&&old.parentNode) old.parentNode.removeChild(old);
+  });
+  const continueAvail = G.continueRemain > 0;
+  const wrap = document.createElement('div');
+  wrap.id = '_result-over';
+  wrap.style.cssText = 'position:absolute;inset:0;z-index:9400;background:rgba(5,3,10,.97);display:flex;flex-direction:column;align-items:center;overflow:hidden;touch-action:none;';
+
+  // ヘッダ（固定）
+  const header = document.createElement('div');
+  header.style.cssText = 'flex-shrink:0;width:100%;text-align:center;padding:20px 16px 10px;';
+  header.innerHTML =
+    '<div style="font-family:\'Cinzel\',serif;font-size:26px;font-weight:900;color:#e74c3c;letter-spacing:4px;text-shadow:0 0 20px rgba(231,76,60,.7);">💀 DEFEAT</div>'+
+    '<div style="margin-top:10px;background:rgba(231,76,60,.15);border:2px solid rgba(231,76,60,.5);border-radius:8px;padding:8px 14px;font-family:\'Cinzel\',serif;font-size:13px;color:#e74c3c;text-align:center;">'+
+      '<div style="font-size:15px;margin-bottom:4px;">💀 '+enemyName+'に敗北した。</div>'+
+      '<div style="font-size:12px;color:#c0392b;">死因：'+causeText+'</div>'+
+    '</div>'+
+    '<div style="font-family:sans-serif;font-size:11px;color:rgba(200,180,160,.6);margin-top:6px;">'+enemyName+'に敗れた…</div>';
+
+  // スクロール領域（中段）
+  const scrollArea = document.createElement('div');
+  scrollArea.style.cssText = 'flex:1;width:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 16px 8px;box-sizing:border-box;touch-action:pan-y;';
+  scrollArea.innerHTML = buildDeckBuildHTML();
+
+  // ボタン領域（固定フッタ）
+  const footer = document.createElement('div');
+  footer.style.cssText = 'flex-shrink:0;width:100%;padding:8px 16px 20px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;';
+
+  // コンテニューボタン
+  const contBtn = document.createElement('div');
+  contBtn.style.cssText = 'width:100%;background:'+(continueAvail?'rgba(46,204,113,.15)':'rgba(50,50,50,.4)')+';border:2px solid '+(continueAvail?'rgba(46,204,113,.6)':'rgba(80,80,80,.4)')+';border-radius:10px;padding:12px 16px;text-align:center;cursor:'+(continueAvail?'pointer':'default')+';touch-action:manipulation;opacity:'+(continueAvail?'1':'0.4')+';';
+  contBtn.innerHTML =
+    '<div style="font-family:\'Cinzel\',serif;font-size:15px;color:'+(continueAvail?'#2ecc71':'#555')+';font-weight:bold;">📺 広告を見てコンテニュー</div>'+
+    '<div style="font-size:10px;color:rgba(46,204,113,.7);margin-top:3px;font-family:sans-serif;">残り '+G.continueRemain+' 回 / ステータス強化を1つ選んで復活</div>';
+
+  // やり直しボタン
+  const restartBtn = document.createElement('div');
+  restartBtn.style.cssText = 'width:100%;background:rgba(100,20,20,.4);border:2px solid rgba(180,60,60,.6);border-radius:10px;padding:12px 16px;text-align:center;cursor:pointer;touch-action:manipulation;font-family:\'Cinzel\',serif;font-size:13px;color:#e74c3c;letter-spacing:1px;';
+  restartBtn.textContent = '最初からやり直す';
+
+  // ボタンエリアをラッパーで包み、ロックオーバーレイを重ねる
+  const btnWrap = document.createElement('div');
+  btnWrap.style.cssText = 'position:relative;display:flex;flex-direction:column;gap:8px;';
+  btnWrap.appendChild(contBtn);
+  btnWrap.appendChild(restartBtn);
+
+  // ロックオーバーレイ（ボタン全体に重なる半透明パネル）
+  const lockOverlay = document.createElement('div');
+  lockOverlay.style.cssText = 'position:absolute;inset:0;border-radius:10px;background:rgba(5,3,10,.72);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;pointer-events:all;z-index:10;';
+  lockOverlay.innerHTML =
+    '<div style="text-align:center;">' +
+      '<div id="_lock-count" style="font-family:\'Cinzel\',serif;font-size:28px;font-weight:900;color:rgba(255,255,255,.55);line-height:1;">2</div>' +
+      '<div style="font-size:9px;color:rgba(255,255,255,.3);font-family:sans-serif;margin-top:2px;letter-spacing:1px;">WAIT</div>' +
+    '</div>';
+  btnWrap.appendChild(lockOverlay);
+  footer.appendChild(btnWrap);
+
+  // ボタンロック（2秒）
+  let _locked = true;
+  let _remain = 2;
+  const _countEl = lockOverlay.querySelector('#_lock-count');
+  const _tick = setInterval(()=>{
+    _remain--;
+    if(_remain > 0){ if(_countEl) _countEl.textContent = _remain; }
+    else {
+      clearInterval(_tick);
+      lockOverlay.style.opacity = '0';
+      lockOverlay.style.transition = 'opacity 0.3s';
+      setTimeout(()=>{ lockOverlay.style.display='none'; }, 300);
+      _locked = false;
+    }
+  }, 1000);
+
+  // コンテニュー処理
+  const doContine = ()=>{
+    if(_locked || G.continueRemain<=0) return;
+    showSimpleConfirm('広告を見てコンテニューしますか？','HPを全回復してステータス強化付きで復活します',()=>{
+      showAdThenContinue(()=>{
+        const over = document.getElementById('_result-over');
+        if(over&&over.parentNode) over.parentNode.removeChild(over);
+        G.continueRemain--;
+        const doRevive=()=>{
+          G.playerHp=G.playerMaxHp;
+          G.phase='player';
+          G.shield=G.initShieldBonus||0;
+          G.atkBuff=G.permAtkBonus||0;
+          G.deck=G.deck.filter(id=>!DB[id]||DB[id].type!=='bougai');
+          addLog('⚡ コンテニュー！ HP全回復して復活！','sys');
+          updateUI();
+          startStage();
+        };
+        if(G.areaId===0){
+          const opts=getCaveStatUpOptions();
+          if(opts.length>0){ _showStatUpUI(opts,doRevive); } else { doRevive(); }
+        } else {
+          showStatUpEvent(false,doRevive);
+        }
+      });
+    });
+  };
+  let _contTouched = false;
+  contBtn.addEventListener('touchend',(e)=>{e.preventDefault();if(_contTouched)return;_contTouched=true;setTimeout(()=>_contTouched=false,600);doContine();});
+  contBtn.addEventListener('click',doContine);
+
+  // やり直し処理
+  const doRestart = ()=>{
+    if(_locked) return;
+    showSimpleConfirm('最初からやり直しますか？','これまでの進行状況は失われます',()=>{
+      const over=document.getElementById('_result-over');
+      if(over&&over.parentNode) over.parentNode.removeChild(over);
+      resetSmithKai(); showLogoThenTitle();
+    });
+  };
+  let _restTouched = false;
+  restartBtn.addEventListener('touchend',(e)=>{e.preventDefault();if(_restTouched)return;_restTouched=true;setTimeout(()=>_restTouched=false,600);doRestart();});
+  restartBtn.addEventListener('click',doRestart);
+
+  wrap.appendChild(header);
+  wrap.appendChild(scrollArea);
+  wrap.appendChild(footer);
+  appendToApp(wrap);
 }
 function updateUI(){
   const e=G.enemy;
@@ -5173,7 +5078,7 @@ function showStatusDetail(target){
     if(lines.length<=1) lines.push('（状態異常なし）');
   }
   const popup=document.createElement('div');
-  popup.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;';
+  popup.style.cssText='position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;';
   const box=document.createElement('div');
   box.style.cssText='background:linear-gradient(160deg,#1a1030,#0e0820);border:2px solid rgba(201,168,76,.6);border-radius:14px;padding:16px 18px;max-width:300px;width:90%;max-height:75vh;overflow-y:auto;font-family:sans-serif;';
   let bhtml='';
@@ -5214,7 +5119,7 @@ function showStatupDetail(){
   if((G.playerMaxHp||30)!==30) lines.push('❤️ 最大HP '+G.playerMaxHp+' (+'+((G.playerMaxHp||30)-30)+')\n最大HPが増加している');
   if(lines.length<=1) lines.push('（ステータス強化なし）');
   const popup=document.createElement('div');
-  popup.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;';
+  popup.style.cssText='position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;';
   const box=document.createElement('div');
   box.style.cssText='background:linear-gradient(160deg,#1a1008,#0e0802);border:2px solid rgba(201,168,76,.6);border-radius:14px;padding:16px 18px;max-width:300px;width:90%;max-height:75vh;overflow-y:auto;font-family:sans-serif;';
   let bhtml='';
@@ -5894,14 +5799,14 @@ function showAltarBeforeEnding(){
     addLog('🔮 祭壇: HP-15 → 「'+DB[chosenId].name+'」獲得！','sys');
     spawnDmgNum('-15','player-dmg'); updateUI();
     hideOv('ov-altar');
-    showClearStats(); showOv('ov-clear');
+    showClearStats(); // 内部で動的生成
   };
   // スキップはクリア画面へ
   const skipBtn=document.getElementById('altar-skip');
   if(skipBtn){
     const origBind=skipBtn.onclick;
-    skipBtn.onclick=()=>{hideOv('ov-altar');showClearStats();showOv('ov-clear');};
-    skipBtn.ontouchend=(e)=>{e.preventDefault();hideOv('ov-altar');showClearStats();showOv('ov-clear');};
+    skipBtn.onclick=()=>{hideOv('ov-altar');showClearStats();};
+    skipBtn.ontouchend=(e)=>{e.preventDefault();hideOv('ov-altar');showClearStats();};
   }
   showOv('ov-altar');
 }
@@ -5978,25 +5883,98 @@ function buildDeckBuildHTML(){
 }
 
 // クリア統計表示
+// クリア統計表示 → 動的生成関数に変更（ver150）
 function showClearStats(){
-  document.getElementById('stat-dealt').textContent='⚔️ 与えたダメージ: '+(G.totalDmgDealt||0);
-  document.getElementById('stat-taken').textContent='🛡️ 受けたダメージ: '+(G.totalDmgTaken||0);
-  document.getElementById('stat-cards').textContent='🃏 使用カード枚数: '+(G.totalCardsUsed||0);
-  document.getElementById('stat-turns').textContent='⏱️ 総ターン数: '+(G.totalTurns||0);
-  const bd=document.getElementById('clear-build');
-  if(bd) bd.innerHTML=buildDeckBuildHTML();
-  // バトルログをリザルトに表示
-  const cl=document.getElementById('clear-log');
-  if(cl&&G.battleLog){
-    cl.innerHTML='';
-    G.battleLog.forEach(({msg,type})=>{
-      const d=document.createElement('div');
-      d.className='log-line '+(type||'');
-      d.innerHTML=msg;
-      cl.appendChild(d);
+  _showResultClear();
+}
+
+// ====== クリア画面：動的生成 ======
+function _showResultClear(){
+  // 既存のリザルト画面が残っていれば完全削除
+  ['_result-over','_result-clear'].forEach(id=>{
+    const old=document.getElementById(id);
+    if(old&&old.parentNode) old.parentNode.removeChild(old);
+  });
+  const wrap = document.createElement('div');
+  wrap.id = '_result-clear';
+  wrap.style.cssText = 'position:absolute;inset:0;z-index:9400;background:rgba(5,3,10,.97);display:flex;flex-direction:column;align-items:center;overflow:hidden;touch-action:none;';
+
+  // ヘッダ（固定）
+  const header = document.createElement('div');
+  header.style.cssText = 'flex-shrink:0;width:100%;text-align:center;padding:20px 16px 10px;';
+  header.innerHTML =
+    '<div style="font-family:\'Cinzel\',serif;font-size:26px;font-weight:900;color:#f0d47a;letter-spacing:5px;text-shadow:0 0 30px rgba(201,168,76,.9),0 0 60px rgba(201,168,76,.4);animation:logo-pulse 1.5s ease-in-out infinite;">🏆 ALL CLEAR 🏆</div>'+
+    '<div style="font-family:\'Cinzel\',serif;font-size:11px;color:rgba(201,168,76,.7);letter-spacing:3px;margin-top:6px;">全ての強敵を打ち倒した！</div>'+
+    '<div style="height:1px;width:100%;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin-top:10px;"></div>'+
+    '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:10px 14px;margin-top:10px;font-family:sans-serif;">'+
+      '<div style="font-family:\'Cinzel\',serif;font-size:11px;color:#c9a84c;margin-bottom:6px;text-align:center;letter-spacing:2px;">📊 BATTLE RECORDS</div>'+
+      '<div style="font-size:11px;color:#e07878;margin-bottom:3px;">⚔️ 与えたダメージ: '+(G.totalDmgDealt||0)+'</div>'+
+      '<div style="font-size:11px;color:#78b0e0;margin-bottom:3px;">🛡️ 受けたダメージ: '+(G.totalDmgTaken||0)+'</div>'+
+      '<div style="font-size:11px;color:#78e0a0;margin-bottom:3px;">🃏 使用カード枚数: '+(G.totalCardsUsed||0)+'</div>'+
+      '<div style="font-size:11px;color:#e0c878;">⏱️ 総ターン数: '+(G.totalTurns||0)+'</div>'+
+    '</div>';
+
+  // スクロール領域（中段）
+  const scrollArea = document.createElement('div');
+  scrollArea.style.cssText = 'flex:1;width:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:8px 16px 8px;box-sizing:border-box;touch-action:pan-y;';
+  scrollArea.innerHTML = buildDeckBuildHTML();
+
+  // ボタン領域（固定フッタ）
+  const footer = document.createElement('div');
+  footer.style.cssText = 'flex-shrink:0;width:100%;padding:8px 16px 20px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;';
+
+  const restartBtn = document.createElement('div');
+  restartBtn.style.cssText = 'width:100%;background:rgba(201,168,76,.15);border:2px solid rgba(201,168,76,.6);border-radius:10px;padding:12px 16px;text-align:center;cursor:pointer;touch-action:manipulation;font-family:\'Cinzel\',serif;font-size:14px;color:#c9a84c;letter-spacing:1px;';
+  restartBtn.textContent = 'もう一度プレイ';
+
+  // ボタンエリアをラッパーで包み、ロックオーバーレイを重ねる
+  const btnWrap = document.createElement('div');
+  btnWrap.style.cssText = 'position:relative;';
+  btnWrap.appendChild(restartBtn);
+
+  // ロックオーバーレイ（ボタン全体に重なる半透明パネル）
+  const lockOverlay = document.createElement('div');
+  lockOverlay.style.cssText = 'position:absolute;inset:0;border-radius:10px;background:rgba(5,3,10,.72);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;pointer-events:all;z-index:10;';
+  lockOverlay.innerHTML =
+    '<div style="text-align:center;">' +
+      '<div id="_lock-count-c" style="font-family:\'Cinzel\',serif;font-size:28px;font-weight:900;color:rgba(255,255,255,.55);line-height:1;">2</div>' +
+      '<div style="font-size:9px;color:rgba(255,255,255,.3);font-family:sans-serif;margin-top:2px;letter-spacing:1px;">WAIT</div>' +
+    '</div>';
+  btnWrap.appendChild(lockOverlay);
+  footer.appendChild(btnWrap);
+
+  // ボタンロック（2秒）
+  let _locked = true;
+  let _remain = 2;
+  const _countEl = lockOverlay.querySelector('#_lock-count-c');
+  const _tick = setInterval(()=>{
+    _remain--;
+    if(_remain > 0){ if(_countEl) _countEl.textContent = _remain; }
+    else {
+      clearInterval(_tick);
+      lockOverlay.style.opacity = '0';
+      lockOverlay.style.transition = 'opacity 0.3s';
+      setTimeout(()=>{ lockOverlay.style.display='none'; }, 300);
+      _locked = false;
+    }
+  }, 1000);
+
+  const doRestart = ()=>{
+    if(_locked) return;
+    showSimpleConfirm('タイトルに戻りますか？','これまでの進行状況は失われます',()=>{
+      const clr=document.getElementById('_result-clear');
+      if(clr&&clr.parentNode) clr.parentNode.removeChild(clr);
+      resetSmithKai(); showLogoThenTitle();
     });
-    cl.scrollTop=cl.scrollHeight;
-  }
+  };
+  let _restTouched = false;
+  restartBtn.addEventListener('touchend',(e)=>{e.preventDefault();if(_restTouched)return;_restTouched=true;setTimeout(()=>_restTouched=false,600);doRestart();});
+  restartBtn.addEventListener('click',doRestart);
+
+  wrap.appendChild(header);
+  wrap.appendChild(scrollArea);
+  wrap.appendChild(footer);
+  appendToApp(wrap);
 }
 
 // 初回ガイド
@@ -6188,872 +6166,105 @@ function updateGaugeLamps(){
   }
 }
 
-// エフェクトキュー（複数効果を順番に表示）
-/* ========================================
-   カード発動エフェクト表示関数（段階①）
-   showCardEffect(type, target)
-     type  : 'slash'|'blunt'|'explode'|'heal'|'shield'|
-             'poison'|'buff'|'debuff'|'ailment'|'special'
-     target: 'enemy' | 'player'
-   ======================================== */
-/* ---- Canvas エフェクトエンジン ---- */
-function showCardEffect(type, target){
-  const areaId = target==='player' ? 'card-effect-player' : 'card-effect-enemy';
-  const area   = document.getElementById(areaId);
-  if(!area) return;
-
-  // エリアのサイズとページ上の位置を取得
-  const rect = (target==='player'
-    ? document.getElementById('player-status-box') || area
-    : document.getElementById('enemy-area') || area
-  ).getBoundingClientRect();
-
-  // Canvas を生成してbody直下に固定配置（エリアに重ねる）
-  const cv = document.createElement('canvas');
-  cv.width  = Math.round(rect.width)  || 320;
-  cv.height = Math.round(rect.height) || 160;
-  cv.style.cssText = [
-    'position:fixed',
-    'left:'+Math.round(rect.left)+'px',
-    'top:'+Math.round(rect.top)+'px',
-    'width:'+cv.width+'px',
-    'height:'+cv.height+'px',
-    'pointer-events:none',
-    'z-index:8000',
-  ].join(';');
+/* ========== カードエフェクトエンジン ========== */
+const CARD_EFFECTS={
+  strike:[{type:'slash',target:'enemy'}],bash:[{type:'slash',target:'enemy'}],heavy:[{type:'slash',target:'enemy'}],twin:[{type:'slash',target:'enemy'}],combo:[{type:'slash',target:'enemy'}],stormSlash:[{type:'slash',target:'enemy'}],godstrike:[{type:'slash',target:'enemy'},{type:'special',target:'enemy'}],pierce:[{type:'slash',target:'enemy'}],armorPierce:[{type:'slash',target:'enemy'}],thinIce:[{type:'slash',target:'enemy'}],knowledge:[{type:'slash',target:'enemy'}],guideStrike:[{type:'slash',target:'enemy'}],furyDance:[{type:'slash',target:'enemy'}],evilCombo:[{type:'slash',target:'enemy'}],strikeBack:[{type:'slash',target:'enemy'}],konshin:[{type:'slash',target:'enemy'}],shinsei:[{type:'slash',target:'enemy'},{type:'special',target:'enemy'}],
+  shieldBash:[{type:'blunt',target:'enemy'}],muboAtk:[{type:'blunt',target:'enemy'}],kyougeki:[{type:'blunt',target:'enemy'}],desperate:[{type:'blunt',target:'enemy'}],chainBlast:[{type:'blunt',target:'enemy'}],accumulate:[{type:'blunt',target:'enemy'}],composure:[{type:'blunt',target:'enemy'}],lastStand:[{type:'blunt',target:'enemy'}],poisonKill:[{type:'blunt',target:'enemy'}],punch:[{type:'blunt',target:'enemy'}],destroy:[{type:'blunt',target:'enemy'}],chikara:[{type:'blunt',target:'enemy'}],karuren:[{type:'blunt',target:'enemy'}],miniCombo:[{type:'blunt',target:'enemy'}],chainStart:[{type:'blunt',target:'enemy'}],
+  soulPact:[{type:'explode',target:'enemy'}],bloodPact:[{type:'explode',target:'enemy'}],curseBurst:[{type:'explode',target:'enemy'}],
+  lifesteal:[{type:'slash',target:'enemy'},{type:'heal',target:'player'}],soulEater:[{type:'slash',target:'enemy'},{type:'heal',target:'player'}],curseSuck:[{type:'slash',target:'enemy'},{type:'heal',target:'player'}],
+  poisonNeedle:[{type:'poison',target:'enemy'}],chainPoison:[{type:'poison',target:'enemy'}],poison:[{type:'poison',target:'enemy'}],ragePoison:[{type:'poison',target:'enemy'}],expPoison:[{type:'poison',target:'enemy'}],bindingChain:[{type:'poison',target:'enemy'}],stumble:[{type:'poison',target:'enemy'}],slow:[{type:'poison',target:'enemy'}],pollutedWorld:[{type:'poison',target:'enemy'}],
+  heal:[{type:'heal',target:'player'}],superheal:[{type:'heal',target:'player'}],sanctuary:[{type:'heal',target:'player'}],breath:[{type:'heal',target:'player'},{type:'shield',target:'player'}],firstAid:[{type:'heal',target:'player'}],teate:[{type:'heal',target:'player'}],healReserve:[{type:'heal',target:'player'}],comboHeal:[{type:'heal',target:'player'}],cleanse:[{type:'heal',target:'player'}],tenacious:[{type:'heal',target:'player'}],
+  guard:[{type:'shield',target:'player'}],fortify:[{type:'shield',target:'player'}],dodge:[{type:'shield',target:'player'}],superdodge:[{type:'shield',target:'player'}],steelBody:[{type:'shield',target:'player'}],godshield:[{type:'shield',target:'player'},{type:'special',target:'player'}],smallShield:[{type:'shield',target:'player'}],allIn:[{type:'shield',target:'player'}],studyGuard:[{type:'shield',target:'player'}],fortress:[{type:'shield',target:'player'}],twoStance:[{type:'shield',target:'player'}],threeStance:[{type:'shield',target:'player'}],curseShield:[{type:'shield',target:'player'}],angerShield:[{type:'shield',target:'player'}],reflect:[{type:'shield',target:'player'}],battleReady:[{type:'shield',target:'player'}],
+  rage:[{type:'buff',target:'player'}],anger:[{type:'buff',target:'player'}],bigMana:[{type:'buff',target:'player'}],dragonGod:[{type:'buff',target:'player'}],manaRelease:[{type:'buff',target:'player'}],manaDrain:[{type:'buff',target:'player'}],superMana:[{type:'buff',target:'player'}],swiftBlade:[{type:'buff',target:'player'}],afterForce:[{type:'buff',target:'player'}],recycle:[{type:'buff',target:'player'}],chargeFrenzy:[{type:'buff',target:'player'}],chargeKeep:[{type:'buff',target:'player'}],
+  freeze:[{type:'debuff',target:'enemy'}],weaken:[{type:'debuff',target:'enemy'}],mirror:[{type:'ailment',target:'player'}],exorcise:[{type:'special',target:'player'}],reconsider:[{type:'special',target:'player'}],curseReturn:[{type:'explode',target:'enemy'}],
+  echo:[{type:'ailment',target:'player'}],freePass:[{type:'ailment',target:'player'}],
+  redraw:[{type:'special',target:'player'}],swift:[{type:'special',target:'player'}],
+  // 追加登録
+  chainStart:[{type:'special',target:'player'}],miniCombo:[{type:'buff',target:'player'}],chikara:[{type:'buff',target:'player'}],soulEater:[{type:'buff',target:'player'}],
+  punch:[{type:'blunt',target:'enemy'}],destroy:[{type:'explode',target:'enemy'}],furyDance:[{type:'slash',target:'enemy'}],karuren:[{type:'blunt',target:'enemy'}],konshin:[{type:'blunt',target:'enemy'}],shinsei:[{type:'special',target:'enemy'}],strikeBack:[{type:'slash',target:'enemy'}],evilCombo:[{type:'slash',target:'enemy'}],curseBurst:[{type:'explode',target:'enemy'}],
+  fortress:[{type:'shield',target:'player'}],twoStance:[{type:'shield',target:'player'}],threeStance:[{type:'shield',target:'player'}],curseShield:[{type:'shield',target:'player'}],angerShield:[{type:'shield',target:'player'}],
+  teate:[{type:'heal',target:'player'}],healReserve:[{type:'heal',target:'player'}],comboHeal:[{type:'heal',target:'player'}],cleanse:[{type:'heal',target:'player'}],curseSuck:[{type:'heal',target:'player'}],tenacious:[{type:'heal',target:'player'}],
+  slow:[{type:'debuff',target:'enemy'}],stumble:[{type:'debuff',target:'enemy'}],bindingChain:[{type:'ailment',target:'enemy'}],
+  poison:[{type:'poison',target:'enemy'}],ragePoison:[{type:'poison',target:'enemy'}],expPoison:[{type:'poison',target:'enemy'}],pollutedWorld:[{type:'poison',target:'enemy'}],
+};
+function triggerCardEffect(cid){
+  var eff=CARD_EFFECTS[cid];
+  if(!eff) return;
+  // カードのtimes（連続回数）を取得
+  var card=DB[cid];
+  var times=(card&&card.effect&&card.effect.times)||1;
+  // 攻撃エフェクトは回数分繰り返す
+  eff.forEach(function(e,i){
+    var repeat=(e.target==='enemy'&&times>1)?times:1;
+    for(var r=0;r<repeat;r++){
+      (function(delay){ setTimeout(function(){ showCardEffect(e.type,e.target); }, delay); })(i*220 + r*850);
+    }
+  });
+}
+function showCardEffect(type,target){
+  var areaEl=target==='player'?document.getElementById('player-status-box'):document.getElementById('enemy-area');
+  if(!areaEl) return;
+  var rect=areaEl.getBoundingClientRect();
+  var cv=document.createElement('canvas');
+  cv.width=Math.round(rect.width)||320; cv.height=Math.round(rect.height)||160;
+  cv.style.cssText='position:fixed;left:'+Math.round(rect.left)+'px;top:'+Math.round(rect.top)+'px;width:'+cv.width+'px;height:'+cv.height+'px;pointer-events:none;z-index:8000;';
   document.body.appendChild(cv);
-  const ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
-  const cx = W/2, cy = H/2;
-
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,startTime=null,rafId;
   function rnd(a,b){return Math.random()*(b-a)+a;}
   function lerp(a,b,t){return a+(b-a)*t;}
-
-  let startTime = null;
-  let rafId;
-
-  // ---------- 各エフェクト定義 ----------
-
-  // ① 斬撃：白く光る軌跡が走り、黒い斬り傷が残る
   if(type==='slash'){
-    var DUR=600;
-    const x0=W*.88, y0=H*.04, x1=W*.12, y1=H*.96;
-    let slashDone=false;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const elapsed=ts-startTime;
-      const t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-
-      // フェーズ1（0〜0.35）：白い光の線が右上から左下へ走る
-      const drawT=Math.min(t/0.35,1);
-      const hx=lerp(x0,x1,drawT);
-      const hy=lerp(y0,y1,drawT);
-
-      if(drawT<1){
-        // 太い白光芯
-        ctx.save();
-        ctx.strokeStyle='rgba(255,255,255,0.95)';
-        ctx.lineWidth=22;
-        ctx.lineCap='round';
-        ctx.shadowColor='rgba(200,220,255,1)';
-        ctx.shadowBlur=28;
-        ctx.beginPath();
-        ctx.moveTo(x0,y0);
-        ctx.lineTo(hx,hy);
-        ctx.stroke();
-        // 細い芯（真っ白）
-        ctx.strokeStyle='rgba(255,255,255,1)';
-        ctx.lineWidth=6;
-        ctx.shadowBlur=10;
-        ctx.beginPath();
-        ctx.moveTo(x0,y0);
-        ctx.lineTo(hx,hy);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // フェーズ2（0.3〜1.0）：光が消えて黒い斬り傷が残る
-      if(t>0.28){
-        const scar=(t-0.28)/0.72; // 0→1
-        const scarAlpha=Math.min(scar*3,1); // 素早く出現
-        const fadeAlpha=scar<0.7?1:1-(scar-0.7)/0.3; // 後半フェードアウト
-        const a=scarAlpha*fadeAlpha;
-        // 斬り傷（細い暗い線）
-        ctx.save();
-        ctx.strokeStyle=`rgba(20,10,30,${a*0.9})`;
-        ctx.lineWidth=4;
-        ctx.lineCap='round';
-        ctx.shadowColor=`rgba(80,40,120,${a*0.5})`;
-        ctx.shadowBlur=6;
-        ctx.beginPath();
-        ctx.moveTo(x0,y0);
-        ctx.lineTo(x1,y1);
-        ctx.stroke();
-        // 傷の縁（薄紫の光）
-        ctx.strokeStyle=`rgba(180,160,255,${a*0.35})`;
-        ctx.lineWidth=9;
-        ctx.shadowColor=`rgba(160,140,255,${a*0.3})`;
-        ctx.shadowBlur=12;
-        ctx.beginPath();
-        ctx.moveTo(x0,y0);
-        ctx.lineTo(x1,y1);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
+    var x0=W*.88,y0=H*.04,x1=W*.12,y1=H*.96;
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/600,1);ctx.clearRect(0,0,W,H);var dt=Math.min(t/.35,1),hx=lerp(x0,x1,dt),hy=lerp(y0,y1,dt);if(dt<1){ctx.save();ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=22;ctx.lineCap='round';ctx.shadowColor='rgba(200,220,255,1)';ctx.shadowBlur=28;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(hx,hy);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,1)';ctx.lineWidth=6;ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(hx,hy);ctx.stroke();ctx.restore();}if(t>.28){var sc=(t-.28)/.72,sa=Math.min(sc*3,1)*(sc<.7?1:1-(sc-.7)/.3);ctx.save();ctx.strokeStyle='rgba(20,10,30,'+sa*.9+')';ctx.lineWidth=4;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.restore();}if(t<1)rafId=requestAnimationFrame(frame);else cv.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ② 打撃パターンA：拳が当たった瞬間のフラッシュ＋放射クラック
-  }else if(type==='blunt_a'){
-    var DUR=450;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const elapsed=ts-startTime;
-      const t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      // 衝撃フラッシュ（中央が白く弾ける）
-      var fa=t<0.15?t/0.15:1-(t-0.15)/0.85;
-      const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,lerp(5,Math.min(W,H)*0.55,t));
-      gr.addColorStop(0,`rgba(255,255,240,${fa*0.95})`);
-      gr.addColorStop(0.25,`rgba(255,220,140,${fa*0.7})`);
-      gr.addColorStop(0.6,`rgba(220,160,60,${fa*0.3})`);
-      gr.addColorStop(1,'rgba(180,100,0,0)');
-      ctx.fillStyle=gr;
-      ctx.beginPath();
-      ctx.arc(cx,cy,Math.min(W,H)*0.55,0,Math.PI*2);
-      ctx.fill();
-      // 放射クラック（6本の亀裂）
-      if(t>0.05 && t<0.7){
-        const ca=t<0.3?1:1-(t-0.3)/0.4;
-        for(let i=0;i<6;i++){
-          const angle=(i/6)*Math.PI*2+0.3;
-          const len=lerp(0,Math.min(W,H)*0.38,Math.min((t-0.05)/0.4,1));
-          ctx.save();
-          ctx.strokeStyle=`rgba(255,240,180,${ca*0.9})`;
-          ctx.lineWidth=i%2===0?3:2;
-          ctx.lineCap='round';
-          ctx.shadowColor=`rgba(255,200,80,${ca})`;
-          ctx.shadowBlur=8;
-          ctx.beginPath();
-          ctx.moveTo(cx,cy);
-          ctx.lineTo(cx+Math.cos(angle)*len, cy+Math.sin(angle)*len);
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
+  }else if(type==='blunt'){
+    var bstars=Array.from({length:10},function(_,i){return{angle:(i/10)*Math.PI*2+rnd(-.2,.2),speed:rnd(1.8,3),r:rnd(4,8)};});
+    function frame(ts){if(!startTime)startTime=ts;var elapsed=ts-startTime,t=Math.min(elapsed/380,1);ctx.clearRect(0,0,W,H);if(elapsed<120){var fa=1-elapsed/120;ctx.fillStyle='rgba(255,240,160,'+fa*.85+')';ctx.beginPath();ctx.arc(cx,cy,32,0,Math.PI*2);ctx.fill();}bstars.forEach(function(s){var dist=elapsed*s.speed*.14,x=cx+Math.cos(s.angle)*dist,y=cy+Math.sin(s.angle)*dist,a=t<.3?1:1-(t-.3)/.7;ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(255,220,80,1)';ctx.shadowColor='rgba(255,180,40,.9)';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(x,y,s.r*(1-t*.4),0,Math.PI*2);ctx.fill();ctx.restore();});if(t<1)rafId=requestAnimationFrame(frame);else cv.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ② 打撃パターンB：星（火花）が飛び散る
-  }else if(type==='blunt_b'){
-    var DUR=500;
-    var stars=Array.from({length:10},(_,i)=>({
-      angle:(i/10)*Math.PI*2+rnd(-0.2,0.2),
-      speed:rnd(1.2,2.2), r:rnd(3,6), trail:[]
-    }));
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const elapsed=ts-startTime;
-      const t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      // 中央フラッシュ
-      if(t<0.2){
-        var fa=1-t/0.2;
-        ctx.fillStyle=`rgba(255,240,160,${fa*0.8})`;
-        ctx.beginPath();
-        ctx.arc(cx,cy,28,0,Math.PI*2);
-        ctx.fill();
-      }
-      stars.forEach(s=>{
-        const dist=elapsed*s.speed*0.12;
-        const x=cx+Math.cos(s.angle)*dist;
-        const y=cy+Math.sin(s.angle)*dist;
-        const a=t<0.4?1:1-(t-0.4)/0.6;
-        // 星形
-        ctx.save();
-        ctx.globalAlpha=a;
-        ctx.fillStyle='rgba(255,220,80,1)';
-        ctx.shadowColor='rgba(255,180,40,.9)';
-        ctx.shadowBlur=10;
-        ctx.beginPath();
-        for(let p=0;p<5;p++){
-          const ang=p*Math.PI*2/5-Math.PI/2;
-          const ang2=ang+Math.PI/5;
-          p===0?ctx.moveTo(x+Math.cos(ang)*s.r,y+Math.sin(ang)*s.r):ctx.lineTo(x+Math.cos(ang)*s.r,y+Math.sin(ang)*s.r);
-          ctx.lineTo(x+Math.cos(ang2)*s.r*0.45,y+Math.sin(ang2)*s.r*0.45);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ② 打撃パターンC：衝撃波の輪＋火花
-  }else if(type==='blunt_c'){
-    var DUR=500;
-    var sparks=Array.from({length:8},()=>({
-      angle:rnd(0,Math.PI*2), speed:rnd(0.8,1.6), r:rnd(2,4)
-    }));
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const elapsed=ts-startTime;
-      const t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      // 衝撃波リング
-      const r=lerp(0,Math.min(W,H)*0.48,t);
-      const ra=t<0.15?t/0.15:1-(t-0.15)/0.85;
-      ctx.save();
-      ctx.strokeStyle=`rgba(255,220,140,${ra})`;
-      ctx.lineWidth=lerp(10,1,t);
-      ctx.shadowColor=`rgba(255,180,60,${ra})`;
-      ctx.shadowBlur=18;
-      ctx.beginPath();
-      ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2);
-      ctx.stroke();
-      ctx.restore();
-      // 細い2番目のリング
-      if(t>0.08){
-        const r2=lerp(0,Math.min(W,H)*0.42,t-0.08);
-        const ra2=(1-(t-0.08)/0.92)*0.6;
-        ctx.save();
-        ctx.strokeStyle=`rgba(255,255,200,${ra2})`;
-        ctx.lineWidth=3;
-        ctx.shadowColor=`rgba(255,240,160,${ra2})`;
-        ctx.shadowBlur=8;
-        ctx.beginPath();
-        ctx.arc(cx,cy,Math.max(r2,1),0,Math.PI*2);
-        ctx.stroke();
-        ctx.restore();
-      }
-      // 火花
-      sparks.forEach(s=>{
-        if(t<0.05) return;
-        const dist=elapsed*s.speed*0.1;
-        const sx=cx+Math.cos(s.angle)*dist;
-        const sy=cy+Math.sin(s.angle)*dist;
-        const sa=t<0.3?1:1-(t-0.3)/0.7;
-        ctx.save();
-        ctx.globalAlpha=sa;
-        ctx.fillStyle='rgba(255,220,100,1)';
-        ctx.shadowColor='rgba(255,180,40,.8)';
-        ctx.shadowBlur=6;
-        ctx.beginPath();
-        ctx.arc(sx,sy,s.r,0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ② 打撃（確定: 丸が飛び散る・高速）
-  }else if(type==='blunt'||type==='blunt_b'){
-    var DUR=380;
-    var stars=Array.from({length:10},function(_,i){
-      return {angle:(i/10)*Math.PI*2+rnd(-0.2,0.2), speed:rnd(1.8,3.0), r:rnd(4,8)};
-    });
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      var elapsed=ts-startTime;
-      var t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      // 中央フラッシュ
-      if(t<0.18){
-        var fa=1-t/0.18;
-        ctx.fillStyle=`rgba(255,240,160,${fa*0.85})`;
-        ctx.beginPath();
-        ctx.arc(cx,cy,32,0,Math.PI*2);
-        ctx.fill();
-      }
-      // 丸が飛び散る
-      stars.forEach(function(s){
-        var dist=elapsed*s.speed*0.14;
-        var x=cx+Math.cos(s.angle)*dist;
-        var y=cy+Math.sin(s.angle)*dist;
-        var a=t<0.3?1:1-(t-0.3)/0.7;
-        ctx.save();
-        ctx.globalAlpha=a;
-        ctx.fillStyle='rgba(255,220,80,1)';
-        ctx.shadowColor='rgba(255,180,40,.9)';
-        ctx.shadowBlur=10;
-        ctx.beginPath();
-        ctx.arc(x,y,s.r*(1-t*0.4),0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-  }else if(type==='blunt_d'){
-    var fcv2=document.createElement('canvas');
-    fcv2.width=window.innerWidth; fcv2.height=window.innerHeight;
-    fcv2.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
-    document.body.appendChild(fcv2);
-    var fctx2=fcv2.getContext('2d');
-    cv.remove();
-    var DUR_D=320;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      var t=Math.min((ts-startTime)/DUR_D,1);
-      fctx2.clearRect(0,0,fcv2.width,fcv2.height);
-      // 0〜0.2: 白く光る、0.2〜0.5: 黒く暗転、0.5〜1.0: 戻る
-      var a;
-      if(t<0.15)      a=t/0.15;
-      else if(t<0.4)  a=1-(t-0.15)/0.25*0.7; // 白から黒へ
-      else            a=0.3*(1-(t-0.4)/0.6);
-      var r=Math.round(255*(t<0.3?1:1-(t-0.3)/0.4));
-      fctx2.fillStyle=`rgba(${r},${r},${r},${Math.min(a,1)})`;
-      fctx2.fillRect(0,0,fcv2.width,fcv2.height);
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { fcv2.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ② 打撃パターンE：中央から光が超高速で弾けて即消える
-  }else if(type==='blunt_e'){
-    var DUR_E=280;
-    var rays=Array.from({length:12},function(_,i){
-      return {angle:(i/12)*Math.PI*2+rnd(-0.15,0.15), len:rnd(0.35,0.55), w:rnd(3,7)};
-    });
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      var t=Math.min((ts-startTime)/DUR_E,1);
-      ctx.clearRect(0,0,W,H);
-      // 中央白フラッシュ
-      var fa=t<0.12?t/0.12:1-(t-0.12)/0.88;
-      var gr=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.5);
-      gr.addColorStop(0,`rgba(255,255,255,${fa*0.95})`);
-      gr.addColorStop(0.2,`rgba(255,240,200,${fa*0.7})`);
-      gr.addColorStop(1,'rgba(255,200,100,0)');
-      ctx.fillStyle=gr;
-      ctx.beginPath();
-      ctx.arc(cx,cy,Math.min(W,H)*0.5,0,Math.PI*2);
-      ctx.fill();
-      // 12本の光線が超高速で広がる
-      var ra=t<0.15?1:1-(t-0.15)/0.85;
-      rays.forEach(function(r2){
-        var len=lerp(0,Math.min(W,H)*r2.len,Math.min(t*3,1));
-        ctx.save();
-        ctx.strokeStyle=`rgba(255,255,220,${ra*0.9})`;
-        ctx.lineWidth=r2.w*(1-t*0.7);
-        ctx.lineCap='round';
-        ctx.shadowColor=`rgba(255,220,100,${ra})`;
-        ctx.shadowBlur=10;
-        ctx.beginPath();
-        ctx.moveTo(cx+Math.cos(r2.angle)*8, cy+Math.sin(r2.angle)*8);
-        ctx.lineTo(cx+Math.cos(r2.angle)*len, cy+Math.sin(r2.angle)*len);
-        ctx.stroke();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-  }else if(type==='debuff_a'){
-    var DUR=750;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      const a=t<0.3?t/0.3:1-(t-0.3)/0.7;
-      // 霧（複数の楕円を重ねる）
-      [[cx,cy,W*.7,H*.6],[cx*0.5,cy*1.2,W*.5,H*.4],[cx*1.5,cy*0.8,W*.4,H*.5]].forEach(([x,y,rw,rh])=>{
-        ctx.save();
-        ctx.globalAlpha=a*0.45;
-        const gr=ctx.createRadialGradient(x,y,0,x,y,Math.max(rw,rh));
-        gr.addColorStop(0,'rgba(60,0,80,0.9)');
-        gr.addColorStop(0.5,'rgba(40,0,60,0.6)');
-        gr.addColorStop(1,'rgba(20,0,40,0)');
-        ctx.fillStyle=gr;
-        ctx.scale(rw/Math.max(rw,rh),rh/Math.max(rw,rh));
-        ctx.beginPath();
-        ctx.arc(x*(Math.max(rw,rh)/rw),y*(Math.max(rw,rh)/rh),Math.max(rw,rh),0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ⑧ 弱体パターンB：太い紫の線が複数、上から叩きつける
-  }else if(type==='debuff_b'){
-    var DUR=600;
-    var lines=Array.from({length:5},()=>({
-      x:rnd(W*.1,W*.9), w:rnd(6,14), delay:rnd(0,150)
-    }));
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const elapsed=ts-startTime;
-      const t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      lines.forEach(l=>{
-        if(elapsed<l.delay) return;
-        const lt=Math.min((elapsed-l.delay)/400,1);
-        const y1=lerp(-20,H*1.1,lt);
-        const la=lt<0.5?1:1-(lt-0.5)/0.5;
-        ctx.save();
-        ctx.globalAlpha=la;
-        const gr=ctx.createLinearGradient(l.x,0,l.x,y1);
-        gr.addColorStop(0,'rgba(180,60,255,0)');
-        gr.addColorStop(0.3,'rgba(160,40,220,0.9)');
-        gr.addColorStop(0.8,'rgba(100,10,160,1)');
-        gr.addColorStop(1,'rgba(60,0,100,0.8)');
-        ctx.strokeStyle=gr;
-        ctx.lineWidth=l.w;
-        ctx.lineCap='round';
-        ctx.shadowColor='rgba(160,40,255,0.8)';
-        ctx.shadowBlur=16;
-        ctx.beginPath();
-        ctx.moveTo(l.x,0);
-        ctx.lineTo(l.x,y1);
-        ctx.stroke();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ⑧ 弱体パターンC：エリア全体が紫に暗く染まる
-  }else if(type==='debuff_c'){
-    var DUR=700;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      const a=t<0.25?t/0.25:1-(t-0.25)/0.75;
-      ctx.fillStyle=`rgba(60,0,90,${a*0.55})`;
-      ctx.fillRect(0,0,W,H);
-      // 中央から暗い渦
-      const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.5);
-      gr.addColorStop(0,`rgba(100,0,140,${a*0.6})`);
-      gr.addColorStop(1,'rgba(40,0,60,0)');
-      ctx.fillStyle=gr;
-      ctx.fillRect(0,0,W,H);
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ⑤ 盾パターンA：画面全体が青く光る（シンプル）
-  }else if(type==='shield_a'){
-    var DUR=500;
-    var fcv=document.createElement('canvas');
-    fcv.width=window.innerWidth; fcv.height=window.innerHeight;
-    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
-    document.body.appendChild(fcv);
-    var fctx=fcv.getContext('2d');
-    cv.remove();
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      fctx.clearRect(0,0,fcv.width,fcv.height);
-      const a=t<0.15?t/0.15:1-(t-0.15)/0.85;
-      fctx.fillStyle=`rgba(40,120,255,${a*0.4})`;
-      fctx.fillRect(0,0,fcv.width,fcv.height);
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { fcv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ⑤ 盾パターンB：青い波紋が中央から広がる
-  }else if(type==='shield_b'){
-    var DUR=650;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const elapsed=ts-startTime;
-      const t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      [0,0.15,0.3].forEach((offset)=>{
-        const rt=Math.max(t-offset,0)/(1-offset);
-        if(rt<=0) return;
-        const r=lerp(0,Math.max(W,H)*0.7,rt);
-        const a=(1-rt)*0.8;
-        ctx.save();
-        ctx.strokeStyle=`rgba(80,160,255,${a})`;
-        ctx.lineWidth=lerp(6,1,rt);
-        ctx.shadowColor=`rgba(60,140,255,${a})`;
-        ctx.shadowBlur=14;
-        ctx.beginPath();
-        ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2);
-        ctx.stroke();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ⑤ 盾パターンC：画面全体＋縁が強く光る
-  }else if(type==='shield_c'){
-    var DUR=550;
-    var fcv=document.createElement('canvas');
-    fcv.width=window.innerWidth; fcv.height=window.innerHeight;
-    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
-    document.body.appendChild(fcv);
-    var fctx=fcv.getContext('2d');
-    cv.remove();
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      fctx.clearRect(0,0,fcv.width,fcv.height);
-      const a=t<0.18?t/0.18:1-(t-0.18)/0.82;
-      fctx.fillStyle=`rgba(30,100,255,${a*0.35})`;
-      fctx.fillRect(0,0,fcv.width,fcv.height);
-      fctx.strokeStyle=`rgba(120,200,255,${a*0.95})`;
-      fctx.lineWidth=8;
-      fctx.shadowColor=`rgba(80,180,255,${a})`;
-      fctx.shadowBlur=24;
-      fctx.strokeRect(4,4,fcv.width-8,fcv.height-8);
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { fcv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-    var DUR=500;
-    // 輪を3本、タイミングをずらす
-    var rings=[
-      {delay:0,   maxR:Math.min(W,H)*0.46, lw:6,  col:'rgba(220,200,160,'},
-      {delay:60,  maxR:Math.min(W,H)*0.38, lw:4,  col:'rgba(255,230,180,'},
-      {delay:120, maxR:Math.min(W,H)*0.28, lw:3,  col:'rgba(255,255,220,'},
-    ];
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const elapsed=ts-startTime;
-      const t=Math.min(elapsed/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      // 中央の衝撃フラッシュ（最初だけ）
-      if(elapsed<120){
-        var fa=1-elapsed/120;
-        const fg=ctx.createRadialGradient(cx,cy,0,cx,cy,35);
-        fg.addColorStop(0,`rgba(255,240,200,${fa*0.8})`);
-        fg.addColorStop(1,'rgba(255,200,100,0)');
-        ctx.fillStyle=fg;
-        ctx.beginPath();
-        ctx.arc(cx,cy,35,0,Math.PI*2);
-        ctx.fill();
-      }
-      rings.forEach(ring=>{
-        if(elapsed<ring.delay) return;
-        const rt=Math.min((elapsed-ring.delay)/(DUR-ring.delay),1);
-        const r=lerp(0,ring.maxR,rt);
-        const a=rt<0.2?rt/0.2:1-(rt-0.2)/0.8;
-        ctx.save();
-        ctx.strokeStyle=ring.col+a+')';
-        ctx.lineWidth=ring.lw*(1-rt*0.5);
-        ctx.shadowColor=ring.col+'0.6)';
-        ctx.shadowBlur=14;
-        ctx.beginPath();
-        ctx.arc(cx,cy,Math.max(r,1),0,Math.PI*2);
-        ctx.stroke();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
-    rafId=requestAnimationFrame(frame);
-
-  // ③ 爆発：中央大円＋周囲に小円が散らばる
   }else if(type==='explode'){
-    var DUR=550;
-    // サブ爆発の位置・遅延・サイズをランダムに事前決定
-    const subs=Array.from({length:5},()=>({
-      ox:rnd(-W*.28,W*.28), oy:rnd(-H*.28,H*.28),
-      delay:rnd(60,180), r:rnd(14,26), life:0
-    }));
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      ctx.clearRect(0,0,W,H);
-
-      // メイン爆発
-      const mr=lerp(0, Math.min(W,H)*0.48, Math.min(t*1.6,1));
-      const ma=t<0.4?1:1-(t-0.4)/0.6;
-      const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,mr);
-      gr.addColorStop(0,`rgba(255,255,180,${ma})`);
-      gr.addColorStop(0.3,`rgba(255,160,20,${ma*0.9})`);
-      gr.addColorStop(0.7,`rgba(200,40,0,${ma*0.5})`);
-      gr.addColorStop(1,'rgba(100,10,0,0)');
-      ctx.fillStyle=gr;
-      ctx.beginPath();
-      ctx.arc(cx,cy,mr,0,Math.PI*2);
-      ctx.fill();
-
-      // サブ爆発
-      const elapsed=(ts-startTime);
-      subs.forEach(s=>{
-        if(elapsed<s.delay) return;
-        const st=Math.min((elapsed-s.delay)/250,1);
-        const sr=lerp(0,s.r,Math.min(st*2,1));
-        const sa=st<0.4?1:1-(st-0.4)/0.6;
-        const sg=ctx.createRadialGradient(cx+s.ox,cy+s.oy,0,cx+s.ox,cy+s.oy,sr);
-        sg.addColorStop(0,`rgba(255,240,100,${sa})`);
-        sg.addColorStop(0.5,`rgba(255,100,20,${sa*0.8})`);
-        sg.addColorStop(1,'rgba(180,30,0,0)');
-        ctx.fillStyle=sg;
-        ctx.beginPath();
-        ctx.arc(cx+s.ox,cy+s.oy,Math.max(sr,0.1),0,Math.PI*2);
-        ctx.fill();
-      });
-
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
+    var subs=Array.from({length:5},function(){return{ox:rnd(-W*.28,W*.28),oy:rnd(-H*.28,H*.28),delay:rnd(60,180),r:rnd(14,26)};});
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/550,1),elapsed=ts-startTime;ctx.clearRect(0,0,W,H);var mr=lerp(0,Math.min(W,H)*.48,Math.min(t*1.6,1)),ma=t<.4?1:1-(t-.4)/.6,gr=ctx.createRadialGradient(cx,cy,0,cx,cy,mr);gr.addColorStop(0,'rgba(255,255,180,'+ma+')');gr.addColorStop(.3,'rgba(255,160,20,'+ma*.9+')');gr.addColorStop(.7,'rgba(200,40,0,'+ma*.5+')');gr.addColorStop(1,'rgba(100,10,0,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(cx,cy,mr,0,Math.PI*2);ctx.fill();subs.forEach(function(s){if(elapsed<s.delay)return;var st=Math.min((elapsed-s.delay)/250,1),sr=lerp(0,s.r,Math.min(st*2,1)),sa=st<.4?1:1-(st-.4)/.6,sg=ctx.createRadialGradient(cx+s.ox,cy+s.oy,0,cx+s.ox,cy+s.oy,sr);sg.addColorStop(0,'rgba(255,240,100,'+sa+')');sg.addColorStop(.5,'rgba(255,100,20,'+sa*.8+')');sg.addColorStop(1,'rgba(180,30,0,0)');ctx.fillStyle=sg;ctx.beginPath();ctx.arc(cx+s.ox,cy+s.oy,Math.max(sr,.1),0,Math.PI*2);ctx.fill();});if(t<1)rafId=requestAnimationFrame(frame);else cv.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ④ 回復：HPバー点滅＋小さい緑の泡が浮かぶ
   }else if(type==='heal'){
-    var DUR=900;
-    const bar=document.getElementById('player-hp-bar');
-    // HPバーを点滅させる（3回）
-    if(bar){
-      let blink=0;
-      const blinkInterval=setInterval(()=>{
-        bar.style.filter=blink%2===0?'brightness(2.5)':'brightness(1)';
-        blink++;
-        if(blink>=6){ clearInterval(blinkInterval); bar.style.filter=''; }
-      },100);
-    }
-    // 小さい泡を10個（r:2〜4に縮小）
-    var bubbles=Array.from({length:10},()=>({
-      x:rnd(W*.08,W*.92), y:rnd(H*.45,H*.92),
-      r:rnd(2,4), delay:rnd(0,400), vx:rnd(-0.15,0.15)
-    }));
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      const elapsed=ts-startTime;
-      bubbles.forEach(b=>{
-        if(elapsed<b.delay) return;
-        const bt=Math.min((elapsed-b.delay)/600,1);
-        const by=lerp(b.y, b.y-H*.55, bt);
-        const bx=b.x+b.vx*elapsed*0.04;
-        const ba=bt<0.7?1:1-(bt-0.7)/0.3;
-        ctx.save();
-        ctx.globalAlpha=ba;
-        ctx.fillStyle='rgba(80,255,140,1)';
-        ctx.shadowColor='rgba(40,200,100,.6)';
-        ctx.shadowBlur=5;
-        ctx.beginPath();
-        ctx.arc(bx,by,b.r,0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
+    var bar=document.getElementById('player-hp-bar');
+    if(bar){var bi=setInterval(function(){bar.style.filter=bi._b%2===0?'brightness(2.5)':'brightness(1)';bi._b=(bi._b||0)+1;if(bi._b>=6){clearInterval(bi);bar.style.filter='';}},100);bi._b=0;}
+    var hbubbles=Array.from({length:10},function(){return{x:rnd(W*.08,W*.92),y:rnd(H*.45,H*.92),r:rnd(2,4),delay:rnd(0,400),vx:rnd(-.15,.15)};});
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/900,1),elapsed=ts-startTime;ctx.clearRect(0,0,W,H);hbubbles.forEach(function(b){if(elapsed<b.delay)return;var bt=Math.min((elapsed-b.delay)/600,1),by=lerp(b.y,b.y-H*.55,bt),bx=b.x+b.vx*elapsed*.04,ba=bt<.7?1:1-(bt-.7)/.3;ctx.save();ctx.globalAlpha=ba;ctx.fillStyle='rgba(80,255,140,1)';ctx.shadowColor='rgba(40,200,100,.6)';ctx.shadowBlur=5;ctx.beginPath();ctx.arc(bx,by,b.r,0,Math.PI*2);ctx.fill();ctx.restore();});if(t<1)rafId=requestAnimationFrame(frame);else cv.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ⑤ 盾（確定: 画面全体が青く光る）
   }else if(type==='shield'){
-    var fcvS=document.createElement('canvas');
-    fcvS.width=window.innerWidth; fcvS.height=window.innerHeight;
-    fcvS.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
-    document.body.appendChild(fcvS);
-    var fctxS=fcvS.getContext('2d');
-    cv.remove();
-    var DUR=500;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      var t=Math.min((ts-startTime)/DUR,1);
-      fctxS.clearRect(0,0,fcvS.width,fcvS.height);
-      var a=t<0.15?t/0.15:1-(t-0.15)/0.85;
-      fctxS.fillStyle=`rgba(40,120,255,${a*0.4})`;
-      fctxS.fillRect(0,0,fcvS.width,fcvS.height);
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { fcvS.remove(); }
-    }
+    var fcvS=document.createElement('canvas');fcvS.width=window.innerWidth;fcvS.height=window.innerHeight;fcvS.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';document.body.appendChild(fcvS);var fctxS=fcvS.getContext('2d');cv.remove();
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/500,1);fctxS.clearRect(0,0,fcvS.width,fcvS.height);var a=t<.15?t/.15:1-(t-.15)/.85;fctxS.fillStyle='rgba(40,120,255,'+a*.4+')';fctxS.fillRect(0,0,fcvS.width,fcvS.height);if(t<1)rafId=requestAnimationFrame(frame);else fcvS.remove();}
     rafId=requestAnimationFrame(frame);
-  // ⑥ 毒：紫の小泡がわきあがる
   }else if(type==='poison'){
-    var DUR=900;
-    var bubbles=Array.from({length:8},()=>({
-      x:rnd(W*.1,W*.9), y:rnd(H*.5,H*.9),
-      r:rnd(3,7), delay:rnd(0,350), vx:rnd(-0.2,0.2)
-    }));
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      const elapsed=ts-startTime;
-      bubbles.forEach(b=>{
-        if(elapsed<b.delay) return;
-        const bt=Math.min((elapsed-b.delay)/600,1);
-        const by=lerp(b.y, b.y-H*.6, bt);
-        const bx=b.x+b.vx*elapsed*0.05;
-        const ba=bt<0.7?1:1-(bt-0.7)/0.3;
-        ctx.save();
-        ctx.globalAlpha=ba;
-        ctx.fillStyle='rgba(180,60,255,1)';
-        ctx.shadowColor='rgba(160,40,255,.8)';
-        ctx.shadowBlur=8;
-        ctx.beginPath();
-        ctx.arc(bx,by,b.r,0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      });
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
+    var pbubbles=Array.from({length:8},function(){return{x:rnd(W*.1,W*.9),y:rnd(H*.5,H*.9),r:rnd(3,7),delay:rnd(0,350),vx:rnd(-.2,.2)};});
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/900,1),elapsed=ts-startTime;ctx.clearRect(0,0,W,H);pbubbles.forEach(function(b){if(elapsed<b.delay)return;var bt=Math.min((elapsed-b.delay)/600,1),by=lerp(b.y,b.y-H*.6,bt),bx=b.x+b.vx*elapsed*.05,ba=bt<.7?1:1-(bt-.7)/.3;ctx.save();ctx.globalAlpha=ba;ctx.fillStyle='rgba(180,60,255,1)';ctx.shadowColor='rgba(160,40,255,.8)';ctx.shadowBlur=8;ctx.beginPath();ctx.arc(bx,by,b.r,0,Math.PI*2);ctx.fill();ctx.restore();});if(t<1)rafId=requestAnimationFrame(frame);else cv.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ⑦ 強化：画面中央から光の円が全体に広がる
   }else if(type==='buff'){
-    var DUR=600;
-    var fcv=document.createElement('canvas');
-    fcv.width=window.innerWidth;
-    fcv.height=window.innerHeight;
-    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';
-    document.body.appendChild(fcv);
-    var fctx=fcv.getContext('2d');
-    cv.remove();
-    var fcx=fcv.width/2, fcy=fcv.height/2;
-    var maxR=Math.sqrt(fcx*fcx+fcy*fcy)*1.1;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      fctx.clearRect(0,0,fcv.width,fcv.height);
-      // 広がる輪（2本）
-      [0, 0.12].forEach((offset,i)=>{
-        const rt=Math.max(t-offset,0)/(1-offset);
-        if(rt<=0) return;
-        const r=lerp(0,maxR,rt);
-        const a=(1-rt)*0.85;
-        fctx.save();
-        fctx.strokeStyle=`rgba(255,210,40,${a})`;
-        fctx.lineWidth=i===0?8:4;
-        fctx.shadowColor=`rgba(255,200,40,${a})`;
-        fctx.shadowBlur=20;
-        fctx.beginPath();
-        fctx.arc(fcx,fcy,Math.max(r,1),0,Math.PI*2);
-        fctx.stroke();
-        fctx.restore();
-      });
-      // 中央フラッシュ（最初だけ）
-      if(t<0.25){
-        var fa=(0.25-t)/0.25;
-        const gr=fctx.createRadialGradient(fcx,fcy,0,fcx,fcy,60);
-        gr.addColorStop(0,`rgba(255,240,160,${fa*0.9})`);
-        gr.addColorStop(1,'rgba(255,200,40,0)');
-        fctx.fillStyle=gr;
-        fctx.beginPath();
-        fctx.arc(fcx,fcy,60,0,Math.PI*2);
-        fctx.fill();
-      }
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { fcv.remove(); }
-    }
+    var fcvB=document.createElement('canvas');fcvB.width=window.innerWidth;fcvB.height=window.innerHeight;fcvB.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8500;';document.body.appendChild(fcvB);var fctxB=fcvB.getContext('2d'),fcx=fcvB.width/2,fcy=fcvB.height/2,maxR=Math.sqrt(fcx*fcx+fcy*fcy)*1.1;cv.remove();
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/600,1);fctxB.clearRect(0,0,fcvB.width,fcvB.height);[0,.12].forEach(function(off){var rt=Math.max(t-off,0)/(1-off);if(rt<=0)return;var r=lerp(0,maxR,rt),a=(1-rt)*.85;fctxB.save();fctxB.strokeStyle='rgba(255,210,40,'+a+')';fctxB.lineWidth=rt<.5?8:4;fctxB.shadowColor='rgba(255,200,40,'+a+')';fctxB.shadowBlur=20;fctxB.beginPath();fctxB.arc(fcx,fcy,Math.max(r,1),0,Math.PI*2);fctxB.stroke();fctxB.restore();});if(t<1)rafId=requestAnimationFrame(frame);else fcvB.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ⑧ 弱体（確定: エリア全体が紫に暗く染まる）
   }else if(type==='debuff'){
-    var DUR=700;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      var t=Math.min((ts-startTime)/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      var a=t<0.25?t/0.25:1-(t-0.25)/0.75;
-      ctx.fillStyle=`rgba(60,0,90,${a*0.55})`;
-      ctx.fillRect(0,0,W,H);
-      var gr=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*0.5);
-      gr.addColorStop(0,`rgba(100,0,140,${a*0.6})`);
-      gr.addColorStop(1,'rgba(40,0,60,0)');
-      ctx.fillStyle=gr;
-      ctx.fillRect(0,0,W,H);
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/700,1);ctx.clearRect(0,0,W,H);var a=t<.25?t/.25:1-(t-.25)/.75;ctx.fillStyle='rgba(60,0,90,'+a*.55+')';ctx.fillRect(0,0,W,H);var gr=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(W,H)*.5);gr.addColorStop(0,'rgba(100,0,140,'+a*.6+')');gr.addColorStop(1,'rgba(40,0,60,0)');ctx.fillStyle=gr;ctx.fillRect(0,0,W,H);if(t<1)rafId=requestAnimationFrame(frame);else cv.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ⑨ 状態異常：点線の紫リング2つが回転しながら広がる
   }else if(type==='ailment'){
-    var DUR=800;
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      ctx.clearRect(0,0,W,H);
-      const alpha=t<0.25?t/0.25:1-(t-0.25)/0.75;
-      const rot=ts*0.004; // 回転速度
-      // 外リング（大・時計回り）
-      const r1=lerp(8,Math.min(W,H)*0.42,t);
-      ctx.save();
-      ctx.strokeStyle=`rgba(180,60,255,${alpha})`;
-      ctx.lineWidth=4;
-      ctx.shadowColor='rgba(160,40,255,.8)';
-      ctx.shadowBlur=14;
-      ctx.setLineDash([14,9]);
-      ctx.lineDashOffset=-rot*60;
-      ctx.beginPath();
-      ctx.arc(cx,cy,r1,0,Math.PI*2);
-      ctx.stroke();
-      ctx.restore();
-      // 内リング（小・逆回転）
-      const r2=lerp(4,Math.min(W,H)*0.25,t);
-      ctx.save();
-      ctx.strokeStyle=`rgba(220,100,255,${alpha*0.8})`;
-      ctx.lineWidth=3;
-      ctx.shadowColor='rgba(200,80,255,.6)';
-      ctx.shadowBlur=10;
-      ctx.setLineDash([9,7]);
-      ctx.lineDashOffset=rot*50;
-      ctx.beginPath();
-      ctx.arc(cx,cy,r2,0,Math.PI*2);
-      ctx.stroke();
-      ctx.restore();
-      // 中央の小さい紫フラッシュ
-      if(t<0.3){
-        var fa=(0.3-t)/0.3;
-        ctx.save();
-        ctx.fillStyle=`rgba(200,80,255,${fa*0.5})`;
-        ctx.beginPath();
-        ctx.arc(cx,cy,18,0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      }
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { cv.remove(); }
-    }
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/800,1);ctx.clearRect(0,0,W,H);var alpha=t<.25?t/.25:1-(t-.25)/.75,rot=ts*.004,r1=lerp(8,Math.min(W,H)*.42,t);ctx.save();ctx.strokeStyle='rgba(180,60,255,'+alpha+')';ctx.lineWidth=4;ctx.shadowColor='rgba(160,40,255,.8)';ctx.shadowBlur=14;ctx.setLineDash([14,9]);ctx.lineDashOffset=-rot*60;ctx.beginPath();ctx.arc(cx,cy,r1,0,Math.PI*2);ctx.stroke();ctx.restore();var r2=lerp(4,Math.min(W,H)*.25,t);ctx.save();ctx.strokeStyle='rgba(220,100,255,'+alpha*.8+')';ctx.lineWidth=3;ctx.shadowColor='rgba(200,80,255,.6)';ctx.shadowBlur=10;ctx.setLineDash([9,7]);ctx.lineDashOffset=rot*50;ctx.beginPath();ctx.arc(cx,cy,r2,0,Math.PI*2);ctx.stroke();ctx.restore();if(t<1)rafId=requestAnimationFrame(frame);else cv.remove();}
     rafId=requestAnimationFrame(frame);
-
-  // ⑩ 特殊：画面全体が黄色く光る
   }else if(type==='special'){
-    var DUR=500;
-    // 全画面用に別Canvas
-    var fcv=document.createElement('canvas');
-    fcv.width=window.innerWidth;
-    fcv.height=window.innerHeight;
-    fcv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9500;';
-    document.body.appendChild(fcv);
-    var fctx=fcv.getContext('2d');
-    cv.remove(); // エリア用canvasは不要
-    function frame(ts){
-      if(!startTime) startTime=ts;
-      const t=Math.min((ts-startTime)/DUR,1);
-      fctx.clearRect(0,0,fcv.width,fcv.height);
-      const a=t<0.15?t/0.15:1-(t-0.15)/0.85;
-      fctx.fillStyle=`rgba(255,220,40,${a*0.3})`;
-      fctx.fillRect(0,0,fcv.width,fcv.height);
-      if(t<1){ rafId=requestAnimationFrame(frame); }
-      else { fcv.remove(); }
-    }
+    var fcvSp=document.createElement('canvas');fcvSp.width=window.innerWidth;fcvSp.height=window.innerHeight;fcvSp.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9500;';document.body.appendChild(fcvSp);var fctxSp=fcvSp.getContext('2d');cv.remove();
+    function frame(ts){if(!startTime)startTime=ts;var t=Math.min((ts-startTime)/500,1);fctxSp.clearRect(0,0,fcvSp.width,fcvSp.height);var a=t<.15?t/.15:1-(t-.15)/.85;fctxSp.fillStyle='rgba(255,220,40,'+a*.3+')';fctxSp.fillRect(0,0,fcvSp.width,fcvSp.height);if(t<1)rafId=requestAnimationFrame(frame);else fcvSp.remove();}
     rafId=requestAnimationFrame(frame);
   }
 }
 
+// エフェクトキュー（複数効果を順番に表示）
 let effectQueue=[];
 let effectRunning=false;
+function clearEffectQueue(){
+  effectQueue=[];effectRunning=false;
+  if(typeof G!=='undefined') G._effectLocked=false;
+  ['hand-area','end-turn-btn','btn-deck-view','charge-gauge-box','curse-timer-box'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.pointerEvents='';
+  });
+}
 function queueEffect(fn, delay){
   effectQueue.push({fn,delay});
   if(!effectRunning) runEffectQueue();
@@ -7084,7 +6295,6 @@ function runEffectQueue(){
   fn();
   setTimeout(runEffectQueue, delay||800);
 }
-function clearEffectQueue(){effectQueue=[];effectRunning=false;}
 
 
 // ドロー演出（カードを引いたときに表示）
@@ -7248,58 +6458,67 @@ function appendToApp(el){
   }
 }
 
+// スクロール▼インジケーター
+function attachScrollIndicator(scrollEl, wrapEl){
+  const old=wrapEl.querySelector('._scroll-ind');
+  if(old) old.remove();
+  const ind=document.createElement('div');
+  ind.className='_scroll-ind';
+  ind.style.cssText='position:absolute;bottom:0;left:0;right:0;height:36px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;pointer-events:none;';
+  ind.innerHTML='<div style="font-size:16px;color:rgba(201,168,76,.85);animation:_scroll-blink 0.8s ease-in-out infinite;text-shadow:0 0 8px rgba(201,168,76,.6);">▼</div>';
+  if(!document.getElementById('_scroll-blink-style')){
+    const s=document.createElement('style');
+    s.id='_scroll-blink-style';
+    s.textContent='@keyframes _scroll-blink{0%,100%{opacity:0.2;transform:translateY(0);}50%{opacity:1;transform:translateY(3px);}}';
+    document.head.appendChild(s);
+  }
+  wrapEl.style.position='relative';
+  wrapEl.appendChild(ind);
+  const update=()=>{
+    const atBottom=scrollEl.scrollHeight-scrollEl.scrollTop-scrollEl.clientHeight<8;
+    ind.style.display=atBottom?'none':'flex';
+  };
+  update();
+  scrollEl.addEventListener('scroll',update,{passive:true});
+}
+
 function showOv(id){
   const el=document.getElementById(id);
   if(el) el.classList.add('show');
   const curtain=document.getElementById('ov-curtain');
   if(curtain){ curtain.style.display='none'; }
   if(window._curtainSafeTimer){ clearTimeout(window._curtainSafeTimer); window._curtainSafeTimer=null; }
-  // クリア・ゲームオーバー画面はボタンを2秒間操作不可（誤タップ防止）
-  if(id==='ov-clear'||id==='ov-over'){
-    const LOCK_MS=2000;
-    const lockIds= id==='ov-clear'
-      ? ['btn-clear-restart']
-      : ['btn-continue','btn-over-restart'];
-    lockIds.forEach(bid=>{
-      const btn=document.getElementById(bid);
-      if(!btn) return;
-      btn.style.pointerEvents='none';
-      btn.style.opacity='0.35';
-      btn.style.transition='opacity 0.4s';
-    });
-    // カウントダウン表示用オーバーレイをボタン上に追加
-    if(el){
-      let _existLock=el.querySelector('._btn-lock-overlay');
-      if(_existLock) _existLock.remove();
-      const lockDiv=document.createElement('div');
-      lockDiv.className='_btn-lock-overlay';
-      lockDiv.style.cssText='position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:20px;padding:4px 14px;font-size:11px;color:rgba(255,255,255,.6);font-family:sans-serif;pointer-events:none;z-index:10;';
-      lockDiv.textContent='2秒後に操作可能になります';
-      el.style.position='relative';
-      el.appendChild(lockDiv);
-      let remain=2;
-      const tick=setInterval(()=>{
-        remain--;
-        if(remain>0){ lockDiv.textContent=remain+'秒後に操作可能になります'; }
-        else {
-          clearInterval(tick);
-          lockDiv.remove();
-          lockIds.forEach(bid=>{
-            const btn=document.getElementById(bid);
-            if(!btn) return;
-            btn.style.pointerEvents='';
-            btn.style.opacity='';
-          });
-        }
-      },1000);
-    }
+  // スクロール▼インジケーター（クラス切り替えのみ、DOM構造変更なし）
+  const scrollTargets={
+    'ov-statup':'statup-list',
+    'ov-charge-select':'charge-select-list',
+    'ov-banish':'banish-list',
+    'ov-altar':null
+  };
+  if(el && id in scrollTargets){
+    setTimeout(()=>{
+      const listId=scrollTargets[id];
+      const scrollEl=listId?document.getElementById(listId):el;
+      if(!scrollEl) return;
+      const update=()=>{
+        const atBottom=scrollEl.scrollHeight-scrollEl.scrollTop-scrollEl.clientHeight<8;
+        el.classList.toggle('has-more',!atBottom);
+      };
+      update();
+      if(scrollEl._scrollIndHandler) scrollEl.removeEventListener('scroll',scrollEl._scrollIndHandler);
+      scrollEl._scrollIndHandler=update;
+      scrollEl.addEventListener('scroll',update,{passive:true});
+    },80);
   }
 }
 function hideOv(id){
   const el=document.getElementById(id);
-  if(el) el.classList.remove('show');
+  if(el){ el.classList.remove('show'); el.classList.remove('has-more'); }
   // チャージ情報はポップアップなので暗幕不要
   if(id==='ov-charge-info') return;
+  // ゲームオーバー・クリア時は暗幕を出さない（リザルト画面が動的生成のため）
+  if(G && G.phase==='gameover') return;
+  if(document.getElementById('_result-clear')||document.getElementById('_result-over')) return;
   // 他にオーバーレイが表示中か確認
   const anyShown=document.querySelectorAll('.overlay.show').length>0;
   // オーバーレイが全て消えたとき、ゲーム中なら暗幕を出したままにして
@@ -7357,7 +6576,7 @@ function showCardDetailWithConfirm(c, onConfirm){
   if(existing&&existing.parentNode) existing.parentNode.removeChild(existing);
   const popup=document.createElement('div');
   popup.id='card-use-popup';
-  popup.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:manipulation;gap:0;';
+  popup.style.cssText='position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:manipulation;gap:0;';
   // カード拡大表示（ステージ中のcard-detail-popupと同様のスタイル）
   const cardWrap=document.createElement('div');
   cardWrap.style.cssText='width:140px;position:relative;margin-bottom:24px;';
@@ -7583,10 +6802,10 @@ bind('reward-skip',()=>{
 // 汎用の決定/キャンセル確認ポップアップ（カード選択・ステータス強化と同じ見た目）
 function showSimpleConfirm(title, desc, onConfirm){
   const popup=document.createElement('div');
-  popup.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
+  popup.style.cssText='position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;touch-action:manipulation;';
   const infoBox=document.createElement('div');
   infoBox.style.cssText='background:rgba(0,0,0,.7);border:2px solid rgba(201,168,76,.6);border-radius:12px;padding:20px 24px;text-align:center;width:240px;';
-  infoBox.innerHTML='<div style="font-family:\'Cinzel\',serif;font-size:14px;color:#c9a84c;font-weight:bold;margin-bottom:8px;">'+title+'</div>'
+  infoBox.innerHTML='<div style="font-family:\'Cinzel\',serif;font-size:14px;color:#c9a84c;font-weight:bold;margin-bottom:8px;line-height:1.6;">'+title+'</div>'
     +(desc?'<div style="font-size:11px;color:#ccc;font-family:sans-serif;line-height:1.5;">'+desc+'</div>':'');
   popup.appendChild(infoBox);
   const btnWrap=document.createElement('div');
@@ -7607,20 +6826,12 @@ function showSimpleConfirm(title, desc, onConfirm){
   popup.appendChild(btnWrap);
   appendToApp(popup);
 }
-bind('btn-clear-restart',()=>{
-  showSimpleConfirm('タイトルに戻りますか？','これまでの進行状況は失われます',()=>{
-    resetSmithKai();hideOv('ov-clear');showLogoThenTitle();
-  });
-});
+// btn-clear-restart / btn-over-restart は動的生成内でバインド済み（ver150）
 bind('banish-skip',()=>{sfxCancel();hideOv('ov-banish');afterEventNext();});
 bind('spring-skip',()=>{sfxCancel();hideOv('ov-spring');document.getElementById('confirm-box').classList.remove('show');afterEventNext();});
 bind('spring-cancel',()=>{sfxCancel();hideOv('ov-spring');document.getElementById('confirm-box').classList.remove('show');showEventSelection();});
 bind('duplicate-cancel',()=>{sfxCancel();hideOv('ov-duplicate');showEventSelection();});
-bind('btn-over-restart',()=>{
-  showSimpleConfirm('最初からやり直しますか？','これまでの進行状況は失われます',()=>{
-    resetSmithKai();hideOv('ov-over');showLogoThenTitle();
-  });
-});
+// btn-over-restart は動的生成内でバインド済み（ver150）
 // 広告データ（デフォルトはここに直接記述、ads.jsonがあれば上書き）
 let _adsList = [
   { "image": "ad1.png", "url": "https://line.me/S/shop/sticker/author/11740", "alt": "広告1" },
@@ -7694,44 +6905,7 @@ function showAdThenContinue(onComplete){
   closeBtn.addEventListener('touchend', doClose);
 }
 
-// コンテニュー
-(()=>{
-  const cb=document.getElementById('btn-continue');
-  if(!cb) return;
-  const go=()=>{
-    if(G.continueRemain<=0) return;
-    showSimpleConfirm('広告を見てコンテニューしますか？','HPを全回復してステータス強化付きで復活します',()=>{
-      showAdThenContinue(()=>{
-        hideOv('ov-over');
-        G.continueRemain--;
-        const doRevive=()=>{
-          G.playerHp=G.playerMaxHp;
-          G.phase='player';
-          G.shield=G.initShieldBonus||0;
-          G.atkBuff=G.permAtkBonus||0;
-          G.deck=G.deck.filter(id=>!DB[id]||DB[id].type!=='bougai');
-          addLog('⚡ コンテニュー！ HP全回復して復活！','sys');
-          updateUI();
-          startStage();
-        };
-        if(G.areaId===0){
-          // 洞窟：洞窟用の強化選択肢を使う
-          const opts=getCaveStatUpOptions();
-          if(opts.length>0){
-            _showStatUpUI(opts, doRevive);
-          } else {
-            doRevive();
-          }
-        } else {
-          // 遺跡：従来通り
-          showStatUpEvent(false, doRevive);
-        }
-      });
-    });
-  };
-  cb.addEventListener('click', go);
-  cb.addEventListener('touchend',(e)=>{e.preventDefault();go();});
-})();
+// コンテニューボタンは動的生成内でバインド済み（ver150）
 bind('btn-close-deck',()=>{sfxCancel();hideOv('ov-deck');});
 bind('btn-close-rules',()=>{sfxCancel();hideOv('ov-rules');});
 // ov-rulesはbody直下のため別途バインド
@@ -8125,6 +7299,59 @@ function openAdminMode(){
 }
 bind('btn-admin-close',()=>hideOv('ov-admin'));
 
+// エフェクト確認ページ
+bind('btn-admin-effect-check',()=>{
+  hideOv('ov-admin');
+  // ドロップダウンをDBから生成
+  const sel=document.getElementById('effect-check-select');
+  if(sel && sel.options.length===0){
+    Object.keys(DB).forEach(cid=>{
+      const c=DB[cid];
+      if(!c||c.type==='bougai') return;
+      const eff=CARD_EFFECTS[cid];
+      const effStr=eff?eff.map(e=>e.type+'('+e.target+')').join(', '):'未設定';
+      const opt=document.createElement('option');
+      opt.value=cid;
+      opt.textContent=c.name+' ['+effStr+']';
+      sel.appendChild(opt);
+    });
+    // 選択変更時にエフェクト情報を更新
+    sel.addEventListener('change',updateEffectCheckInfo);
+    updateEffectCheckInfo();
+  }
+  showOv('ov-effect-check');
+});
+
+function updateEffectCheckInfo(){
+  const sel=document.getElementById('effect-check-select');
+  const info=document.getElementById('effect-check-info');
+  if(!sel||!info) return;
+  const cid=sel.value;
+  const eff=CARD_EFFECTS[cid];
+  if(!eff||eff.length===0){
+    info.textContent='エフェクト未設定';
+    info.style.color='#888';
+  } else {
+    const typeNames={slash:'斬撃',blunt:'打撃',explode:'爆発',heal:'回復',shield:'盾',poison:'毒',buff:'強化',debuff:'弱体',ailment:'状態異常',special:'特殊'};
+    const targetNames={enemy:'敵エリア',player:'味方エリア'};
+    info.innerHTML=eff.map((e,i)=>`<span style="color:#c9a84c;">第${i+1}段:</span> ${typeNames[e.type]||e.type} → ${targetNames[e.target]||e.target}`).join('<br>');
+    info.style.color='#ddd';
+  }
+}
+
+bind('btn-effect-play',()=>{
+  const sel=document.getElementById('effect-check-select');
+  if(!sel) return;
+  const cid=sel.value;
+  // プレビューエリアを基準にエフェクトを表示
+  triggerCardEffect(cid);
+});
+
+bind('btn-effect-check-back',()=>{
+  hideOv('ov-effect-check');
+  showOv('ov-admin');
+});
+
 // 管理者パスワード入力のイベントをJS側でバインド（インライン属性より確実）
 (function(){
   const pwBox=document.getElementById('admin-pw-box');
@@ -8229,8 +7456,6 @@ const logoScreen=document.getElementById('logo-screen');
 const appDiv=document.getElementById('app');
 
 window.addEventListener('load',()=>{
-  // 起動時に全overlayのshowをクリア（キャッシュ残り防止）
-  document.querySelectorAll('.overlay.show').forEach(el=>el.classList.remove('show'));
   // 最初に「タップでスタート」画面を表示（ユーザー操作を得てからBGM開始）
   const tapScreen=document.getElementById('tap-to-start-screen');
   if(tapScreen){
@@ -8271,6 +7496,7 @@ window.addEventListener('load',()=>{
 });
 
 function showLogoThenTitle(){
+  _gameStarting=false;
   // ログエリアをクリア
   const _logEl=document.getElementById('log-area');
   if(_logEl) _logEl.innerHTML='';
@@ -8365,6 +7591,8 @@ function showStartScreen(callback){
 let _gameStarting=false;
 function startGame(){
   if(_gameStarting) return;
+  // ロゴ演出中（opacity<1）はタップを無視
+  if(parseFloat(logoScreen.style.opacity||'0') < 0.9) return;
   _gameStarting=true;
   hideOv('ov-charge-select'); // 念のため非表示
   sfxConfirm();
@@ -8811,5 +8039,7 @@ document.addEventListener('visibilitychange', ()=>{
   },600);
 })();
 </script>
+<!-- ov-over/ov-clear: body直下・position:fixed -->
+
 </body>
 </html>
