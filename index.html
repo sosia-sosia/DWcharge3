@@ -499,6 +499,30 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .hp-bar.player.low-hp{animation:hp-low-blink 1.2s ease-in-out infinite;}
 @keyframes hp-low-blink{0%,100%{background:linear-gradient(180deg,#ff5a5a,#c0392b);box-shadow:0 0 8px rgba(200,40,40,.4)}50%{background:linear-gradient(180deg,#ff2020,#900);box-shadow:0 0 18px rgba(255,0,0,.8)}}
 
+/* GUARDブロック演出 */
+@keyframes guard-block-anim{
+  0%  {opacity:0;transform:scale(0.5) translateY(10px);}
+  15% {opacity:1;transform:scale(1.2) translateY(-6px);}
+  50% {opacity:1;transform:scale(1.0) translateY(0);}
+  100%{opacity:0;transform:scale(0.9) translateY(-20px);}
+}
+/* 青フラッシュ */
+#flash-overlay.flash-blue{animation:flash-blue-anim .5s ease-out forwards;}
+@keyframes flash-blue-anim{0%{background:rgba(93,173,226,.55)}100%{background:transparent}}
+/* GUARD数字スタイル */
+.dmg-num.player-guard{
+  font-size:36px!important;font-weight:900;font-family:'Cinzel',serif;
+  color:#fff;letter-spacing:2px;
+  text-shadow:0 0 8px #5dade2,0 0 20px #5dade2,0 0 40px #2980b9;
+  animation:guard-num-anim 1.2s ease-out forwards;
+}
+@keyframes guard-num-anim{
+  0%  {opacity:0;transform:scale(0.6) translateY(12px);}
+  20% {opacity:1;transform:scale(1.15) translateY(-4px);}
+  60% {opacity:1;transform:scale(1.0) translateY(-10px);}
+  100%{opacity:0;transform:scale(0.9) translateY(-28px);}
+}
+
 /* カードリップルエフェクト */
 .card-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.45);pointer-events:none;animation:ripple-anim .5s ease-out forwards;z-index:99;}
 @keyframes ripple-anim{0%{width:0;height:0;opacity:1;transform:translate(-50%,-50%)}100%{width:80px;height:80px;opacity:0;transform:translate(-50%,-50%)}}
@@ -648,7 +672,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:#b8d4ff;letter-spacing:8px;text-shadow:0 0 20px rgba(100,160,255,.8),0 0 40px rgba(100,160,255,.3),1px 1px 0 #0a2060;text-align:center;">CHARGE</div>
     <div style="height:2px;width:220px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin-top:6px;"></div>
     <div style="font-family:'Cinzel',serif;font-size:10px;color:rgba(201,168,76,.5);letter-spacing:3px;">CARD BATTLE RPG</div>
-    <div style="font-family:sans-serif;font-size:9px;color:rgba(201,168,76,.35);letter-spacing:1px;margin-top:2px;">ver171</div>
+    <div style="font-family:sans-serif;font-size:9px;color:rgba(201,168,76,.35);letter-spacing:1px;margin-top:2px;">ver175</div>
     <div style="font-family:'Cinzel',serif;font-size:12px;color:rgba(201,168,76,.7);letter-spacing:4px;animation:logo-pulse 1.5s ease-in-out infinite;margin-top:10px;">▶ TAP TO START</div>
   </div>
 
@@ -1152,7 +1176,7 @@ const DB={
   bigMana:     {id:'bigMana',     name:'大魔力解放',icon:'⚗️', type:'skill',   rarity:'legendary',cost:0, desc:'マナ+4 / 使用後除外 / 敵討伐後デッキに戻る',shortDesc:"マナ+4 除外", effect:{mana:4,tempExile:true}},
   dragonGod:   {id:'dragonGod',   name:'龍神化',  icon:'🐉', type:'skill',   rarity:'legendary',cost:0, desc:'次の攻撃の1撃目が2倍ダメージ',shortDesc:"次撃1撃目2倍",            effect:{doubleBuff:true}},
   manaRelease: {id:'manaRelease', name:'魔力解放', icon:'💡', type:'skill',   rarity:'epic',     cost:0, desc:'マナ+2 / 戦闘終了まで除外',shortDesc:"マナ+2 除外", effect:{mana:2,battleExile:true}},
-  freeze:      {id:'freeze',      name:'凍結',    icon:'❄️', type:'skill',   rarity:'epic',      cost:3, desc:'敵を1ターン行動不能にする / 戦闘終了まで除外',shortDesc:"敵1T行動不能", effect:{freezeEnemy:true,battleExile:true}},
+  freeze:      {id:'freeze',      name:'凍結',    icon:'❄️', type:'skill',   rarity:'epic',      cost:5, desc:'敵を1ターン行動不能にする / 戦闘終了まで除外',shortDesc:"敵1T行動不能", effect:{freezeEnemy:true,battleExile:true}},
   echo:        {id:'echo',        name:'残影',    icon:'👥', type:'skill',   rarity:'legendary',cost:1, desc:'直前に使ったカードと同じ効果を再び発動',shortDesc:"直前カード再発動",  effect:{echoLast:true}},
   freePass:    {id:'freePass',    name:'踏み倒し', icon:'🎭', type:'skill',   rarity:'legendary',cost:0, desc:'次に使用するカードのコストを0にする。1ターン1度のみ使用可。',shortDesc:"次カードコスト0",  effect:{freeNextCard:true}},
   guideStrike: {id:'guideStrike',name:'導きの一撃',icon:'✨',type:'attack', rarity:'common',   cost:1, desc:'攻撃 4 + ドロー1',shortDesc:"攻4+ドロー1",             effect:{atk:4,draw:1}},
@@ -1435,6 +1459,7 @@ function startStage(){
   showStageIntro(G.stage+1, getAreaEnemies()[G.stage], ()=>_startStageBattle());
 }
 function _startStageBattle(){
+  clearEffectQueue(); // 前ステージの残留エフェクトロックをリセット
   stopCurseOrbs();
   stopEventBgm();
   updateBgm();
@@ -1793,15 +1818,17 @@ function playCard(idx, _isChain){
   // 自傷ダメージ・HP減少を攻撃より先に処理（魂喰らい+血の契約などの処理順確保）
   if(ef.selfDmg){
     const sd=ef.selfDmg;
-    G.playerHp=Math.max(1,G.playerHp-sd); // 0以下にはしない（攻撃後に死亡チェック）
+    G.playerHp=Math.max(1,G.playerHp-sd);
     msgs.push('HP-'+sd);
-    queueEffect(()=>{spawnDmgNum('-'+sd,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 800);
+    updateUI(); // HPバーを即時更新（演出より先にバーを下げる）
+    queueEffect(()=>{spawnDmgNum('-'+sd,'player-dmg');shakePlayerArea();flashScreen('flash-red');updateUI();}, 1200);
   }
   if(ef.selfHp&&ef.selfHp<0){
     const sd2=Math.abs(ef.selfHp);
     G.playerHp=Math.max(1,G.playerHp+ef.selfHp);
     msgs.push('HP-'+sd2);
-    queueEffect(()=>{spawnDmgNum('-'+sd2,'player-dmg');shakePlayerArea();flashScreen('flash-red');}, 800);
+    updateUI(); // HPバーを即時更新
+    queueEffect(()=>{spawnDmgNum('-'+sd2,'player-dmg');shakePlayerArea();flashScreen('flash-red');updateUI();}, 1200);
   }
   if(ef.atk && !ef.ignoreShield){
     const t=ef.times||1;
@@ -1823,6 +1850,7 @@ function playCard(idx, _isChain){
     }
     const _hpBefore=G.enemy.curHp;
     const _hpPerHit=[];
+    const _seHealPerHit=[]; // 魂喰らい回復量を各ヒット分記録
     for(let i=0;i<t;i++){
       const _mult=(G.doubleNext&&i===0)?(G.doubleMultiplier||2):1;
       if(G.doubleNext&&i===0){G.doubleNext=false;G.doubleMultiplier=1;}
@@ -1834,10 +1862,10 @@ function playCard(idx, _isChain){
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
       _hpPerHit.push({dmg:d, hp:G.enemy.curHp});
       G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+      // 魂喰らい：回復量を記録しておき演出はヒットアニメ内で行う
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');}_seHealPerHit.push(_seH>0?_seH:0);}else{_seHealPerHit.push(0);}
       if(G.swiftBladeActive && d>=10){queueEffect(()=>{addLog('⚡ 加速する刃: ドロー1','sys');flashDrawCard(1);setTimeout(()=>{drawCards(1);renderHand();},500);}, 800);}
       msgs.push(c.name+': '+d+'ダメ');
-      // HP0になっても残りのヒットは通常通りダメージを与え続ける（オーバーキルも演出する＝爽快感優先）
     }
     // 先頭のqueueEffectでHPを_hpBeforeに一時戻し、1撃ごとに段階表示
     if(t>1){
@@ -1849,8 +1877,8 @@ function playCard(idx, _isChain){
         if(hpNum) hpNum.textContent=_hpBefore+'/'+G.enemy.hp;
       }, 0);
     }
-    _hpPerHit.forEach(function(hit){
-      (function(dmg, snapHp){
+    _hpPerHit.forEach(function(hit, hitIdx){
+      (function(dmg, snapHp, seHeal){
         queueEffect(()=>{
           G.enemy.curHp=snapHp;
           const hpBar=document.getElementById('enemy-hp-bar');
@@ -1861,8 +1889,12 @@ function playCard(idx, _isChain){
           shakeEnemyArea();
           flashScreen('flash-gold');
           sfxDamage();
+          // 魂喰らい演出をヒット直後に表示（HP巻き戻しの影響なし）
+          if(seHeal>0){
+            setTimeout(()=>{spawnDmgNum('+'+seHeal,'heal');sfxHeal();flashHealEffect(seHeal);},200);
+          }
         }, 800);
-      })(hit.dmg, hit.hp);
+      })(hit.dmg, hit.hp, _seHealPerHit[hitIdx]||0);
     });
     // 全ヒットの演出が終わった直後に死亡判定（演出中のHP巻き戻しの影響を受けないタイミングで判定するため）
     if(_hpPerHit.length>0 && _hpPerHit[_hpPerHit.length-1].hp<=0){
@@ -1918,7 +1950,7 @@ function playCard(idx, _isChain){
     let d=(atkVal+G.atkBuff)*_m2;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     msgs.push(c.name+': '+(isFullHp?'満タン ':'')+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
   }
@@ -1931,7 +1963,7 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('連鎖爆発: 攻カード'+atkCount+'枚×5='+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -1942,7 +1974,7 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('積み重ね: ステージ消費マナ'+spent+'→'+d+'ダメージ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -1954,7 +1986,7 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('捨て身: '+n+'枚捨て×5='+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -1975,7 +2007,7 @@ function playCard(idx, _isChain){
     let dmgLeft=d;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,dmgLeft);G.enemyShield-=a;dmgLeft-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-dmgLeft);
-    if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+dmgLeft;
     msgs.push('薄氷: 山札'+rem+'枚→'+(doubleApplied?d/2+'×2=':'')+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -1986,7 +2018,7 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('知識の海: デッキ'+G.deck.length+'枚='+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -2031,7 +2063,7 @@ function playCard(idx, _isChain){
           if(G.doubleNext&&i===0) G.doubleNext=false;
           if(!pef.pierceBreak&&G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
           G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-          if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+          if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
           G.totalDmgDealt=(G.totalDmgDealt||0)+d;
           echoMsgs.push(d+'ダメ');
           (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);})(d);
@@ -2044,7 +2076,7 @@ function playCard(idx, _isChain){
         let d=baseDmg*_mult;
         if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
         G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-        if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+        if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
         G.totalDmgDealt=(G.totalDmgDealt||0)+d;
         echoMsgs.push('殴り返し: '+d+'ダメ'+(prevLoss>0?' (前敵T減HP:'+prevLoss+'含む)':''));
         (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);})(d);
@@ -2119,7 +2151,7 @@ function playCard(idx, _isChain){
       let dmgLeft=finalDmg;
       if(G.enemyShield>0){const abs=Math.min(G.enemyShield,dmgLeft);G.enemyShield-=abs;dmgLeft-=abs;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-dmgLeft);
-      if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+      if(G.soulEaterActive && dmgLeft>0){const _seH=Math.floor(dmgLeft/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
       G.totalDmgDealt=(G.totalDmgDealt||0)+dmgLeft;
       msgs.push('盾の一撃: '+(doubleApplied?sd+'×2=':'')+finalDmg+'ダメ 盾'+(remain>0?remain+'に':'0に'));
       queueEffect(()=>{spawnDmgNum('-'+finalDmg,'enemy-dmg'); shakeEnemyArea(); flashScreen('flash-gold'); sfxDamage();}, 800);
@@ -2191,7 +2223,7 @@ function playCard(idx, _isChain){
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,hd);G.enemyShield-=a;hd-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-hd);
     G.totalDmgDealt=(G.totalDmgDealt||0)+hd;
-    if(G.soulEaterActive && hd>0){const _seH=Math.floor(hd/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && hd>0){const _seH=Math.floor(hd/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.stageHealSum=0; // 使用後カウントリセット
     msgs.push('神聖なる拳: 回復合計'+healTotal+'→'+d+'ダメ（カウントリセット）');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -2206,7 +2238,7 @@ function playCard(idx, _isChain){
     let fd=furyDmg;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,fd);G.enemyShield-=a;fd-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-fd);
-    if(G.soulEaterActive && furyDmg>0){const _seH=Math.floor(furyDmg/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && furyDmg>0){const _seH=Math.floor(furyDmg/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+fd;
     G.furyDanceBonus=(G.furyDanceBonus||0)+3;
     msgs.push('憤怒の舞: '+(furyBonus>0?'(+'+furyBonus+'累積) ':'')+furyDmg+'ダメ+ドロー1 次の舞+3累積');
@@ -2226,7 +2258,7 @@ function playCard(idx, _isChain){
     if(G.doubleNext){G.doubleNext=false;G.doubleMultiplier=1;}
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('追撃: '+(isSecondAtk?'2枚目↑ 攻撃'+bonusVal:'1枚目 攻撃4')+' → '+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -2294,7 +2326,7 @@ function playCard(idx, _isChain){
       let d=sv;
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
       G.totalDmgDealt=(G.totalDmgDealt||0)+d;
       msgs.push('反転(旧): 盾'+sv+'→'+d+'ダメ');
       queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -2310,7 +2342,7 @@ function playCard(idx, _isChain){
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
       G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
       msgs.push('反転: 盾-'+sv+' → '+d+'ダメ');
       queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
       checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
@@ -2337,7 +2369,7 @@ function playCard(idx, _isChain){
     if(G.doubleNext) G.doubleNext=false;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,bda);G.enemyShield-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-bda);
-    if(G.soulEaterActive && bda>0){const _seH=Math.floor(bda/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && bda>0){const _seH=Math.floor(bda/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+bda;
     msgs.push('呪い爆発: 状態異常'+count+'×8='+bda+'ダメージ');
     queueEffect(()=>{spawnDmgNum('-'+bda,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -2350,7 +2382,7 @@ function playCard(idx, _isChain){
       let epd=pd;
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,epd);G.enemyShield-=a;epd-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-epd);
-      if(G.soulEaterActive && epd>0){const _seH=Math.floor(epd/2);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+      if(G.soulEaterActive && epd>0){const _seH=Math.floor(epd/2);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
       G.totalDmgDealt=(G.totalDmgDealt||0)+epd;
       const halfPoison=Math.ceil(pc/2);
       G.enemyPoison=halfPoison;
@@ -2369,7 +2401,7 @@ function playCard(idx, _isChain){
     const _mult=(G.doubleNext)?(G.doubleMultiplier||2):1;if(G.doubleNext){G.doubleNext=false;G.doubleMultiplier=1;}
     let d=(ef.atk+G.atkBuff)*_mult;
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('鎧抜き: 盾無視'+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -2400,7 +2432,7 @@ function playCard(idx, _isChain){
     let d=baseDmg*_mult;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     G.totalDmgDealt=(G.totalDmgDealt||0)+d;
     msgs.push('殴り返し: '+d+'ダメ'+(prevLoss>0?' (前敵T減HP:'+prevLoss+'含む)':''));
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
@@ -2414,7 +2446,7 @@ function playCard(idx, _isChain){
       let d=(ef.atk+G.atkBuff)*_mult;
       if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
       G.enemy.curHp=Math.max(0,G.enemy.curHp-d);G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+      if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
       msgs.push('連撃: '+d+'ダメ');
       (function(dmg){queueEffect(()=>{spawnDmgNum('-'+dmg,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);})(d);
     }
@@ -2443,17 +2475,19 @@ function playCard(idx, _isChain){
     let d=cd*_mult;
     if(G.enemyShield>0){const a=Math.min(G.enemyShield,d);G.enemyShield-=a;d-=a;}
     G.enemy.curHp=Math.max(0,G.enemy.curHp-d);G.totalDmgDealt=(G.totalDmgDealt||0)+d;
-    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'player-dmg');sfxHeal();flashHealEffect(_seH);}, 800);}}
+    if(G.soulEaterActive && d>0){const _seH=Math.floor(d/2)+(G.soulEaterBonus||0);if(_seH>0){G.playerHp=Math.min(G.playerMaxHp,G.playerHp+_seH);addLog('💀 魂喰らい: +'+_seH+' 回復','sys');queueEffect(()=>{spawnDmgNum('+'+_seH,'heal');sfxHeal();flashHealEffect(_seH);}, 1200);}}
     msgs.push('呪詛返し: '+d+'ダメ');
     queueEffect(()=>{spawnDmgNum('-'+d,'enemy-dmg');shakeEnemyArea();flashScreen('flash-gold');sfxDamage();}, 800);
     checkEnemyDeath(); // HP0でもここではreturnしない（後続の効果ブロックを継続処理。最終判定は関数末尾）
   }
   // 妨害除外 or ドロー（解呪）
   if(ef.bougaiExile_or_draw){
-    // 解呪：状態異常チェック（妨害カードは別扱い）
+    // 解呪：状態異常チェック（手札の妨害カードも含む）
+    const _hasBougaiInHand=G.hand.some(id=>DB[id]&&DB[id].type==='bougai');
     const _hasNeg=(G.playerPoison||0)>0||(G.heavyWoundTurns||0)>0
       ||(G.shieldWeakenTurns||0)>0||(G.quakeTurns||0)>0
-      ||G.sealThisTurn||(G.manaRegenPenaltyNext||0)>0;
+      ||G.sealThisTurn||(G.manaRegenPenaltyNext||0)>0
+      ||_hasBougaiInHand;
     if(!_hasNeg){addLog('✨ 解呪: 状態異常がないため使用不可！','sys');return;}
     const bIdx=G.hand.findIndex(id=>DB[id]&&DB[id].type==='bougai');
     if(bIdx>=0){const bid=G.hand.splice(bIdx,1)[0];msgs.push('妨害「'+DB[bid].name+'」除外');}
@@ -2805,6 +2839,7 @@ function enemyTurn(){
         updateUI();
         return showBougaiPopup('bougai_poisonfang',2,()=>nextStep());
       }
+      return; // 死亡時はnextStepへ進まない
     }
     else if(act==='burn'){
       // 火傷：ATK + デッキに火傷Dカードが3枚追加
@@ -2816,6 +2851,7 @@ function enemyTurn(){
         updateUI();
         return showBougaiPopup('bougai_burn',3,()=>nextStep());
       }
+      return; // 死亡時はnextStepへ進まない
     }
     else if(act==='weaken_e'){
       // 衰弱：ATK + 2ターン間シールドの効果が半減
@@ -2825,7 +2861,7 @@ function enemyTurn(){
         G.shieldWeakenTurns=2;
         addLog('💀 衰弱！2ターン間シールド効果が半減！','enemy');
         updateUI();
-      }
+      } else { return; } // 死亡時はnextStepへ進まない
     }
     else if(act==='judgment'){
       // 裁き：ATK + 次の開始時マナ-1
@@ -2835,7 +2871,7 @@ function enemyTurn(){
         G.manaRegenPenaltyNext=(G.manaRegenPenaltyNext||0)+1;
         addLog('⚖️ 裁き！次のターン開始時マナが-1！','enemy');
         updateUI();
-      }
+      } else { return; }
     }
     else if(act==='heavywound'){
       // 重傷：ATK + 回復カードの効果が3ターン半減
@@ -2845,7 +2881,7 @@ function enemyTurn(){
         G.heavyWoundTurns=3;
         addLog('💔 重傷！3ターン間回復効果が半減！','enemy');
         updateUI();
-      }
+      } else { return; }
     }
     else if(act==='soulcrush'){
       // 魂砕き：ATK + デッキに魂砕きDカード1枚追加
@@ -2857,6 +2893,7 @@ function enemyTurn(){
         updateUI();
         return showBougaiPopup('bougai_soulcrush',1,()=>nextStep());
       }
+      return; // 死亡時はnextStepへ進まない
     }
     else if(act==='curse_bind'){
       // 呪縛：ATK + 次のターン開始時のマナ回復-2
@@ -2866,7 +2903,7 @@ function enemyTurn(){
         G.manaRegenPenaltyNext=(G.manaRegenPenaltyNext||0)+2;
         addLog('⛓️ 呪縛！次ターン開始マナ-2！','enemy');
         updateUI();
-      }
+      } else { return; } // ← ここが原因だった（returnなしでnextStepが走っていた）
     }
     else if(act==='despair'){
       // 絶望：ATK + デッキに足枷Dカード3枚追加
@@ -2878,6 +2915,7 @@ function enemyTurn(){
         updateUI();
         return showBougaiPopup('bougai_ashikase',3,()=>nextStep());
       }
+      return; // 死亡時はnextStepへ進まない
     }
     else if(act==='enervate'){
       // 脱力：ATK + デッキに脱力Dカード2枚追加
@@ -2889,6 +2927,7 @@ function enemyTurn(){
         updateUI();
         return showBougaiPopup('bougai_datsuryo',2,()=>nextStep());
       }
+      return; // 死亡時はnextStepへ進まない
     }
     else if(act==='reflect_e'){
       // 反射：ATK + 次の攻撃のダメージが反射する
@@ -2898,8 +2937,10 @@ function enemyTurn(){
         G.enemy.reflectActive=true;
         addLog('🔄 反射！次の攻撃は反射される！','enemy');
         updateUI();
-      }
+      } else { return; }
     }
+    // 死亡していなければ次のステップへ
+    if(G.playerHp<=0) return; // defeat済みなのでnextStepを呼ばない
     setTimeout(nextStep,1000);
     },1000); // アクション実行遅延（行動表示後1秒）
   });
@@ -3146,7 +3187,7 @@ function dealToPlayer(dmg,lbl){
       addLog('🪨 剛体: シールド'+halfLoss+'減少（半減）','sys');
     } else {
       const a=Math.min(G.shield,d);G.shield-=a;d-=a;
-      if(a){addLog('🛡️ シールド'+a+'吸収','enemy');sfxShield();flashShieldBlock('player');}
+      if(a){addLog('🛡️ GUARD！ シールド'+a+'吸収（ダメージ0）','sys');sfxShield();flashShieldBlock('player');}
     }
   }
   G.playerHp=Math.max(0,G.playerHp-d);
@@ -3162,7 +3203,12 @@ function dealToPlayer(dmg,lbl){
   }
   addLog('🔴 '+lbl+': '+d+'ダメ','enemy');
   if(d>0){queueEffect(()=>{spawnDmgNum('-'+d,'player-dmg'); shakePlayerArea(); flashScreen('flash-red'); sfxDamage();}, 800);}
-  else{queueEffect(()=>{spawnDmgNum('GUARD','player-dmg');}, 800);} // 全シールド吸収時
+  else{queueEffect(()=>{
+    // 全シールド吸収（ダメージ0）：GUARD演出
+    spawnDmgNum('GUARD!','player-guard');
+    flashShieldBlock('player');
+    sfxShield();
+  }, 800);} // 全シールド吸収時
   updateUI(); if(G.playerHp<=0)defeat(G.enemy?(G.enemy.name+'の攻撃'):undefined);
 }
 // 妨害カード追加ヘルパー：デッキとdrawPileの両方に追加する
@@ -3747,7 +3793,7 @@ function showSmithEvent(){
     } else {
       skipBtn.style.cssText='background:rgba(80,80,80,.3);border-color:rgba(200,200,200,.3);color:#aaa;font-size:11px;width:100%;margin-top:8px;';
       skipBtn.textContent='← イベント選択に戻る';
-      bindTouch(skipBtn,()=>{restoreSmithBg();hideOv('ov-statup');showSpringOrSmithChoice();});
+      bindTouch(skipBtn,()=>{restoreSmithBg();hideOv('ov-statup');showEventSelection();});
     }
     list.appendChild(skipBtn);
     showOv('ov-statup');
@@ -3789,7 +3835,7 @@ function showSmithEvent(){
   } else {
     bottomBtn.style.cssText='background:rgba(80,80,80,.3);border-color:rgba(200,200,200,.3);color:#aaa;font-size:11px;width:100%;margin-top:4px;';
     bottomBtn.textContent='← イベント選択に戻る';
-    bindTouch(bottomBtn,()=>{restoreSmithBg();hideOv('ov-statup');showSpringOrSmithChoice();});
+    bindTouch(bottomBtn,()=>{restoreSmithBg();hideOv('ov-statup');showEventSelection();});
   }
   list.appendChild(bottomBtn);
 
@@ -4172,9 +4218,16 @@ function showSpringEvent(){
   // デッキのカードを種類ごとに表示
   const cnt={};
   G.deck.forEach(id=>cnt[id]=(cnt[id]||0)+1);
-  Object.entries(cnt).forEach(([id,n])=>{
+  const validEntries=Object.entries(cnt).filter(([id])=>DB[id]&&DB[id].rarity!=='gauge');
+  // 渡せるカードがない場合はスキップして次へ
+  if(validEntries.length===0){
+    addLog('💧 泉に渡せるカードがありません（スキップ）','sys');
+    hideOv('ov-spring');
+    afterEventNext();
+    return;
+  }
+  validEntries.forEach(([id,n])=>{
     const c=DB[id]; if(!c) return;
-    if(c.rarity==='gauge') return; // Gカードは等価交換不可
     const d=document.createElement('div');
     const fImg=FRAME_IMGS[c.rarity]||'';
     if(fImg){d.style.backgroundImage='url('+fImg+')';d.style.backgroundSize='100% 100%';}
@@ -4195,14 +4248,18 @@ function showSpringEvent(){
 
     const selectCard=(ev)=>{
       if(ev&&ev.type==='touchend') ev.preventDefault();
-      showCardDetailWithConfirm(c, ()=>{
-        const i=G.deck.indexOf(id);
-        if(i>=0) G.deck.splice(i,1);
-        addLog('💧「'+c.name+'」を泉に渡した','sys');
-        showSpringRewards(c.rarity, list, rewardArea, rewardList);
-      });
+      // showCardDetailWithConfirmを直接呼ばず、直接選択処理へ（bindCardTouchが既にconfirmを出すため二重になる）
+      const i=G.deck.indexOf(id);
+      if(i>=0) G.deck.splice(i,1);
+      addLog('💧「'+c.name+'」を泉に渡した','sys');
+      showSpringRewards(c.rarity, list, rewardArea, rewardList);
     };
-    bindCardTouch(d, c, selectCard);
+    // 直接タップ（二重confirm防止のためbindCardTouchは使わない）
+    let _sMoved=false,_sSY=0,_sSX=0;
+    d.addEventListener('touchstart',(e)=>{_sMoved=false;_sSY=e.touches[0].clientY;_sSX=e.touches[0].clientX;},{passive:true});
+    d.addEventListener('touchmove',(e)=>{const dy=Math.abs(e.touches[0].clientY-_sSY),dx=Math.abs(e.touches[0].clientX-_sSX);if(dy>5||dx>5)_sMoved=true;},{passive:true});
+    d.addEventListener('touchend',(ev)=>{if(_sMoved)return;ev.preventDefault();selectCard(ev);});
+    d.addEventListener('click',(ev)=>{if(!_sMoved)selectCard(ev);});
     list.appendChild(d);
   });
   showOv('ov-spring');
@@ -4261,14 +4318,17 @@ function showSpringRewards(rarity, list, rewardArea, rewardList){
 
     const pick=(ev)=>{
       if(ev&&ev.type==='touchend') ev.preventDefault();
-      showCardDetailWithConfirm(c, ()=>{
-        G.deck.push(cid);
-        addLog('💧「'+c.name+'」を獲得！','sys');
-        hideOv('ov-spring');
-        afterEventNext();
-      });
+      G.deck.push(cid);
+      addLog('💧「'+c.name+'」を獲得！','sys');
+      hideOv('ov-spring');
+      afterEventNext();
     };
-    bindCardTouch(d, c, pick);
+    // 直接タップ（二重confirm防止）
+    let _rMoved=false,_rSY=0,_rSX=0;
+    d.addEventListener('touchstart',(e)=>{_rMoved=false;_rSY=e.touches[0].clientY;_rSX=e.touches[0].clientX;},{passive:true});
+    d.addEventListener('touchmove',(e)=>{const dy=Math.abs(e.touches[0].clientY-_rSY),dx=Math.abs(e.touches[0].clientX-_rSX);if(dy>5||dx>5)_rMoved=true;},{passive:true});
+    d.addEventListener('touchend',(ev)=>{if(_rMoved)return;ev.preventDefault();pick(ev);});
+    d.addEventListener('click',(ev)=>{if(!_rMoved)pick(ev);});
     rewardList.appendChild(d);
   });
 }
@@ -4361,6 +4421,14 @@ function showStatUpEvent(stage2Only, onDone){
       </div>`;
     list.appendChild(d);
   });
+  // 選択肢が全くない場合はスキップ
+  if(options.length===0 && hiddenOptions.length===0){
+    addLog('⬆️ 強化の選択肢がありません（スキップ）','sys');
+    if(onDone){ onDone(); }
+    else if(G._postEventStatUp){ G._postEventStatUp=false; startStage(); }
+    else { startStage(); }
+    return;
+  }
   showOv('ov-statup');
 }
 
@@ -5214,9 +5282,10 @@ function renderHand(){  clampPage();
     const ef=c.effect||{};
     const needsBougai=ef.bougaiExile_atk||ef.bougaiExile_shield||ef.bougaiExile_heal||ef.bougaiExile_curse;
     const isBougaiLocked=needsBougai&&!hasBougaiInHand;
-    // 解呪：状態異常を受けていない場合は使用不可（妨害カードは別扱い）
+    // 解呪：状態異常を受けていないかつ手札に妨害カードもない場合は使用不可
     const hasBougaiInHand = G.hand.some(id=>DB[id]&&DB[id].type==='bougai');
-    const isExorciseLocked = (c.id==='exorcise'||c._baseId==='exorcise') && !hasBougaiInHand;
+    const _exorciseHasTarget=hasBougaiInHand||(G.playerPoison||0)>0||(G.heavyWoundTurns||0)>0||(G.shieldWeakenTurns||0)>0||(G.quakeTurns||0)>0||G.sealThisTurn||(G.manaRegenPenaltyNext||0)>0;
+    const isExorciseLocked = (c.id==='exorcise'||c._baseId==='exorcise') && !_exorciseHasTarget;
     // 驚異の生命力：HP50%未満は使用不可
     const isHalfHpLocked = (ef.requireHalfHp) && G.playerHp < G.playerMaxHp*0.5;
     const canUse = ok && !isPoisonKillLocked && !isLastStandLocked && !isFuryDanceLocked && !isSwiftLocked && !isEchoLocked && !isFreePassLocked && !isFreePassCostLocked && !isChainNoSkillLocked && !isAfterForceLocked && !isSealLocked && !isQuakeLocked && !isBougaiLocked && !isExorciseLocked && !isHalfHpLocked;
@@ -5724,10 +5793,17 @@ function showDuplicateEvent(){
     }
   }
   const cnt={};G.deck.forEach(id=>cnt[id]=(cnt[id]||0)+1);
+  const _hasDupTarget=Object.entries(cnt).some(([id])=>DB[id]&&DB[id].rarity!=='gauge'&&DB[id].rarity!=='legendary');
+  if(!_hasDupTarget){
+    addLog('🪄 複製できるカードがありません（スキップ）','sys');
+    hideOv('ov-duplicate');
+    afterEventNext();
+    return;
+  }
   Object.entries(cnt).forEach(([id,n])=>{
     const c=DB[id];if(!c)return;
-    if(c.rarity==='gauge') return; // Gカードは複製不可
-    if(c.rarity==='legendary') return; // Lカードは複製不可
+    if(c.rarity==='gauge') return;
+    if(c.rarity==='legendary') return;
     const d=document.createElement('div');
     const fImg=FRAME_IMGS[c.rarity]||'';
     if(fImg){d.style.backgroundImage='url('+fImg+')';d.style.backgroundSize='100% 100%';}
@@ -6340,6 +6416,7 @@ function showEffectPopup(imgFile, labelText, colorHex, mode){
 // 回復演出
 function flashHealEffect(amount){
   showEffectPopup('Ekaihuku.png', (amount?'+'+amount+' 回復':'回復'), '#4aff88');
+  updateUI(); // HP回復をバーに即時反映
 }
 // 反射演出
 function flashReflectEffect(){
@@ -6370,22 +6447,31 @@ function flashShieldAdd(target, amount){
 // 盾でダメージ防いだ時の演出
 function flashShieldBlock(target){
   const el=document.getElementById('effect-layer');
+  // BLOCK文字（大きく・強く光る）
   const d=document.createElement('div');
   d.textContent='BLOCK';
-  d.style.cssText='position:fixed;font-size:26px;font-weight:bold;color:#5dade2;pointer-events:none;z-index:9999;text-shadow:0 0 12px #5dade2,0 0 24px #5dade2;animation:shield-add-anim 1.2s ease-out forwards;';
+  d.style.cssText='position:fixed;font-size:40px;font-weight:900;font-family:\'Cinzel\',serif;color:#fff;pointer-events:none;z-index:9999;text-shadow:0 0 10px #5dade2,0 0 24px #5dade2,0 0 48px #2980b9;letter-spacing:3px;animation:guard-block-anim 1.4s ease-out forwards;';
   if(target==='enemy'){
     const ea=document.getElementById('enemy-area');
     const rect=ea?ea.getBoundingClientRect():{left:window.innerWidth/2,top:window.innerHeight*0.3,width:0,height:0};
-    d.style.left=(rect.left+rect.width/2-24)+'px';
-    d.style.top=(rect.top+rect.height/2-14)+'px';
+    d.style.left=(rect.left+rect.width/2-50)+'px';
+    d.style.top=(rect.top+rect.height/2-22)+'px';
   } else {
     const pb=document.getElementById('player-hp-bar');
     const rect=pb?pb.getBoundingClientRect():{left:window.innerWidth/2,top:window.innerHeight*0.7,width:0,height:0};
-    d.style.left=(rect.left+rect.width/2-24)+'px';
-    d.style.top=(rect.top-40)+'px';
+    d.style.left=(rect.left+rect.width/2-50)+'px';
+    d.style.top=(rect.top-52)+'px';
   }
   el.appendChild(d);
-  setTimeout(()=>d.remove(),1300);
+  setTimeout(()=>d.remove(),1500);
+  // 青フラッシュ背景
+  const flashOv=document.getElementById('flash-overlay');
+  if(flashOv){flashOv.className=''; void flashOv.offsetWidth; flashOv.className='flash-blue';}
+  // プレイヤーHPバーの強い青光り
+  if(target==='player'){
+    const hpBar=document.getElementById('player-hp-bar');
+    if(hpBar){hpBar.classList.remove('shield-flash'); void hpBar.offsetWidth; hpBar.classList.add('shield-flash'); setTimeout(()=>hpBar.classList.remove('shield-flash'),700);}
+  }
 }
 function spawnDmgNum(txt,type){
   const el=document.getElementById('effect-layer');
@@ -6398,13 +6484,13 @@ function spawnDmgNum(txt,type){
   else if(num>=10) d.style.fontSize='26px';
   else d.style.fontSize='20px';
   let x,y;
-  if(type==='player-dmg'||type==='heal'){
+  if(type==='player-dmg'||type==='heal'||type==='player-guard'){
     // プレイヤーHPバー付近（fixed座標）
     const pRow=document.getElementById('player-hp-bar');
     if(pRow){
       const rect=pRow.getBoundingClientRect();
       x=rect.left+rect.width/2-16+Math.random()*40-20;
-      y=rect.top-30+Math.random()*10-5;
+      y=type==='player-guard'?rect.top-56:rect.top-30+Math.random()*10-5;
     } else {
       x=window.innerWidth/2; y=window.innerHeight*0.7;
     }
@@ -6516,6 +6602,8 @@ function hideOv(id){
   if(el){ el.classList.remove('show'); el.classList.remove('has-more'); }
   // チャージ情報はポップアップなので暗幕不要
   if(id==='ov-charge-info') return;
+  // デッキ・捨札・ドロー確認はゲーム中閲覧なので暗幕不要（戦闘続行）
+  if(id==='ov-deck'||id==='ov-discard') return;
   // ゲームオーバー・クリア時は暗幕を出さない（リザルト画面が動的生成のため）
   if(G && G.phase==='gameover') return;
   if(document.getElementById('_result-clear')||document.getElementById('_result-over')) return;
@@ -6674,7 +6762,7 @@ function playEventBgm(){
   try{
     _eventAudio=new Audio('event.mp3');
     _eventAudio.loop=true;
-    _eventAudio.volume=0.5;
+    _eventAudio.volume=0.85;
     _eventAudio.play().catch(()=>{});
   }catch(e){}
 }
@@ -6693,7 +6781,7 @@ function playBgm(file){
   try{
     _bgmAudio=new Audio(file);
     _bgmAudio.loop=true;
-    _bgmAudio.volume=0.5;
+    _bgmAudio.volume=0.85;
     _bgmAudio.play().catch(()=>{});
   }catch(e){}
 }
